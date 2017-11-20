@@ -17,19 +17,19 @@ const coin = [{
   path: 'coin/coinPay',
   component: CoinPay,
   name: 'coinPay',
-  meta: { title: '资金记录-充值押金' }
+  meta: { title: '资金管理-充值' }
 },
 {
   path: 'coin/coinApply',
   component: CoinApply,
   name: 'coinApply',
-  meta: { title: '资金记录-押金提现' }
+  meta: { title: '资金管理-资金记录' }
 },
 {
   path: 'coin/coinList',
   component: CoinList,
   name: 'coinList',
-  meta: { title: '资金记录-提现记录' }
+  meta: { title: '资金管理-银行卡管理' }
 }
 ]
 export default coin

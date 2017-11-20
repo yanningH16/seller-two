@@ -1,6 +1,6 @@
 <template>
   <div>
-    coinApply
+    资金记录
   </div>
 </template>
 <script type="text/ecmascript-6">

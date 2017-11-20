@@ -16,6 +16,17 @@
         </router-link>
       </div>
     </div>
+    <div class="state">
+      <img :src="srcPic" alt="" class="pic">
+      <p class="phone">
+        <span>15037183341</span>
+        <i class="el-icon-caret-bottom"></i>
+      </p>
+      <p class="balance">账户余额:
+        <span>120.00</span>
+      </p>
+      <p class="pay">立即充值</p>
+    </div>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -23,7 +34,8 @@ export default {
   name: 'navMenu',
   data () {
     return {
-      isActive: 0
+      isActive: 0,
+      srcPic: 'http://img0.imgtn.bdimg.com/it/u=370586742,3427985766&fm=27&gp=0.jpg'
     }
   },
   computed: {
@@ -32,33 +44,71 @@ export default {
         return [
           {
             icon: 'el-icon-menu',
-            header: '任务管理',
-            routerHead: 'task',
+            header: '首页',
+            routerHead: 'header',
             lines: [
               {
-                text: '垫付任务',
-                link: 'task',
+                text: '总览',
+                link: 'overView',
                 bradge: 12
+              },
+              {
+                text: '任务管理',
+                link: 'task'
               }
             ]
           },
           {
             icon: 'el-icon-menu',
-            header: '资金记录',
+            header: '订单管理',
+            routerHead: 'order',
+            lines: [
+              {
+                text: '审核订单',
+                link: 'auditOrder'
+              },
+              {
+                text: '审核评价',
+                link: 'appraiseOrder',
+                bradge: 3
+              }
+            ]
+          },
+          {
+            icon: 'el-icon-menu',
+            header: '资金管理',
             routerHead: 'coin',
             lines: [
               {
-                text: '充值押金',
-                link: 'coinPay',
-                bradge: 3
-              },
-              {
-                text: '押金提现',
-                link: 'coinApply'
+                text: '充值',
+                link: 'coinPay'
               },
               {
                 text: '资金记录',
+                link: 'coinApply'
+              },
+              {
+                text: '银行卡管理',
                 link: 'coinList'
+              }
+            ]
+          },
+          {
+            icon: 'el-icon-menu',
+            header: '其它管理',
+            routerHead: 'othersAdmin',
+            lines: [
+              {
+                text: '店铺管理',
+                link: 'shopAdmin'
+              },
+              {
+                text: '推广赚钱',
+                link: 'pushAdmin'
+              },
+              {
+                text: '我的举报',
+                link: 'myReport'
               }
             ]
           }
@@ -154,4 +204,22 @@ export default {
           border-radius 10px
           padding 2px 4px
           text-align center
+  .state
+    margin-top 37px
+    text-align center 
+    color white
+    font-size 14px
+    .pic
+      width 40px
+      height 40px
+      border-radius 50%   
+    .phone
+      margin-top 20px
+      cursor pointer
+    .balance
+      margin-top 12px   
+    .pay
+      margin-top 12px
+      color rgba(255,41,51,1)  
+      cursor pointer
 </style>

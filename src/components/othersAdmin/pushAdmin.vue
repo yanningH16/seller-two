@@ -1,10 +1,10 @@
 <template>
   <div class="">
-    woshi task</div>
+    推广赚钱</div>
 </template>
 <script type="text/ecmascript-6">
 export default {
-  name: 'task',
+  name: 'pushAdmin',
   data () {
     return {
     }

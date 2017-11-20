@@ -9,7 +9,7 @@ import reg from './reg/reg'
 
 const defaultRouter = [{
   path: '/',
-  redirect: 'home/task'
+  redirect: 'home/header/overView'
 }]
 
 Vue.use(Router)

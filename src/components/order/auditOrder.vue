@@ -1,11 +1,10 @@
 <template>
-  <div>
-    充值
-  </div>
+  <div class="">
+    订单审核</div>
 </template>
 <script type="text/ecmascript-6">
 export default {
-  name: 'coinPay',
+  name: 'auditOrder',
   data () {
     return {
     }

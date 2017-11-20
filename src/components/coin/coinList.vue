@@ -1,6 +1,6 @@
 <template>
   <div>
-    coinList
+    银行卡管理
   </div>
 </template>
 <script type="text/ecmascript-6">

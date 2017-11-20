@@ -1,11 +1,10 @@
 <template>
-  <div>
-    充值
-  </div>
+  <div class="">
+    woshi 任务管理</div>
 </template>
 <script type="text/ecmascript-6">
 export default {
-  name: 'coinPay',
+  name: 'task',
   data () {
     return {
     }

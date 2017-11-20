@@ -1,5 +1,7 @@
-import task from '../task/task'
+import header from '../header/header'
 import coin from '../coin/coin'
+import order from '../order/order'
+import othersAdmin from '../othersAdmin/othersAdmin'
 const Home = (resolve) => {
   import('@/components/home/home').then((module) => {
     resolve(module)
@@ -10,6 +12,6 @@ const home = [{
   path: '/home',
   component: Home,
   name: 'home',
-  children: [...defaultHome, ...task, ...coin]
+  children: [...defaultHome, ...header, ...order, ...coin, ...othersAdmin]
 }]
 export default home

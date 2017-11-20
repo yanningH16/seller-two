@@ -1,11 +1,10 @@
 <template>
-  <div>
-    充值
-  </div>
+  <div class="">
+    我的举报</div>
 </template>
 <script type="text/ecmascript-6">
 export default {
-  name: 'coinPay',
+  name: 'myReport',
   data () {
     return {
     }
