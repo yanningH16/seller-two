@@ -2,7 +2,7 @@
   <div class="menu">
     <div class="logo">
       <!-- <img src="logo" alt="Logo" class="img"> -->
-      <span style="color:#fff;line-height:60px">LOGO</span>
+      <span style="color:#fff;line-height:80px;font-size:32px;">LOGO</span>
     </div>
     <div class="router">
       <div class="routerBox" v-for="(item,index) in menus" :key="index" ref="routerBox" @click="setRouterActive">
@@ -136,11 +136,10 @@ export default {
 <style lang="stylus" rel="stylesheet/stylus" scoped>
 @import '../../assets/stylus/variable'
 .menu
-  background #0a1727
+  background #090723
   height 100%
   .logo
-    height $normal-height
-    background $bg-small
+    height 80px
     text-align center
     .img
       position relative
@@ -151,10 +150,10 @@ export default {
     .routerBox
       font-size 0
       .routerHeader
-        height $line-height
-        line-height $line-height
-        color $color-normal-d
-        font-size $font-size-normal
+        height 40px
+        line-height 40px
+        color #ffffff
+        font-size 16px
         cursor pointer
         position relative
         &.routerHeaderActive
@@ -164,15 +163,14 @@ export default {
         .icon
           text-align center
           position absolute
-          top 14px
+          top 12px
           left 20px
       .routerLine
         position relative
-        height $line-height
-        line-height $line-height
-        color $color-normal
-        font-size $font-size-small
-        background $bg-small
+        height 40px
+        line-height 40px
+        color #e7e7e7
+        font-size 14px
         cursor pointer
         &:hover
           background $bg-active
@@ -205,21 +203,21 @@ export default {
           padding 2px 4px
           text-align center
   .state
-    margin-top 37px
-    text-align center 
+    margin-top 36px
+    text-align center
     color white
     font-size 14px
     .pic
       width 40px
       height 40px
-      border-radius 50%   
+      border-radius 50%
     .phone
       margin-top 20px
       cursor pointer
     .balance
-      margin-top 12px   
+      margin-top 12px
     .pay
       margin-top 12px
-      color rgba(255,41,51,1)  
+      color rgba(255, 41, 51, 1)
       cursor pointer
 </style>

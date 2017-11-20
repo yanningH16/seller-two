@@ -4,7 +4,6 @@
       <navMenu></navMenu>
     </div>
     <div class="routerBox">
-      <userInfo></userInfo>
       <div class="routerContainer">
         <router-view/>
       </div>
@@ -14,13 +13,11 @@
 
 <script type="text/ecmascript-6">
 import NavMenu from '../../base/navMenu/navMenu'
-import UserInfo from '../../base/userInfo/userInfo'
 // import { mapMutations} from 'vuex'
 export default {
   name: 'admin',
   components: {
-    NavMenu,
-    UserInfo
+    NavMenu
   },
   data () {
     return {
