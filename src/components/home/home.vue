@@ -49,5 +49,5 @@ export default {
       flex 1
       overflow hidden
       overflow-y auto
-      background $bg-container
+      background #efefef
 </style>

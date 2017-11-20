@@ -35,7 +35,7 @@ export default {
   data () {
     return {
       isActive: 0,
-      srcPic: 'http://img0.imgtn.bdimg.com/it/u=370586742,3427985766&fm=27&gp=0.jpg'
+      srcPic: 'http://scimg.jb51.net/allimg/130929/2-1309292141522I.jpg'
     }
   },
   computed: {
@@ -123,10 +123,14 @@ export default {
     setRouterActive () {
       this.$nextTick(() => {
         let activeRouter = this.$route.path
-        if (activeRouter.indexOf('task') !== -1) {
+        if (activeRouter.indexOf('header') !== -1) {
           this.isActive = 0
-        } else if (activeRouter.indexOf('coin') !== -1) {
+        } else if (activeRouter.indexOf('order') !== -1) {
           this.isActive = 1
+        } else if (activeRouter.indexOf('coin') !== -1) {
+          this.isActive = 2
+        } else if (activeRouter.indexOf('othersAdmin') !== -1) {
+          this.isActive = 3
         }
       })
     }
