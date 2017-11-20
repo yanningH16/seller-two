@@ -13,6 +13,11 @@ const myReport = (resolve) => {
     resolve(module)
   })
 }
+const shopAdminList = (resolve) => {
+  import('@/components/othersAdmin/shopAdminList').then((module) => {
+    resolve(module)
+  })
+}
 const othersAdmin = [{
   path: 'othersAdmin/shopAdmin',
   component: shopAdmin,
@@ -30,6 +35,12 @@ const othersAdmin = [{
   component: myReport,
   name: 'myReport',
   meta: { title: '其它管理-我的举报' }
+},
+{
+  path: 'othersAdmin/shopAdminList',
+  component: shopAdminList,
+  name: 'shopAdminList',
+  meta: { title: '其它管理-店铺列表' }
 }
 ]
 export default othersAdmin
