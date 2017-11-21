@@ -18,29 +18,30 @@ const shopAdminList = (resolve) => {
     resolve(module)
   })
 }
-const othersAdmin = [{
-  path: 'othersAdmin/shopAdmin',
-  component: shopAdmin,
-  name: 'shopAdmin',
-  meta: { title: '其它管理-店铺管理' }
-},
-{
-  path: 'othersAdmin/pushAdmin',
-  component: pushAdmin,
-  name: 'pushAdmin',
-  meta: { title: '其它管理-推广赚金' }
-},
-{
-  path: 'othersAdmin/myReport',
-  component: myReport,
-  name: 'myReport',
-  meta: { title: '其它管理-我的举报' }
-},
-{
-  path: 'othersAdmin/shopAdminList',
-  component: shopAdminList,
-  name: 'shopAdminList',
-  meta: { title: '其它管理-店铺列表' }
-}
+const othersAdmin = [
+  {
+    path: 'othersAdmin/shopAdminList',
+    component: shopAdminList,
+    name: 'shopAdminList',
+    meta: { title: '其它管理-店铺列表' }
+  },
+  {
+    path: 'othersAdmin/pushAdmin',
+    component: pushAdmin,
+    name: 'pushAdmin',
+    meta: { title: '其它管理-推广赚金' }
+  },
+  {
+    path: 'othersAdmin/myReport',
+    component: myReport,
+    name: 'myReport',
+    meta: { title: '其它管理-我的举报' }
+  },
+  {
+    path: 'othersAdmin/shopAdmin',
+    component: shopAdmin,
+    name: 'shopAdmin',
+    meta: { title: '其它管理-店铺管理' }
+  }
 ]
 export default othersAdmin

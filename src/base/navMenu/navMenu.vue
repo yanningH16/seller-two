@@ -18,10 +18,18 @@
     </div>
     <div class="state">
       <img :src="srcPic" alt="" class="pic">
-      <p class="phone">
+      <p class="phone" @click="personInfo">
         <span>15037183341</span>
         <i class="el-icon-caret-bottom"></i>
       </p>
+      <div v-show="pull">
+        <router-link :to="{name:'userInfo'}">
+          <p class="info">账号信息</p>
+        </router-link>
+        <router-link :to="{name:'out'}">
+          <p class="info">退出登陆</p>
+        </router-link>
+      </div>
       <p class="balance">账户余额:
         <span>120.00</span>
       </p>
@@ -34,6 +42,7 @@ export default {
   name: 'navMenu',
   data () {
     return {
+      pull: false,
       isActive: 0,
       srcPic: 'http://scimg.jb51.net/allimg/130929/2-1309292141522I.jpg'
     }
@@ -100,7 +109,7 @@ export default {
             lines: [
               {
                 text: '店铺管理',
-                link: 'shopAdmin'
+                link: 'shopAdminList'
               },
               {
                 text: '推广赚钱',
@@ -133,6 +142,9 @@ export default {
           this.isActive = 3
         }
       })
+    },
+    personInfo () {
+      this.pull = !this.pull
     }
   }
 }
@@ -224,4 +236,8 @@ export default {
       margin-top 12px
       color rgba(255, 41, 51, 1)
       cursor pointer
+    .info
+      line-height 40px
+      cursor pointer
+      color white
 </style>

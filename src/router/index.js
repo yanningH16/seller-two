@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import user from './user/user'
 import error from './error/error'
 import home from './home/home'
 import login from './login/login'
@@ -15,6 +14,6 @@ const defaultRouter = [{
 Vue.use(Router)
 
 export default new Router({
-  routes: [...defaultRouter, ...user, ...error, ...home, ...login, ...reg],
+  routes: [...defaultRouter, ...error, ...home, ...login, ...reg],
   mode: 'history'
 })
