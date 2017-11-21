@@ -25,8 +25,15 @@
 // .el-select .el-input 
 //   width 110px
 .el-radio__input.is-checked .el-radio__inner
-  border-color: #FF2933
-  background: #FF2933
+  border-color #FF2933
+  background #FF2933
+.el-radio__input.is-checked+.el-radio__label
+    color #444444
+.el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate .el-checkbox__inner
+    background-color #FF2933
+    border-color #FF2933
+.el-checkbox__input.is-checked+.el-checkbox__label
+    color #444444
 // 面包屑
 .el-breadcrumb__inner, .el-breadcrumb__inner a
   color #898989

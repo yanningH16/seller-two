@@ -13,6 +13,16 @@ const SendTaskTwo = (resolve) => {
     resolve(module)
   })
 }
+const SendTaskThree = (resolve) => {
+  import('@/components/header/sendTask/sendTaskThree').then((module) => {
+    resolve(module)
+  })
+}
+const SendTaskFour = (resolve) => {
+  import('@/components/header/sendTask/sendTaskFour').then((module) => {
+    resolve(module)
+  })
+}
 const task = (resolve) => {
   import('@/components/header/task').then((module) => {
     resolve(module)
@@ -32,6 +42,16 @@ const header = [{
   path: 'header/overView/sendTaskTwo',
   component: SendTaskTwo,
   name: 'sendTaskTwo',
+  meta: { title: '首页-总览-发布垫付任务' }
+}, {
+  path: 'header/overView/sendTaskThree',
+  component: SendTaskThree,
+  name: 'sendTaskThree',
+  meta: { title: '首页-总览-发布垫付任务' }
+}, {
+  path: 'header/overView/sendTaskFour',
+  component: SendTaskFour,
+  name: 'sendTaskFour',
   meta: { title: '首页-总览-发布垫付任务' }
 }, {
   path: 'header/task',
