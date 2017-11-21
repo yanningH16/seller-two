@@ -200,25 +200,63 @@
                 </p>
                 <p>
                   <span>目标翻页数:</span>&nbsp;
-                  <el-input style="width:120px;" placeholder="请输入搜索关键字"></el-input>
+                  <el-input style="width:120px;" placeholder="请输入数量"></el-input>
                 </p>
               </div>
               <div class="col col3">
                 <p>
                   <span>现有收货/下单人数约:</span>&nbsp;
-                  <el-input style="width:120px;" placeholder="请输入搜索关键字"></el-input>
+                  <el-input style="width:120px;" placeholder="请输入数量"></el-input>
                 </p>
               </div>
             </div>
             <div class="save">
-              <button class="btn">保存</button>
+              <button class="btn btn-small">保存</button>
             </div>
           </li>
         </ul>
+        <div class="addKeyword">
+          <el-button type="text">
+            <i class="el-icon-circle-plus"></i>
+            可多添加2个淘宝搜索关键词方案
+          </el-button>
+          <span class="gray">(最多可添加5组关键词方案)</span>
+        </div>
       </div>
       <h2>第三步: 选择任务类型与单数</h2>
       <div class="step step3">
-        33333
+        <span>任务开展时间&nbsp;:&nbsp;</span>
+        <el-date-picker v-model="taskStarTime" type="date" placeholder="选择日期" format="yyyy/MM/dd" value-format="yyyy-MM-dd">
+        </el-date-picker>
+        <table class="dateTable">
+          <thead>2017-11-21</thead>
+          <tr>
+            <th>日</th>
+            <th>一</th>
+            <th>二</th>
+            <th>三</th>
+            <th>四</th>
+            <th>五</th>
+            <th>六</th>
+          </tr>
+          <tr>
+            <td>
+              <b>9</b>
+              <span>投放数量</span>
+              <div class="numAdd">
+                <span class="l">-</span>
+                <input type="number">
+                <span class="r">+</span>
+              </div>
+            </td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </table>
       </div>
       <div class="next">
         <!-- <button class="btn" :class="{'disabled': !(shop && taskType)}" :disabled="!(shop && taskType)" @click="doNext">下一步</button> -->
@@ -243,7 +281,11 @@ export default {
       isPost: 0,
       isSuportHuabei: 1,
       isSuportCard: 1,
-      isSuportTics: 1
+      isSuportTics: 1,
+      // 任务开展时间
+      taskStarTime: '',
+      // 投放数量
+      num1: 1
     }
   },
   methods: {
@@ -301,6 +343,7 @@ export default {
   .cont
     background #ffffff
     padding 20px
+    min-width 900px
     .next
       margin-top 280px
       margin-bottom 20px
@@ -401,6 +444,8 @@ export default {
           display inline-block
           width 250px
     .keywordList
+      padding-bottom 32px
+      border-bottom 1px solid #cccccc
       .deleBtn
         float right
         font-size 20px
@@ -412,8 +457,20 @@ export default {
         box-shadow 0 1px 5px rgba(0, 0, 0, 0.12)
     .filter
       display flex
-      col
+      .col
         flex 1
-        margin-left 20px
-        min-width 600px
+        margin-right 20px
+        span
+          display inline-block
+          min-width 75px
+          max-width 140px
+        p
+          margin-bottom 12px
+      .col2
+        max-width 260px
+    .save
+      text-align center
+      margin-top 24px
+    .addKeyword
+      margin-top 28px
 </style>
