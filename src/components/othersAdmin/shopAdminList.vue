@@ -6,18 +6,34 @@
       <el-tabs v-model="activeName">
         <el-tab-pane label="用户管理" name="first">
           <div class="icon">
-            <i class="el-icon-document"></i>
+            <i class="el-icon-document" style="margin-right:20px"></i>
             <i class="el-icon-delete"></i>
           </div>
           <table class="border">
-            <tr>测试一下大家诶飞飞机二级分
-              <span class="right">的法兰克福</span>
+            <tr>
+              <i style="margin-left:20px">店铺信息:
+                <em>索尼旗舰店</em>
+                <span class="right">状态 :
+                  <em>已审核</em>
+                </span>
+              </i>
             </tr>
-            <tr>测试一下大家诶飞飞机二级分</tr>
-            <tr>测试一下大家诶飞飞机二级分</tr>
+            <tr>
+              <i style="margin-left:20px">店铺链接:
+                <em>http://www.baidu.com</em>
+              </i>
+            </tr>
+            <tr>
+              <i style="margin-left:20px">联系人方式: QQ
+                <em>632311638</em> 微信
+                <em>1503718341</em> 手机
+                <em>15037183341</em>
+              </i>
+            </tr>
           </table>
         </el-tab-pane>
       </el-tabs>
+      <router-link :to="{name:'shopAdmin'}"><button class="btn">+添加店铺</button></router-link> 
     </div>
   </div>
 </template>
@@ -46,19 +62,26 @@ export default {
   .content
     background #fff
     margin-top 24px
-    padding-left 20px
-    padding-right 20px
+    padding 0 20px 336px
+    position relative
     .border
       border 1px solid rgba(204, 204, 204, 1)
       width 100%
       line-height 40px
+      margin-top 9px
+      font-size 14px
       tr:nth-child(2n-1)
         border 1px solid rgba(204, 204, 204, 1)
         background #fafafa
       .right
         float right
+        margin-right 20px
     .icon
       text-align right
-      font-size 18px
+      font-size 20px
       padding-top 40px
+    .btn
+      position absolute
+      bottom 38px
+      left 50%
 </style>
