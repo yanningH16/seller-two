@@ -33,7 +33,7 @@
       <p class="balance">账户余额:
         <span>120.00</span>
       </p>
-      <p class="pay">立即充值</p>
+      <router-link :to="{name:'coinPay'}"><p class="pay">立即充值</p></router-link> 
     </div>
   </div>
 </template>

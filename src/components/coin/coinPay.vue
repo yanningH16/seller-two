@@ -22,7 +22,7 @@
         <span style="font-size:12px">为快速到账,请按此金额付款,包括小数点后两位</span>
       </div>
       <div class="number">
-        <button class="btn small" @click="dialogVisible = true">生产充值单</button>
+        <button class="buttn buttn_small" @click="dialogVisible = true">生产充值单</button>
       </div>
     </div>
     <div class="contentDelit">

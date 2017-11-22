@@ -16,7 +16,7 @@ const user = [
     meta: { title: '个人信息' }
   },
   {
-    path: 'othersAdmin/pushAdmin',
+    path: 'user/out',
     component: out,
     name: 'out',
     meta: { title: '退出登陆' }
