@@ -4,22 +4,27 @@
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item :to="{ name: 'overView' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item :to="{ name: 'overView' }">总览</el-breadcrumb-item>
-        <el-breadcrumb-item>发布垫付任务</el-breadcrumb-item>
+        <el-breadcrumb-item v-if="!isReturnBack">发布垫付任务</el-breadcrumb-item>
+        <el-breadcrumb-item v-if="isReturnBack">修改垫付任务</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <div class="warning" v-if="warnShow">
+    <div class="warning" v-if="warnShow && !isReturnBack">
       <i class="el-icon-warning"></i>
       <span style="margin-left:20px;margin-right:40px;">(1) 当日18点前发布的任务，当日审核通过后进行分发。</span>
       <span>（2）当日22点后发布的任务，将在当日审核后于次日8点起开始。</span>
       <b class="el-icon-close" style="float:right;margin-top:14px;font-weight: bold" @click="warnShow=false"></b>
     </div>
-    <div class="step">
+    <div class="step" v-if="!isReturnBack">
       <el-steps :active="active" finish-status="success" align-center>
         <el-step title="选择任务类型"></el-step>
         <el-step title="填写任务信息"></el-step>
         <el-step title="支付"></el-step>
         <el-step title="发布成功"></el-step>
       </el-steps>
+    </div>
+    <div class="returnBack" v-if="isReturnBack">
+      <div>驳回原因：</div>
+      <p>好gas发送啊司法所和萨芬沙发上好gas发送啊司法所和萨芬沙发上好g</p>
     </div>
     <div class="cont">
       <div class="choosed">
@@ -88,20 +93,20 @@
             </tr>
             <tr>
               <td>
-                <input type="number" placeholder="请填写">
+                <input type="number" :disabled="isReturnBack" placeholder="请填写">
               </td>
               <td>
-                <input type="number" placeholder="请填写">
+                <input type="number" :disabled="isReturnBack" placeholder="请填写">
               </td>
               <td>
-                <input type="number" placeholder="请填写">
+                <input type="number" :disabled="isReturnBack" placeholder="请填写">
               </td>
               <td>
-                <input type="text" placeholder="任意规格(按照试用价格下单)">
+                <input type="text" :disabled="isReturnBack" placeholder="任意规格(按照试用价格下单)">
               </td>
             </tr>
           </table>
-          <el-radio-group v-model="isPost">
+          <el-radio-group v-model="isPost" :disabled="isReturnBack">
             <div class="checkBox">
               <el-radio :label="0">
                 <b style="color: #3c3c3c">商品本身不包邮</b>
@@ -227,14 +232,14 @@
           <span class="gray">(最多可添加5组关键词方案)</span>
         </div>
       </div>
-      <h2>第三步: 选择任务类型与单数</h2>
-      <div class="step step3">
+      <h2 v-if="!isReturnBack">第三步: 选择任务类型与单数</h2>
+      <div v-if="!isReturnBack" class="step step3">
         <span>任务开展时间&nbsp;:&nbsp;</span>
-        <el-date-picker v-model="taskStarTime" type="date" placeholder="选择日期" format="yyyy/MM/dd" value-format="yyyy-MM-dd">
+        <el-date-picker v-model="taskStarTime" @change="setTaskStarTime" type="date" placeholder="选择日期" format="yyyy/MM/dd">
         </el-date-picker>
         <table class="dateTable">
           <tr>
-            <th colspan="7">2017/11/21</th>
+            <th colspan="7">{{ newTaskStarTime }}</th>
           </tr>
           <tr>
             <th>日</th>
@@ -245,22 +250,18 @@
             <th>五</th>
             <th>六</th>
           </tr>
-          <tr>
-            <td>
-              <b>9</b>
-              <p>投放数量</p>
-              <div class="numAdd">
-                <span class="l">－</span>
-                <input type="number" value="1">
-                <span class="r">+</span>
+          <tr v-for="(items, indexs) in timeArr" :key="indexs">
+            <td v-for="(item, index) in items.line" :key="index">
+              <div v-if="item.day!=''">
+                <b>{{ item.day }}</b>
+                <p>投放数量</p>
+                <div class="numAdd">
+                  <span class="l" @click="dele(indexs, index)">－</span>
+                  <input type="number" :value="item.num">
+                  <span class="r" @click="add(indexs, index)">+</span>
+                </div>
               </div>
             </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
           </tr>
         </table>
         <span class="must">总计25单任务，其中：</span>
@@ -305,9 +306,14 @@
           </el-radio-group>
         </div>
       </div>
-      <div class="next">
+      <div class="next" v-if="!isReturnBack">
         <button class="btn disabled" @click="doPrevent">上一步</button>
         <button class="btn" @click="doNext">下一步</button>
+        <!-- <button class="btn" :class="{'disabled': !(shop && taskType)}" :disabled="!(shop && taskType)" @click="doNext">下一步</button> -->
+      </div>
+      <div class="next" v-if="isReturnBack">
+        <button class="btn disabled">取消</button>
+        <button class="btn">确认</button>
         <!-- <button class="btn" :class="{'disabled': !(shop && taskType)}" :disabled="!(shop && taskType)" @click="doNext">下一步</button> -->
       </div>
     </div>
@@ -319,6 +325,8 @@ export default {
   data () {
     return {
       warnShow: true,
+      // 是否驳回
+      isReturnBack: false,
       active: 1,
       imageUrl: '',
       classOne: '',
@@ -333,10 +341,8 @@ export default {
       isSuportTics: 1,
       // 任务开展时间
       taskStarTime: '',
-      // 日历对象
-      timeObj: {},
-      // 投放数量
-      num1: 1,
+      // 日历数组
+      timeArr: [],
       // 复选框的以选择数组
       taskTotal: [],
       // 设置买号类型
@@ -355,33 +361,69 @@ export default {
       }]
     }
   },
+  computed: {
+    newTaskStarTime: function () {
+      let timeArr = this.taskStarTime.toLocaleString().split('/')
+      return timeArr[0] + '年' + timeArr[1] + '月'
+    }
+  },
   methods: {
-    setDate () {
-      let time = new Date()
+    setMyDate (val) {
+      if (val) {
+        this.taskStarTime = val
+        this.filterTime(val)
+      } else {
+        this.taskStarTime = new Date()
+        this.filterTime(new Date())
+      }
+    },
+    // 筛选日历
+    filterTime (time) {
       let week = time.getDay()
       let arr = []
       let times = time
-      let timeObj = {
-        line1: [],
-        line2: [],
-        line3: []
-      }
-      this.taskStarTime = time
+      let timeArr = []
       for (let i = 0; i < week; i++) {
-        arr.push('')
+        arr.push({
+          day: '',
+          num: 1
+        })
       }
       for (let i = 0; i < 14; i++) {
         let thisTime = new Date(times).getDate()
-        times = time.setDate(time.getDate() + 1)
-        arr.push(thisTime)
+        times = new Date(times).setDate(new Date(times).getDate() + 1)
+        arr.push({
+          day: thisTime,
+          num: 1
+        })
       }
       for (let i = 0; i < 7 - week; i++) {
-        arr.push('')
+        arr.push({
+          day: '',
+          num: 1
+        })
       }
-      timeObj.line1 = arr.slice(0, 7)
-      timeObj.line2 = arr.slice(7, 14)
-      timeObj.line3 = arr.slice(14, 21)
-      this.timeObj = timeObj
+      for (let i = 0; i < 3; i++) {
+        timeArr.push({
+          line: arr.slice(7 * i, 7 * (i + 1))
+        })
+      }
+      this.timeArr = timeArr
+    },
+    dele (lineIndex, arrIndex) {
+      if (this.timeArr[lineIndex].line[arrIndex].num <= 0) {
+        this.timeArr[lineIndex].line[arrIndex].num = 0
+      } else {
+        this.timeArr[lineIndex].line[arrIndex].num--
+      }
+    },
+    add (lineIndex, arrIndex) {
+      this.timeArr[lineIndex].line[arrIndex].num++
+    },
+    // 改变任务开展时间时设置
+    setTaskStarTime () {
+      console.log(this.taskStarTime)
+      this.setMyDate(this.taskStarTime)
     },
     handleAvatarSuccess (res, file) {
       this.imageUrl = URL.createObjectURL(file.raw)
@@ -430,7 +472,7 @@ export default {
     }
   },
   mounted () {
-    this.setDate()
+    this.setMyDate()
   }
 }
 </script>
@@ -454,6 +496,20 @@ export default {
     padding-right 16px
     margin-bottom 24px
     border-radius 4px
+  .returnBack
+    padding 28px 100px
+    display flex
+    font-size 14px
+    background #ffffff
+    margin-bottom 1px
+    box-shadow 0 1px 1px #dedede
+    div
+      width 100px
+      text-align right
+      line-height 30px
+    p
+      flex 1
+      line-height 30px
   .warning
     height 36px
     background rgba(255, 171, 177, 0.4)
@@ -556,6 +612,11 @@ export default {
           width 100%
           outline none
           text-align center
+          &:disabled
+            color #dedede
+            background none
+            &:hover
+              cursor not-allowed
     .checkBox
       height 14px
       line-height 1

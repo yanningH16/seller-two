@@ -69,7 +69,9 @@ input[type="number"]
     left: 0
     height: 100%
     transform-origin: left 0
-
+.pager
+  text-align right
+  margin-top 40px
 .btn
   border none 
   outline none 
@@ -79,13 +81,15 @@ input[type="number"]
   font-size 14px
   line-height 36px
   height 36px
-  width 74px
+  min-width 74px
   text-align center
   padding-left 14px
   padding-right 14px
   cursor pointer
   margin-left 12px
   margin-right 12px
+.btn:hover
+  opacity 0.8
 .btn-small
   height 22px
   line-height 22px
@@ -96,7 +100,10 @@ input[type="number"]
   cursor auto
   color #9b9b9b
   background #ededed
-  cursor: pointer
+.disabled-btn
+  cursor not-allowed
+  color #b7b7b7
+  background #ededed
 
 @media (-webkit-min-device-pixel-ratio: 1.5),(min-device-pixel-ratio: 1.5)
   .border-top-1px
