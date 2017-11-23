@@ -107,7 +107,7 @@
                   <p>已完成订单:
                     <span class="red">99</span>
                   </p>
-                  <el-tooltip class="item" effect="dark" content="未通过原因: 123456577896552" placement="top">
+                  <el-tooltip popper-class="tooltipItem" effect="dark" content="未通过原因: 123456577896552" placement="top">
                     <p class="overflow">未通过原因: 123456577896552</p>
                   </el-tooltip>
                 </li>
