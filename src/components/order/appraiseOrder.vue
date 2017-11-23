@@ -161,6 +161,13 @@ export default {
 <style lang="stylus" rel="stylesheet/stylus" scoped>
 .wrap
   padding 0 20px 0 20px
+  .gray
+    cursor pointer
+    color #9b9b9b
+    background #ededed  
+    width 60px
+    height 22px
+    line-height 22px
   .shop
     background #fff
     height 36px

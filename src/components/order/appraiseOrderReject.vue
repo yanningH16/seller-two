@@ -84,7 +84,7 @@
             <p style="padding-bottom:20px">
               驳回原因:
               <el-tooltip  effect="dark" popper-class="tooltipItem" content="超出部分显示内容" placement="top-start">
-                <span class="right_text">绝地反击噢诶费劲儿</span>
+                <span class="right_text">绝地反击噢k京东foe见覅返利积分开始了对方诶费劲儿</span>
               </el-tooltip>
             </p>
             <p class="right_first">
