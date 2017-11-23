@@ -18,8 +18,8 @@
         <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="textarea">
         </el-input>
       </li>
-      <li>
-          <span style="margin-left:-330px;color:#444">上传截图</span> 
+      <li class="pic">
+          <span class="word">上传截图</span> 
           <el-upload class="avatar-uploader" action="" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
             <img v-if="imageUrl" :src="imageUrl" class="avatar">
             <i v-else class="upPic">+</i>
@@ -81,39 +81,46 @@ export default {
 }
 </script>
 <style lang="stylus" rel="stylesheet/stylus" scoped>
-h4
+body
   width 100%
-  height 40px
-  background rgba(255,51,65,0.3)
-  color #ff3341
-  font-size 20px
-  text-align center
-  line-height 40px
-.infoMsg
-  background #ffffff
-  text-align center  
-  padding-bottom 100px
-  li
-    padding-top 40px
-    font-size 14px
-    color #3c3c3c
-    span 
-      color #fb132d
-    .jietu
-
-    .avatar-uploader
-      border 1px solid #d9d9d9
-      cursor pointer
-      width 120px
-      height 120px
-      background rgba(250, 250, 250, 1)
-      margin-left 40%
-    .upPic
-      font-size 30px
+  height 100%
+  h4
+    width 100%
+    height 40px
+    background rgba(255,51,65,0.3)
+    color #ff3341
+    font-size 20px
+    text-align center
+    line-height 40px
+  .infoMsg
+    background #ffffff
+    text-align center  
+    padding-bottom 200px
+    li
+      padding-top 40px
+      font-size 14px
+      color #3c3c3c
+      span 
+        color #fb132d
+    .pic
+      margin-left -200px    
+      .word
+        color #444444
+        vertical-align top 
+        display inline-block
+      .avatar-uploader
+        border 1px solid #d9d9d9
+        cursor pointer
+        width 120px
+        height 120px
+        background rgba(250, 250, 250, 1)
+        display inline-block
+      .upPic
+        font-size 30px
+        display inline-block
+        line-height 120px
+    .beizhu
       display inline-block
-      line-height 120px
-  .beizhu
-    display inline-block
-    vertical-align top
+      vertical-align top
 
 </style>

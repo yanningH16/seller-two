@@ -2,12 +2,12 @@
   <div class="login">
     <div class="logo">
       <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1510149804507&di=38dc2b1b6be35acb5c774289b83f10fd&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F0124f358cec437a801219c77cd9b01.jpg%40900w_1l_2o_100sh.jpg" alt="logo">
-      <span>抱 一 通 信</span>
+      <span>抱 一 刷 单 项 目</span>
     </div>
     <div class="cont">
-      <div class="text">
+      <!-- <div class="text">
         <h1>数 据 智 能&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;驱 动 未 来</h1>
-      </div>
+      </div> -->
       <div class="board">
         <h2>登&nbsp;录</h2>
         <div class="inputCont">
@@ -21,7 +21,7 @@
           </div>
           <button>登&nbsp;录</button>
           <h3>
-            <span>忘记密码</span>
+            <router-link :to="{name:'Password'}"><span>忘记密码</span></router-link>
           </h3>
         </div>
       </div>
@@ -108,14 +108,14 @@ export default {
           line-height 52px
           color #ffffff
           font-size 16px
-          background #40b6ff
+          background #ff3341
           cursor pointer
           border-radius 2px
           margin-bottom 16px
           &:hover
-            background #40b6f2
+            background #ff3341
           &:active
-            color lightgreen
+            color white
         h3
           overflow hidden
           span

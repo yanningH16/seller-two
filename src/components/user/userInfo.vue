@@ -101,6 +101,7 @@ export default {
     padding 0 20px 20px
     font-size 14px
     color rgba(155, 155, 155, 1)
+    padding-left 60px
     .avatar-uploader
       border 1px solid #d9d9d9
       cursor pointer

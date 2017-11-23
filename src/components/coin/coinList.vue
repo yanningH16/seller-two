@@ -7,7 +7,7 @@
       <h3>银行卡管理</h3>
       <p class="affirms">该绑定的银行卡将用于提现,请认真核实好银行卡信息,确保信息准确无误</p>
       <ul class="addBank">
-        <li class="add" @click="dialogFormVisible=true">
+        <li class="add" @click="addbank=true">
           <span>+</span>
           <p>添加一张银行卡</p>
         </li>
@@ -21,7 +21,7 @@
     </div>
     <!-- 添加银行卡的弹框 -->
     <div class="bank">
-      <el-dialog title="添加银行卡" :visible.sync="dialogFormVisible" :modal-append-to-body='false' width="40%">
+      <el-dialog title="添加银行卡" :visible.sync="addbank" :modal-append-to-body='false' width="40%">
         <el-form :model="form">
           <el-form-item label="银行">
             <el-select v-model="form.region" placeholder="请选择">
@@ -38,7 +38,7 @@
         </el-form>
         <el-checkbox v-model="checked" style="margin-left:40px">设为默认银行卡</el-checkbox>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
+          <el-button @click="addbank = false">取 消</el-button>
           <el-button type="danger" @click="addSure">确 定</el-button>
         </div>
       </el-dialog>
@@ -59,7 +59,7 @@
         </el-form>
         <el-checkbox v-model="checked" style="margin-left:40px">设为默认银行卡</el-checkbox>
         <div slot="footer" class="dialog-footer">
-          <el-button type="danger" >确认修改</el-button>
+          <el-button type="danger">确认修改</el-button>
           <el-button>删除银行卡</el-button>
         </div>
       </el-dialog>
@@ -73,6 +73,7 @@ export default {
     return {
       checked: true,
       dialogFormVisible: false,
+      addbank: false,
       acquies: true,
       form: {
         name: '',
