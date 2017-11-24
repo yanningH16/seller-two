@@ -34,9 +34,9 @@
           </el-upload>
         </li>
         <li class="addContent" v-for="(item,index) in addArr" :key='index'>
-          <i class="el-icon-delete" style="float:right;font-size:20px"></i>
+          <i class="el-icon-delete" style="float:right;font-size:20px;cursor:pointer" @click="remove(index)"></i>
           <div>发货地址:
-            <span>{{item.itemCode+item.itemCity+item.itemZone}}</span>
+            <span>{{item.itemCode+' '+item.itemCity+' '+item.itemZone}}</span>
           </div>
           <div style="margin-top:10px">街道地址:
             <span>{{item.jieName}}</span>
@@ -55,8 +55,8 @@
               <el-select v-model="itemCity" placeholder="市" style="margin-left:12px;margin-right:12px" @change="cityChange">
                 <el-option v-for="(item,index) in city" :key="index" :label="item.name" :value="item"></el-option>
               </el-select>
-              <el-select v-model="itemZone" placeholder="区">
-                <el-option v-for="(item,index) in zone" :key="index" :label="item.name" :value="item.name"></el-option>
+              <el-select v-model="itemZone" placeholder="区" @change="zoneChange">
+                <el-option v-for="(item,index) in zone" :key="index" :label="item.name" :value="item"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="街道地址">
@@ -107,6 +107,9 @@ export default {
       itemCity: null,
       zone: [],
       itemZone: null,
+      provincesCode: '',
+      cityCode: '',
+      zoneCode: '',
       jieName: '',
       phone: '',
       input: '',
@@ -164,7 +167,10 @@ export default {
           itemCity: this.itemCity,
           itemZone: this.itemZone,
           jieName: this.jieName,
-          phone: this.phone
+          phone: this.phone,
+          pCode: this.provincesCode,
+          cCode: this.cityCode,
+          zCode: this.zoneCode
         })
       }
       this.addContent = true
@@ -172,25 +178,40 @@ export default {
     },
     // 当点击确认绑定的时候做的请求
     addSure () {
+      console.log(this.addArr)
+      let shopArr = []
+      for (let i of this.addArr) {
+        shopArr.push({
+          province: i.itemCode,
+          provinceCode: i.pCode,
+          city: i.itemCity,
+          cityCode: i.cCode,
+          region: i.itemZone,
+          regionCode: i.zCode,
+          telephone: i.phone,
+          address: i.jieName
+        })
+      }
       this.$ajax.post('/api/seller/shop/addShop', {
         sellerUserId: this.userInfo.sellerUserId,
         shopHomePage: this.input,
         shopName: this.input1,
         productClassId: this.value,
-        screenShot: ''
+        screenShot: '123.jpg',
+        postAddressList: shopArr
       }).then((data) => {
-        // console.log(data)
+        console.log(data)
         let res = data.data
         if (res.code === '200') {
-          let arr = []
-          for (let word of res.data) {
-            let goods = {
-              id: word.id,
-              className: word.className
-            }
-            arr.push(goods)
-          }
-          this.shopType = arr
+          // let arr = []
+          // for (let word of res.data) {
+          //   let goods = {
+          //     id: word.id,
+          //     className: word.className
+          //   }
+          //   arr.push(goods)
+          // }
+          // this.shopType = arr
         } else {
           this.$message({
             message: data.data.message,
@@ -232,14 +253,21 @@ export default {
     // 检测当省份发生变化出发的改变事件
     provinceChange () {
       this.getCity()
+      this.provincesCode = this.itemCode.code
       this.itemCode = this.itemCode.name
       this.itemCity = null
       this.itemZone = null
     },
     cityChange () {
       this.getZone()
+      this.cityCode = this.itemCity.code
       this.itemCity = this.itemCity.name
       this.itemZone = null
+    },
+    zoneChange () {
+      console.log(this.itemZone)
+      this.zoneCode = this.itemZone.code
+      this.itemZone = this.itemZone.name
     },
     // 获取省的接口
     Provinces () {
@@ -282,7 +310,8 @@ export default {
             let goods = {
               id: word.id,
               name: word.name,
-              provinceCode: word.code
+              code: word.code,
+              provinceCode: word.provinceCode
             }
             arr.push(goods)
           }
@@ -301,7 +330,7 @@ export default {
     // 通过市获取区的值
     getZone () {
       this.$ajax.post('/api/config/location/getAreaListByCityCode', {
-        cityCode: this.itemCity.provinceCode
+        cityCode: this.itemCity.code
       }).then((data) => {
         console.log(data)
         let res = data.data
@@ -311,7 +340,8 @@ export default {
             let goods = {
               id: word.id,
               name: word.name,
-              provinceCode: word.code
+              code: word.code,
+              cityCode: word.cityCode
             }
             arr.push(goods)
           }
@@ -326,6 +356,9 @@ export default {
         console.log(err)
         this.$message.error('服务器错误！')
       })
+    },
+    remove (index) {
+      this.addArr.splice(index, 1)
     }
   }
 }
