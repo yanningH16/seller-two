@@ -21,7 +21,7 @@ axios.interceptors.request.use((config) => {
 axios.interceptors.response.use((res) => {
   // 需做用户token和userid存储
   if (parseInt(res.status) === 200) {
-    setUserTokenStorage(res.headers.accesstoken)
+    setUserTokenStorage(res.config.headers.accesstoken)
   }
   return res
 }, (error) => {
@@ -37,7 +37,7 @@ axios.interceptors.response.use((res) => {
             showCancelButton: false,
             closeOnClickModal: false
           }).then(() => {
-            store.commit(types.CLEAR_USER_INFO)
+            store.commit(types.CLEAR_USER_TOKEN)
             router.replace({
               name: 'login'
             })
