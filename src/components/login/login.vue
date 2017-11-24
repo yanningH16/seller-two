@@ -36,17 +36,23 @@ export default {
   name: 'login',
   data () {
     return {
-      username: '',
-      password: ''
+      username: '15037183342',
+      password: '123456'
     }
   },
   methods: {
     login () {
       if (this.username === '' || this.password === '') {
-        this.waringText = '请输入正确用户名或密码！'
+        this.$message({
+          message: '请输入正确用户名或密码',
+          type: 'warning'
+        })
         return false
       } else if (this.password.length < 6) {
-        this.waringText = '密码至少6位！'
+        this.$message({
+          message: '密码不少于6位',
+          type: 'warning'
+        })
         return false
       } else {
         // 登录
