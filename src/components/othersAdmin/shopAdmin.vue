@@ -36,16 +36,7 @@
         <li class="addContent" v-for="(item,index) in addArr" :key='index'>
           <i class="el-icon-delete" style="float:right;font-size:20px"></i>
           <div>发货地址:
-            <span>{{item.itemCode.name+item.itemCity.name+item.itemZone.name}}</span>
-            <!-- <el-select v-model="itemCode" placeholder="省份" @change="provinceChange" disabled="true">
-              <el-option v-for="item in provinces" :key="item.value" :label="item.name" :value="item.code"></el-option>
-            </el-select>
-            <el-select v-model="itemCity" placeholder="市" style="margin-left:12px;margin-right:12px" @change="cityChange">
-              <el-option v-for="item in city" :key="item.value" :label="item.name" :value="item.provinceCode"></el-option>
-            </el-select>
-            <el-select v-model="itemZone" placeholder="区">
-              <el-option v-for="item in zone" :key="item.value" :label="item.name" :value="item.provinceCode"></el-option>
-            </el-select> -->
+            <span>{{item.itemCode+item.itemCity+item.itemZone}}</span>
           </div>
           <div style="margin-top:10px">街道地址:
             <span>{{item.jieName}}</span>
@@ -59,13 +50,13 @@
           <el-form>
             <el-form-item label="发货地址">
               <el-select v-model="itemCode" placeholder="省份" @change="provinceChange">
-                <el-option v-for="item in provinces" :key="item.value" :label="item.name" :value="item"></el-option>
+                <el-option v-for="(item,index) in provinces" :key="index" :label="item.name" :value="item"></el-option>
               </el-select>
               <el-select v-model="itemCity" placeholder="市" style="margin-left:12px;margin-right:12px" @change="cityChange">
-                <el-option v-for="item in city" :key="item.value" :label="item.name" :value="item"></el-option>
+                <el-option v-for="(item,index) in city" :key="index" :label="item.name" :value="item"></el-option>
               </el-select>
               <el-select v-model="itemZone" placeholder="区">
-                <el-option v-for="item in zone" :key="item.value" :label="item.name" :value="item"></el-option>
+                <el-option v-for="(item,index) in zone" :key="index" :label="item.name" :value="item.name"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="街道地址">
@@ -241,11 +232,13 @@ export default {
     // 检测当省份发生变化出发的改变事件
     provinceChange () {
       this.getCity()
+      this.itemCode = this.itemCode.name
       this.itemCity = null
       this.itemZone = null
     },
     cityChange () {
       this.getZone()
+      this.itemCity = this.itemCity.name
       this.itemZone = null
     },
     // 获取省的接口
