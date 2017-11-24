@@ -6,6 +6,10 @@
     <div class="routerBox">
       <div class="routerContainer">
         <router-view/>
+        <div v-if="$route.name!='myReport' && $route.name!='report'" class="report" @click="toReport">
+          <span class="el-icon-warning"></span>
+          <p>举报</p>
+        </div>
       </div>
     </div>
   </div>
@@ -25,7 +29,9 @@ export default {
     }
   },
   methods: {
-
+    toReport () {
+      this.$router.push({ name: 'report' })
+    }
   }
 }
 </script>
@@ -50,4 +56,23 @@ export default {
       overflow hidden
       overflow-y auto
       background #efefef
+      .report
+        position fixed
+        right 0
+        bottom 0
+        color #ffffff
+        width 60px
+        height 60px
+        background rgba(68, 68, 68, 0.5)
+        border-radius 4px
+        text-align center
+        cursor pointer
+        &:hover
+          opacity 0.8
+        span
+          font-size 20px
+          line-height 35px
+        p
+          font-size 14px
+          line-height 25px
 </style>

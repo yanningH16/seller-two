@@ -67,7 +67,7 @@
         </el-radio-group>
       </div>
       <div class="next">
-        <button class="btn" :class="{'disabled': !(shop && taskType)}" :disabled="!(shop && taskType)" @click="doNext">下一步</button>
+        <button class="btn" :class="{'disabled-btn': !(shop && taskType)}" :disabled="!(shop && taskType)" @click="doNext">下一步</button>
       </div>
     </div>
   </div>
