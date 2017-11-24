@@ -10,6 +10,7 @@ clearErrorTimeList()
   // http request 拦截器
   /* axios token认证 */
 axios.interceptors.request.use((config) => {
+  console.log(config)
   if (store.state.userInfo) {
     config.headers.accesstoken = store.state.userToken //    请求接口header参数添加
     config.headers.userAccountId = store.state.userInfo.operateUserAccountId
@@ -20,7 +21,7 @@ axios.interceptors.request.use((config) => {
 })
 axios.interceptors.response.use((res) => {
   // 需做用户token和userid存储
-  if (res.code === '200') {
+  if (parseInt(res.status) === 200) {
     setUserTokenStorage(res.headers.accesstoken)
   }
   return res

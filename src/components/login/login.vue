@@ -32,6 +32,7 @@
 </template>
 <script type="text/ecmascript-6">
 import md5 from 'md5'
+import { mapActions } from 'vuex'
 export default {
   name: 'login',
   data () {
@@ -62,7 +63,7 @@ export default {
         }).then((data) => {
           console.log(data)
           if (data.data.code === '200') {
-            this.setUserInfo(data.data.data)
+            this.setUserInfo(111)
             this.$message({
               message: '登录成功,页面跳转中...',
               type: 'success',
@@ -81,7 +82,10 @@ export default {
           this.$message.error('服务器错误！')
         })
       }
-    }
+    },
+    ...mapActions([
+      'setUserInfo'
+    ])
   }
 }
 </script>
