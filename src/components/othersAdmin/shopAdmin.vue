@@ -22,7 +22,7 @@
         <li class="type">
           <span>商品所属分类&nbsp;&nbsp;</span>
           <el-select v-model="value" placeholder="请选择">
-            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+            <el-option v-for="item in shopType" :key="item.value" :label="item.className" :value="item.id">
             </el-option>
           </el-select>
         </li>
@@ -33,32 +33,46 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </li>
-        <!-- <li class="addContent" v-for="(item,index) in addArr" :key='index'> -->
-        <li class="addContent">
+        <li class="addContent" v-for="(item,index) in addArr" :key='index'>
           <i class="el-icon-delete" style="float:right;font-size:20px"></i>
-          <div>发货地址: <span>浙江省杭州市西湖区</span></div>
-          <div style="margin-top:10px">街道地址: <span>仓溢东苑个违法而无人飞机</span></div>
-          <div style="margin-top:10px">发货电话: <span>15037183341</span></div>
+          <div>发货地址:
+            <span>{{item.itemCode.name+item.itemCity.name+item.itemZone.name}}</span>
+            <!-- <el-select v-model="itemCode" placeholder="省份" @change="provinceChange" disabled="true">
+              <el-option v-for="item in provinces" :key="item.value" :label="item.name" :value="item.code"></el-option>
+            </el-select>
+            <el-select v-model="itemCity" placeholder="市" style="margin-left:12px;margin-right:12px" @change="cityChange">
+              <el-option v-for="item in city" :key="item.value" :label="item.name" :value="item.provinceCode"></el-option>
+            </el-select>
+            <el-select v-model="itemZone" placeholder="区">
+              <el-option v-for="item in zone" :key="item.value" :label="item.name" :value="item.provinceCode"></el-option>
+            </el-select> -->
+          </div>
+          <div style="margin-top:10px">街道地址:
+            <span>{{item.jieName}}</span>
+          </div>
+          <div style="margin-top:10px">发货电话:
+            <span>{{item.phone}}</span>
+          </div>
           <div class="line"></div>
         </li>
         <li class="pullDown" v-show="pull">
-          <el-form :model="form">
+          <el-form>
             <el-form-item label="发货地址">
-              <el-select v-model="form.region" placeholder="省份">
-                <el-option label="区域一" value="dd"></el-option>
+              <el-select v-model="itemCode" placeholder="省份" @change="provinceChange">
+                <el-option v-for="item in provinces" :key="item.value" :label="item.name" :value="item"></el-option>
               </el-select>
-              <el-select v-model="form.city" placeholder="市" style="margin-left:12px;margin-right:12px">
-                <el-option label="区域一" value="dd"></el-option>
+              <el-select v-model="itemCity" placeholder="市" style="margin-left:12px;margin-right:12px" @change="cityChange">
+                <el-option v-for="item in city" :key="item.value" :label="item.name" :value="item"></el-option>
               </el-select>
-              <el-select v-model="form.zone" placeholder="区">
-                <el-option label="区域一" value="dd"></el-option>
+              <el-select v-model="itemZone" placeholder="区">
+                <el-option v-for="item in zone" :key="item.value" :label="item.name" :value="item"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="街道地址">
-              <el-input v-model="form.name" style="width:384px"></el-input>
+              <el-input v-model="jieName" style="width:384px"></el-input>
             </el-form-item>
             <el-form-item label="发货电话">
-              <el-input v-model="form.phone" style="width:384px"></el-input>
+              <el-input v-model="phone" style="width:384px"></el-input>
             </el-form-item>
           </el-form>
           <button class="btn" @click="save">保存</button>
@@ -67,8 +81,8 @@
           <i class="el-icon-circle-plus" style="color:rgba(23,159,255,1);cursor:pointer" @click="add"> 添加发货地址</i>
         </li>
         <li>
-        <div class="line"></div>
-        <p class="person">此店铺与平台对接人</p>
+          <div class="line"></div>
+          <p class="person">此店铺与平台对接人</p>
         </li>
         <li class="personInfo">
           姓名&nbsp;&nbsp;
@@ -79,13 +93,14 @@
           <el-input v-model="input" placeholder="请输入内容" style="width:384px;margin-top:20px"></el-input>
         </li>
         <li>
-         <router-link :to="{name:'shopAdminList'}"><button class=" btn" :class="{disabled:active}" style="margin-bottom:60px" :disabled='disable'>确认绑定</button></router-link> 
+          <button class=" btn" style="margin-bottom:60px" @click="addSure">确认绑定</button>
         </li>
       </ul>
     </div>
   </div>
 </template>
 <script type="text/ecmascript-6">
+import { mapGetters } from 'vuex'
 export default {
   name: 'shopAdmin',
   data () {
@@ -94,31 +109,33 @@ export default {
       disable: false,
       // 判断是否有这个类名的存在
       active: true,
+      shopType: [],
+      provinces: [],
+      itemCode: null,
+      city: [],
+      itemCity: null,
+      zone: [],
+      itemZone: null,
+      jieName: '',
+      phone: '',
       input: '',
       input1: '',
       input2: '',
       value: '',
       imageUrl: '',
-      pull: true,
+      pull: false,
       addArr: [],
-      form: {
-        name: '',
-        region: '',
-        city: '',
-        zone: '',
-        phone: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      },
-      options: [{
-        value: '选项1',
-        label: '黄金糕发多少纷纷'
-      }]
+      addContent: false
     }
+  },
+  computed: {
+    ...mapGetters([
+      'userInfo'
+    ])
+  },
+  created () {
+    this.shopFirst()
+    this.Provinces()
   },
   methods: {
     handleAvatarSuccess (res, file) {
@@ -140,7 +157,182 @@ export default {
       this.pull = !this.pull
     },
     save () {
-      alert(1111)
+      if (this.itemCode === '' || this.itemCity === '' || this.itemZone === '' || this.jieName === '' || this.phone === '') {
+        this.$message({
+          message: '请正确填写信息',
+          type: 'warning'
+        })
+        return false
+      } else {
+        this.$message({
+          message: '添加成功',
+          type: 'success'
+        })
+        this.addArr.push({
+          itemCode: this.itemCode,
+          itemCity: this.itemCity,
+          itemZone: this.itemZone,
+          jieName: this.jieName,
+          phone: this.phone
+        })
+      }
+      this.addContent = true
+      this.pull = false
+    },
+    // 当点击确认绑定的时候做的请求
+    addSure () {
+      this.$ajax.post('/api/seller/shop/addShop', {
+        sellerUserId: this.userInfo.sellerUserId,
+        shopHomePage: this.input,
+        shopName: this.input1,
+        productClassId: this.value,
+        screenShot: ''
+      }).then((data) => {
+        // console.log(data)
+        let res = data.data
+        if (res.code === '200') {
+          let arr = []
+          for (let word of res.data) {
+            let goods = {
+              id: word.id,
+              className: word.className
+            }
+            arr.push(goods)
+          }
+          this.shopType = arr
+        } else {
+          this.$message({
+            message: data.data.message,
+            type: 'warning'
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+        this.$message.error('服务器错误！')
+      })
+    },
+    // 商品所属的一级分类
+    shopFirst () {
+      this.$ajax.post('/api/config/productClass/getJDFirstClass', {
+      }).then((data) => {
+        // console.log(data)
+        let res = data.data
+        if (res.code === '200') {
+          let arr = []
+          for (let word of res.data) {
+            let goods = {
+              id: word.id,
+              className: word.className
+            }
+            arr.push(goods)
+          }
+          this.shopType = arr
+        } else {
+          this.$message({
+            message: data.data.message,
+            type: 'warning'
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+        this.$message.error('服务器错误！')
+      })
+    },
+    // 检测当省份发生变化出发的改变事件
+    provinceChange () {
+      this.getCity()
+      this.itemCity = null
+      this.itemZone = null
+    },
+    cityChange () {
+      this.getZone()
+      this.itemZone = null
+    },
+    // 获取省的接口
+    Provinces () {
+      this.$ajax.post('/api/config/location/getProvinceList', {
+      }).then((data) => {
+        // console.log(data)
+        let res = data.data
+        if (res.code === '200') {
+          let arr = []
+          for (let word of res.data) {
+            let goods = {
+              id: word.id,
+              name: word.name,
+              code: word.code
+            }
+            arr.push(goods)
+          }
+          this.provinces = arr
+        } else {
+          this.$message({
+            message: data.data.message,
+            type: 'warning'
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+        this.$message.error('服务器错误！')
+      })
+    },
+    // 通过省份获取市
+    getCity () {
+      this.$ajax.post('/api/config/location/getCityListByProvinceCode', {
+        provinceCode: this.itemCode.code
+      }).then((data) => {
+        // console.log(data)
+        let res = data.data
+        if (res.code === '200') {
+          let arr = []
+          for (let word of res.data) {
+            let goods = {
+              id: word.id,
+              name: word.name,
+              provinceCode: word.code
+            }
+            arr.push(goods)
+          }
+          this.city = arr
+        } else {
+          this.$message({
+            message: data.data.message,
+            type: 'warning'
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+        this.$message.error('服务器错误！')
+      })
+    },
+    // 通过市获取区的值
+    getZone () {
+      this.$ajax.post('/api/config/location/getAreaListByCityCode', {
+        cityCode: this.itemCity.provinceCode
+      }).then((data) => {
+        console.log(data)
+        let res = data.data
+        if (res.code === '200') {
+          let arr = []
+          for (let word of res.data) {
+            let goods = {
+              id: word.id,
+              name: word.name,
+              provinceCode: word.code
+            }
+            arr.push(goods)
+          }
+          this.zone = arr
+        } else {
+          this.$message({
+            message: data.data.message,
+            type: 'warning'
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+        this.$message.error('服务器错误！')
+      })
     }
   }
 }
@@ -190,11 +382,10 @@ export default {
         display inline
         width 164px
         height 36px
-        border 1px solid rgba(255, 51, 65, 1)
-        color rgba(255, 51, 65, 1)
+        // border 1px solid rgba(255, 51, 65, 1)
+        color white
         padding 10px 40px
         margin-left 12px
-        cursor pointer
       .pic
         margin-top 20px
         .pic_admin
@@ -237,5 +428,5 @@ export default {
         margin-top 10px
         padding 40px
         margin-left 35%
-        text-align left 
+        text-align left
 </style>

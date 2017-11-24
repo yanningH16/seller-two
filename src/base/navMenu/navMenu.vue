@@ -26,7 +26,7 @@
         <router-link :to="{name:'userInfo'}">
           <p class="info">账号信息</p>
         </router-link>
-        <router-link :to="{name:'out'}">
+        <router-link :to="{name:'login'}">
           <p class="info">退出登陆</p>
         </router-link>
       </div>
