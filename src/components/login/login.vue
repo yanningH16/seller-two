@@ -63,12 +63,12 @@ export default {
         }).then((data) => {
           console.log(data)
           if (data.data.code === '200') {
-            this.setUserInfo(111)
+            this.setUserInfo(data.data.data)
             this.$message({
               message: '登录成功,页面跳转中...',
               type: 'success',
               onClose: () => {
-                this.$router.push({ name: 'task' })
+                this.$router.push({ name: 'overView' })
               }
             })
           } else {
