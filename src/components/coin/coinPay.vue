@@ -63,7 +63,7 @@
       </div>
     </div>
     <!-- 弹框部分 -->
-    <el-dialog title="生产充值单" :visible.sync="dialogVisible" width="30%" :before-close="handleClose" :modal-append-to-body='false'>
+    <el-dialog title="生产充值单" :visible.sync="dialogVisible" width="30%" :modal-append-to-body='false'>
       <p style="font-size:16px;color:#333">请使用尾号
         <span style="color:#ff0020">0212</span>的
         <span style="color:#ff0020">招商银行</span>网银账户向以下银行账户转账,
@@ -77,6 +77,7 @@
         <li class="detali">
           银行卡号&nbsp;&nbsp;
           <span>1533565665856</span>
+          <span class="blue copy" data-clipboard-text='123' @click="doCopy">复制</span>
         </li>
         <li class="detali">
           收款账户详情&nbsp;&nbsp;
@@ -90,6 +91,7 @@
         <li class="detali">
           备注/附言/摘要&nbsp;&nbsp;
           <span>k6129</span>
+          <span class="blue copy" data-clipboard-text='123' @click="doCopy">复制</span>
           <p style="margin-left:100px">请在备注/附言/摘要中严格要求填写<br>不要填写除此以外的其他字符(刷单,SD等),否则不能正确到账</p>
         </li>
       </ul>
@@ -99,7 +101,7 @@
       </span>
     </el-dialog>
     <!-- 充值单详情的弹窗 -->
-    <el-dialog title="充值单详情" :visible.sync="toview" width="30%" :before-close="handleClose" :modal-append-to-body='false'>
+    <el-dialog title="充值单详情" :visible.sync="toview" width="30%" :modal-append-to-body='false'>
       <div class="line"></div>
       <ul class="payPar">
         <li>
@@ -109,6 +111,7 @@
         <li>
           充值账户&nbsp;&nbsp;
           <span>5465464646546546</span>
+          <span class="blue copy" data-clipboard-text='123' @click="doCopy">复制</span>
         </li>
         <li>
           充值账户详情&nbsp;&nbsp;
@@ -122,6 +125,7 @@
         <li>
           银行卡号&nbsp;&nbsp;
           <span>1533565665856</span>
+          <span class="blue copy" data-clipboard-text='123' @click="doCopy">复制</span>
         </li>
         <li>
           收款账户详情&nbsp;&nbsp;
@@ -135,6 +139,7 @@
         <li>
           备注/附言/摘要&nbsp;&nbsp;
           <span>k6129</span>
+          <span class="blue copy" data-clipboard-text='123' @click="doCopy">复制</span>
           <p style="margin-left:100px">请在备注/附言/摘要中严格要求填写<br>不要填写除此以外的其他字符(刷单,SD等),否则不能正确到账</p>
         </li>
       </ul>
@@ -142,6 +147,7 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
+import Clipboard from 'clipboard'
 export default {
   name: 'coinPay',
   data () {
@@ -179,6 +185,15 @@ export default {
     }
   },
   methods: {
+    doCopy () {
+      var clipboard = new Clipboard('.copy')
+      clipboard.on('success', (e) => {
+        this.$message({
+          message: '复制成功！',
+          type: 'success'
+        })
+      })
+    },
     // handleClick (val) {
     //   console.log(val)
     // },
@@ -187,13 +202,6 @@ export default {
     },
     handleCurrentChange (val) {
       console.log(`当前页: ${val}`)
-    },
-    handleClose (done) {
-      this.$confirm('确认关闭？')
-        .then(_ => {
-          done()
-        })
-        .catch(_ => { })
     }
   }
 }
@@ -201,6 +209,15 @@ export default {
 <style lang="stylus" rel="stylesheet/stylus" scoped>
 .wrap
   padding 0 20px 0 20px
+  .blue
+    width 34px
+    height 18px
+    border 1px solid #179fff
+    color #179fff !important
+    padding 5px
+    border-radius 4px
+    margin-left 10px
+    cursor pointer
   .shop
     background #fff
     height 36px

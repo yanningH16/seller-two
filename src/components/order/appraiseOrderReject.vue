@@ -83,8 +83,8 @@
           <li class="right">
             <p style="padding-bottom:20px">
               驳回原因:
-              <el-tooltip  effect="dark" popper-class="tooltipItem" content="超出部分显示内容" placement="top-start">
-                <span class="right_text">绝地反击噢k京东foe见覅返利积分开始了对方诶费劲儿</span>
+              <el-tooltip  effect="dark" popper-class="tooltipItem" content="绝地反击噢k京东foe见覅返利积分狂蜂浪蝶首付款is啊放假哦IE佛教开始了对方诶费劲儿" placement="top-start">
+                <span class="right_text">绝地反击噢k京东foe见覅返利积分狂蜂浪蝶首付款is啊放假哦IE佛教开始了对方诶费劲儿</span>
               </el-tooltip>
             </p>
             <p class="right_first">
@@ -185,6 +185,7 @@ export default {
           overflow  hidden
           text-overflow ellipsis
           white-space  nowrap
+          display inline-block
       .midd
         margin-top 30px
         border-left 1px solid #dedede

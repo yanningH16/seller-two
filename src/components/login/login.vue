@@ -13,15 +13,17 @@
         <div class="inputCont">
           <div class="input">
             <span class="el-icon-edit"></span>
-            <input type="number" placeholder="输入手机号">
+            <input type="number" placeholder="输入手机号" v-model="username">
           </div>
           <div class="input">
             <span class="el-icon-edit-outline"></span>
-            <input type="password" placeholder="输入登录密码">
+            <input type="password" placeholder="输入登录密码" v-model="password">
           </div>
-          <button>登&nbsp;录</button>
+          <button @click="login">登&nbsp;录</button>
           <h3>
-            <router-link :to="{name:'Password'}"><span>忘记密码</span></router-link>
+            <router-link :to="{name:'Password'}">
+              <span>忘记密码</span>
+            </router-link>
           </h3>
         </div>
       </div>
@@ -29,10 +31,51 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
+import md5 from 'md5'
 export default {
   name: 'login',
   data () {
     return {
+      username: '',
+      password: ''
+    }
+  },
+  methods: {
+    login () {
+      if (this.username === '' || this.password === '') {
+        this.waringText = '请输入正确用户名或密码！'
+        return false
+      } else if (this.password.length < 6) {
+        this.waringText = '密码至少6位！'
+        return false
+      } else {
+        // 登录
+        this.$ajax.post('/api/sellerAccout/login', {
+          telephone: this.username,
+          password: md5(this.password)
+        }).then((data) => {
+          console.log(data)
+          if (data.data.code === '200') {
+            this.setUserInfo(data.data.data)
+            this.setUserToken(data.headers.accesstoken)
+            this.$message({
+              message: '登录成功,页面跳转中...',
+              type: 'success',
+              onClose: () => {
+                this.$router.push({ name: 'task' })
+              }
+            })
+          } else {
+            this.$message({
+              message: data.data.message,
+              type: 'warning'
+            })
+          }
+        }).catch((err) => {
+          console.log(err)
+          this.$message.error('服务器错误！')
+        })
+      }
     }
   }
 }
