@@ -483,8 +483,9 @@ export default {
         padding-bottom 60px
       .addContent
         width 480px
-        display inline-block
+        display block
         margin-top 10px
         padding 40px
+        margin-left 35%
         text-align left
 </style>

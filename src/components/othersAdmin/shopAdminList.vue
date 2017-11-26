@@ -5,29 +5,29 @@
     <div class="content">
       <el-tabs v-model="activeName">
         <el-tab-pane label="用户管理" name="first">
-          <div class="icon">
-            <i class="el-icon-document" style="margin-right:20px"></i>
-            <i class="el-icon-delete"></i>
-          </div>
-          <table class="border">
+          <table class="border" v-for="(item,index) in shopList" :key="index">
+            <div class="icon">
+            </div>
             <tr>
-              <i style="margin-left:20px">店铺信息:
-                <em>索尼旗舰店</em>
+              <i style="margin-left:20px">店铺名称:
+                <em>{{item.shopName}}</em>
                 <span class="right">状态 :
-                  <em>已审核</em>
+                  <em>{{item.status}}</em>
+                  <i class="el-icon-document" style="margin-right:10px;margin-left:10px;cursor:pointer"></i>
+                  <i class="el-icon-delete" style="cursor:pointer" @click="open2(index)"></i>
                 </span>
               </i>
             </tr>
             <tr>
               <i style="margin-left:20px">店铺链接:
-                <em>http://www.baidu.com</em>
+                <em>{{item.shopHomePageUrl}}</em>
               </i>
             </tr>
             <tr>
-              <i style="margin-left:20px">联系人方式: QQ
-                <em>632311638</em> 微信
-                <em>1503718341</em> 手机
-                <em>15037183341</em>
+              <i style="margin-left:20px">联系人方式:&nbsp;&nbsp; 姓名:
+                <em>{{item.contactName}}&nbsp;&nbsp;</em> 手机:
+                <em>{{item.contactTelephone}}&nbsp;&nbsp;</em>QQ:
+                <em>{{item.contactQQ}}</em>
               </i>
             </tr>
           </table>
@@ -45,13 +45,89 @@ export default {
   name: 'shopAdminList',
   data () {
     return {
-      activeName: 'first'
+      activeName: 'first',
+      shopList: []
     }
   },
   computed: {
     ...mapGetters([
       'userInfo'
     ])
+  },
+  created () {
+    this.shoplist()
+  },
+  methods: {
+    // 删除店铺的操作
+    open2 (index) {
+      console.log(this.shopList[index])
+      this.$confirm('此操作将永久删除该店铺, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$ajax.post('/api/seller/shop/deleteShop', {
+          sellerShopId: this.shopList[index].shopId
+        }).then((data) => {
+          console.log(data)
+          let res = data.data
+          if (res.code === '200') {
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+            this.shoplist()
+          } else {
+            this.$message({
+              message: data.data.message,
+              type: 'warning'
+            })
+          }
+        }).catch((err) => {
+          console.log(err)
+          this.$message.error('未知错误！')
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    // 获取店铺列表的接口
+    shoplist () {
+      this.$ajax.post('/api/seller/shop/getShopListBySellerUserId', {
+        sellerUserId: this.userInfo.sellerUserId,
+        shopType: 0
+      }).then((data) => {
+        console.log(data)
+        let res = data.data
+        if (res.code === '200') {
+          let arr = []
+          for (let word of res.data) {
+            let goods = {
+              shopName: word.shopName,
+              shopHomePageUrl: word.shopHomePageUrl,
+              contactQQ: word.contactQQ,
+              contactName: word.contactName,
+              contactTelephone: word.contactTelephone,
+              status: word.status === '1' ? '已审核' : '未审核',
+              shopId: word.shopId
+            }
+            arr.push(goods)
+          }
+          this.shopList = arr
+        } else {
+          this.$message({
+            message: data.data.message,
+            type: 'warning'
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+        this.$message.error('未知错误！')
+      })
+    }
   }
 }
 </script>
@@ -76,18 +152,15 @@ export default {
       border 1px solid rgba(204, 204, 204, 1)
       width 100%
       line-height 40px
-      margin-top 9px
+      margin-top 15px
       font-size 14px
+      min-width 500px
       tr:nth-child(2n-1)
         border 1px solid rgba(204, 204, 204, 1)
         background #fafafa
       .right
         float right
         margin-right 20px
-    .icon
-      text-align right
-      font-size 20px
-      padding-top 40px
     .btn
       position absolute
       bottom 38px

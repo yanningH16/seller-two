@@ -23,11 +23,22 @@ const shopAdminList = (resolve) => {
     resolve(module)
   })
 }
+const changeShop = (resolve) => {
+  import('@/components/othersAdmin/changeShop').then((module) => {
+    resolve(module)
+  })
+}
 const othersAdmin = [{
   path: 'othersAdmin/shopAdminList',
   component: shopAdminList,
   name: 'shopAdminList',
   meta: { title: '其它管理-店铺列表' }
+},
+{
+  path: 'othersAdmin/changeShop',
+  component: changeShop,
+  name: 'changeShop',
+  meta: { title: '修改店铺' }
 },
 {
   path: 'othersAdmin/pushAdmin',
