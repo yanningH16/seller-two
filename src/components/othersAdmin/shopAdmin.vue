@@ -21,8 +21,8 @@
         </li>
         <li class="type">
           <span>商品所属分类&nbsp;&nbsp;</span>
-          <el-select v-model="value" placeholder="请选择">
-            <el-option v-for="item in shopType" :key="item.value" :label="item.className" :value="item.id">
+          <el-select v-model="value" placeholder="请选择" @change="valueChange">
+            <el-option v-for="item in shopType" :key="item.value" :label="item.className" :value="item">
             </el-option>
           </el-select>
         </li>
@@ -77,11 +77,11 @@
         </li>
         <li class="personInfo">
           姓名&nbsp;&nbsp;
-          <el-input v-model="input" placeholder="请输入内容" style="width:384px"></el-input><br>
+          <el-input v-model="input4" placeholder="请输入内容" style="width:384px"></el-input><br>
           <span style="margin-left:-10px">手机号&nbsp;&nbsp;</span>
-          <el-input v-model="input" placeholder="请输入内容" style="width:384px;margin-top:20px"></el-input><br>
+          <el-input v-model="input5" placeholder="请输入内容" style="width:384px;margin-top:20px"></el-input><br>
           <span>QQ号&nbsp;&nbsp;</span>
-          <el-input v-model="input" placeholder="请输入内容" style="width:384px;margin-top:20px"></el-input>
+          <el-input v-model="input6" placeholder="请输入内容" style="width:384px;margin-top:20px"></el-input>
         </li>
         <li>
           <button class=" btn" style="margin-bottom:60px" @click="addSure">确认绑定</button>
@@ -115,7 +115,12 @@ export default {
       input: '',
       input1: '',
       input2: '',
+      input4: '',
+      input5: '',
+      input6: '',
       value: '',
+      className: '',
+      valueCode: '',
       imageUrl: '',
       pull: false,
       addArr: [],
@@ -150,6 +155,7 @@ export default {
     add () {
       this.pull = !this.pull
     },
+    // 当点击保存的时候进行收货地的保存
     save () {
       if (this.itemCode === '' || this.itemCity === '' || this.itemZone === '' || this.jieName === '' || this.phone === '') {
         this.$message({
@@ -178,7 +184,6 @@ export default {
     },
     // 当点击确认绑定的时候做的请求
     addSure () {
-      console.log(this.addArr)
       let shopArr = []
       for (let i of this.addArr) {
         shopArr.push({
@@ -196,22 +201,18 @@ export default {
         sellerUserId: this.userInfo.sellerUserId,
         shopHomePage: this.input,
         shopName: this.input1,
-        productClassId: this.value,
+        productClassId: this.valueCode,
         screenShot: '123.jpg',
-        postAddressList: shopArr
+        postAddressList: JSON.stringify(shopArr),
+        concatName: this.input4,
+        concatTelephone: this.input5,
+        concatQQ: this.input6,
+        shopType: 0,
+        productClassDetail: this.className
       }).then((data) => {
         console.log(data)
         let res = data.data
         if (res.code === '200') {
-          // let arr = []
-          // for (let word of res.data) {
-          //   let goods = {
-          //     id: word.id,
-          //     className: word.className
-          //   }
-          //   arr.push(goods)
-          // }
-          // this.shopType = arr
         } else {
           this.$message({
             message: data.data.message,
@@ -268,6 +269,12 @@ export default {
       console.log(this.itemZone)
       this.zoneCode = this.itemZone.code
       this.itemZone = this.itemZone.name
+    },
+    // 检测一级分类变化的时候出发效果
+    valueChange () {
+      this.valueCode = this.value.id
+      this.className = this.value.className
+      this.value = this.value.className
     },
     // 获取省的接口
     Provinces () {
@@ -442,7 +449,7 @@ export default {
         margin-left 37%
       .person
         margin-top 32px
-        margin-left -1000px
+        margin-left -80%
         font-size 14px
         color rgba(68, 68, 68, 1)
       .personInfo

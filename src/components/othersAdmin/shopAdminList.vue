@@ -33,17 +33,25 @@
           </table>
         </el-tab-pane>
       </el-tabs>
-      <router-link :to="{name:'shopAdmin'}"><button class="btn">+添加店铺</button></router-link> 
+      <router-link :to="{name:'shopAdmin'}">
+        <button class="btn">+添加店铺</button>
+      </router-link>
     </div>
   </div>
 </template>
 <script type="text/ecmascript-6">
+import { mapGetters } from 'vuex'
 export default {
   name: 'shopAdminList',
   data () {
     return {
       activeName: 'first'
     }
+  },
+  computed: {
+    ...mapGetters([
+      'userInfo'
+    ])
   }
 }
 </script>
