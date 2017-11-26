@@ -35,7 +35,7 @@
           <button class="btn disabled">充值本金</button>
         </li>
         <li>
-          <button class="btn">发布垫付任务</button>
+          <button class="btn" @click="$router.push({name: 'sendTaskOne'})">发布垫付任务</button>
         </li>
       </ul>
     </div>

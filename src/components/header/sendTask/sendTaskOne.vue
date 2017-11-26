@@ -24,32 +24,18 @@
     <div class="cont">
       <div class="step1">
         <h2>第一步: 选择店铺</h2>
-        <el-radio-group v-model="shop" style="padding-left:60px;">
-          <div class="taskType">
-            <el-radio :label="3">
-              <span class="jdIcon"></span>
-              <b style="font-size:14px;color:#444444;">爱尚时尚潮鞋店</b>
-            </el-radio>
-          </div>
-          <div class="taskType">
-            <el-radio :label="6">
-              <span class="jdIcon"></span>
-              <b style="font-size:14px;color:#444444;">爱尚时尚潮鞋店</b>
-            </el-radio>
-          </div>
-          <div class="taskType">
-            <el-radio :label="9">
-              <span class="jdIcon"></span>
-              <b style="font-size:14px;color:#444444;">爱尚时尚潮鞋店</b>
-            </el-radio>
-          </div>
-        </el-radio-group>
+        <div class="taskType" v-for="(item, index) in shopListArr" :key="index" style="padding-left:60px;">
+          <el-radio v-model="shop" :label="item">
+            <span :class="{'jdIcon': item.shopType==0}"></span>
+            <b style="font-size:14px;color:#444444;">{{ item.shopName }}</b>
+          </el-radio>
+        </div>
       </div>
       <div class="step2">
         <h2>第二部: 选择任务类型</h2>
         <el-radio-group v-model="taskType" style="padding-left:60px;">
           <div class="taskType">
-            <el-radio :label="2">
+            <el-radio :label="1">
               <span class="jdIcon"></span>
               <b style="font-size:14px;color:#444444;">京东App任务
                 <span style="color:#949494">(用户在京东app下单)</span>
@@ -57,7 +43,7 @@
             </el-radio>
           </div>
           <div class="taskType">
-            <el-radio :label="6">
+            <el-radio :label="2">
               <span class="jdIcon"></span>
               <b style="font-size:14px;color:#444444;">微信京东任务
                 <span style="color:#949494">(用户在微信京东下单)</span>
@@ -73,6 +59,7 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
+import { mapGetters } from 'vuex'
 export default {
   name: 'sendTaskOne',
   data () {
@@ -80,13 +67,49 @@ export default {
       warnShow: true,
       active: 0,
       shop: null,
-      taskType: null
+      taskType: null,
+      shopListArr: []
     }
+  },
+  computed: {
+    ...mapGetters([
+      'userInfo'
+    ])
   },
   methods: {
     doNext () {
-      this.$router.push({ name: 'sendTaskTwo' })
+      // 创建发布任务
+      this.$ajax.post('/api/seller/task/createTask', {
+        shopType: this.shop.shopType,
+        shopId: this.shop.shopId,
+        taskType: this.taskType,
+        sellerUserId: this.userInfo.sellerUserId
+      }).then((data) => {
+        console.log(data)
+        if (data.data.code === '200') {
+          this.$router.push({ name: 'sendTaskTwo', query: { sellerTaskId: data.data.data.sellerTaskId } })
+        }
+      }).catch((err) => {
+        console.log(err)
+        this.$message.error('服务器错误！')
+      })
+    },
+    // 获取店铺列表
+    getShopList () {
+      this.$ajax.post('/api/seller/shop/getShopListBySellerUserId', {
+        sellerUserId: this.userInfo.sellerUserId,
+        shopType: 3
+      }).then((data) => {
+        console.log(data)
+        this.shopListArr = data.data.data
+      }).catch((err) => {
+        console.log(err)
+        this.$message.error('服务器错误！')
+      })
     }
+  },
+  mounted () {
+    this.getShopList()
   }
 }
 </script>
