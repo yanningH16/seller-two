@@ -37,7 +37,7 @@
       <div class="step step1">
         <div class="input">
           <span class="must">商品标题：</span>
-          <el-input placeholder="请输入内容" style="width:600px;">
+          <el-input placeholder="请输入内容" v-model="sendObj.productName" style="width:600px;">
             <span slot="suffix" style="line-height:40px;">0/20</span>
           </el-input>
           <p>请输入试用商品简称，不要和淘宝商品名相同，防止试客直接搜索名称购买</p>
@@ -358,7 +358,47 @@ export default {
         nowOrder: '',
         evaluteNum: '',
         pageNum: ''
-      }]
+      }],
+      sendObj: {
+        productName: '',
+        productUrl: '',
+        productPicUrl: '',
+        productClassFirstId: '',
+        productClassSecondId: '',
+        productClassThirdId: '',
+        productClassFirstDesc: '',
+        productClassSecondDesc: '',
+        productClassThirdDesc: '',
+        productShowPrice: '',
+        productOrderPrice: '',
+        numPerOrder: '',
+        productFormat: '',
+        isPostageFree: '',
+        isSupportBaiTiao: '',
+        isSupportCredit: '',
+        isSupportTicket: '',
+        searchKeywordList: [{
+          keyowrd: '',
+          sortClass: '',
+          priceHigh: '',
+          priceLow: '',
+          brand: '',
+          postLocation: '',
+          favorNum: '',
+          pageNum: ''
+        }],
+        taskNumList: {
+          time: '',
+          num: ''
+        },
+        totalNum: '',
+        wordFavorNum: '',
+        graphicWordFavorNum: '',
+        plusNum: '',
+        defaultFavorNum: '',
+        sellerTaskId: '',
+        throwTime: ''
+      }
     }
   },
   computed: {
