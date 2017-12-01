@@ -29,22 +29,22 @@
     <div class="cont">
       <div class="choosed">
         <span>已选择: </span>
-        <b>手机京东&nbsp;&nbsp;垫付任务</b>
+        <b>{{ creatShopInfo.taskType == 1 ? '手机京东' : '微信京东' }}&nbsp;&nbsp;垫付任务</b>
         <i></i>
-        <span>爱上时尚旗舰店</span>
+        <span>{{ creatShopInfo.shopName }}</span>
       </div>
       <h2>第一步: 填写商品信息</h2>
       <div class="step step1">
         <div class="input">
           <span class="must">商品标题：</span>
           <el-input placeholder="请输入内容" v-model="sendObj.productName" style="width:600px;">
-            <span slot="suffix" style="line-height:40px;">0/20</span>
+            <span slot="suffix" style="line-height:40px;">{{ sendObj.productName.length }}/20</span>
           </el-input>
           <p>请输入试用商品简称，不要和淘宝商品名相同，防止试客直接搜索名称购买</p>
         </div>
         <div class="input">
           <span class="must">商品链接：</span>
-          <el-input placeholder="请输入内容" style="width:600px;"></el-input>
+          <el-input placeholder="请输入内容" v-model="sendObj.productUrl" style="width:600px;"></el-input>
           <p>我们会根据您填写的试用商品链接抓取部分商品的宝贝描述。</p>
         </div>
         <div class="input">
@@ -54,21 +54,21 @@
           <div class="uploadImg">
             <h3>商品展示图</h3>
             <el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-              <img v-if="imageUrl" :src="imageUrl" class="avatar">
+              <img v-if="sendObj.productPicUrl" :src="sendObj.productPicUrl" class="avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
           </div>
           <span class="must">商品类目</span>
-          <el-select v-model="classOne" placeholder="请选择" style="width:140px;margin-left:12px;">
-            <el-option v-for="(item, index) in classOneArr" :key="index" :label="item.label" :value="item.value">
+          <el-select v-model="classValue.classOne" value-key="id" placeholder="请选择" style="width:140px;margin-left:12px;" @change="chooseClass(1)">
+            <el-option v-for="(item, index) in classObj.classOne" :key="index" :label="item.className" :value="item">
             </el-option>
           </el-select>
-          <el-select v-model="classOne" placeholder="请选择" style="width:140px;margin-left:12px;">
-            <el-option v-for="(item, index) in classOneArr" :key="index" :label="item.label" :value="item.value">
+          <el-select v-model="classValue.classTwo" value-key="id" placeholder="请选择" style="width:140px;margin-left:12px;" @change="chooseClass(2)">
+            <el-option v-for="(item, index) in classObj.classTwo" :key="index" :label="item.className" :value="item">
             </el-option>
           </el-select>
-          <el-select v-model="classOne" placeholder="请选择" style="width:140px;margin-left:12px;">
-            <el-option v-for="(item, index) in classOneArr" :key="index" :label="item.label" :value="item.value">
+          <el-select v-model="classValue.classThree" value-key="id" placeholder="请选择" style="width:140px;margin-left:12px;" @change="chooseClass(3)">
+            <el-option v-for="(item, index) in classObj.classThree" :key="index" :label="item.className" :value="item">
             </el-option>
           </el-select>
           <div class="setFormat">
@@ -93,20 +93,20 @@
             </tr>
             <tr>
               <td>
-                <input type="number" :disabled="isReturnBack" placeholder="请填写">
+                <input type="number" v-model="sendObj.productShowPrice" :disabled="isReturnBack" placeholder="请填写">
               </td>
               <td>
-                <input type="number" :disabled="isReturnBack" placeholder="请填写">
+                <input type="number" v-model="sendObj.productOrderPrice" :disabled="isReturnBack" placeholder="请填写">
               </td>
               <td>
-                <input type="number" :disabled="isReturnBack" placeholder="请填写">
+                <input type="number" v-model="sendObj.numPerOrder" :disabled="isReturnBack" placeholder="请填写">
               </td>
               <td>
-                <input type="text" :disabled="isReturnBack" placeholder="任意规格(按照试用价格下单)">
+                <input type="text" v-model="sendObj.productFormat" :disabled="isReturnBack" placeholder="任意规格(按照试用价格下单)">
               </td>
             </tr>
           </table>
-          <el-radio-group v-model="isPost" :disabled="isReturnBack">
+          <el-radio-group v-model="sendObj.isPostageFree" :disabled="isReturnBack">
             <div class="checkBox">
               <el-radio :label="0">
                 <b style="color: #3c3c3c">商品本身不包邮</b>
@@ -123,8 +123,8 @@
           <h4>支持付款方式：</h4>
           <ul class="payWay">
             <li>
-              <span>是否允许买家使用花呗付款</span>
-              <el-radio-group v-model="isSuportHuabei">
+              <span>是否允许买家使用白条付款</span>
+              <el-radio-group v-model="sendObj.isSupportBaiTiao">
                 <el-radio :label="1">
                   <b style="color: #3c3c3c">允许</b>
                 </el-radio>
@@ -135,7 +135,7 @@
             </li>
             <li>
               <span>是否允许买家使用信用卡付款</span>
-              <el-radio-group v-model="isSuportCard">
+              <el-radio-group v-model="sendObj.isSupportCredit">
                 <el-radio :label="1">
                   <b style="color: #3c3c3c">允许</b>
                 </el-radio>
@@ -146,7 +146,7 @@
             </li>
             <li>
               <span>是否允许买家使用优惠券付款</span>
-              <el-radio-group v-model="isSuportTics">
+              <el-radio-group v-model="sendObj.isSupportTicket">
                 <el-radio :label="1">
                   <b style="color: #3c3c3c">允许</b>
                 </el-radio>
@@ -165,7 +165,7 @@
             <li>
               <span>关键词来源{{ index+1 }}：让试客在
                 <b class="red">京东APP</b>搜索关键字&nbsp;&nbsp;</span>
-              <el-input style="width:340px;" placeholder="请输入搜索关键字"></el-input>
+              <el-input style="width:340px;" v-model="item.keyword" placeholder="请输入搜索关键字"></el-input>
               <span v-if="index!==0" class="el-icon-delete deleBtn" @click="deleKeyArr(index)"></span>
             </li>
             <li style="margin-top:24px;margin-bottom:14px;">
@@ -175,7 +175,7 @@
             <transition-group name="fade">
               <li class="searchBox" v-show="item.showSearch" :key="index">
                 <span>排序方式：</span>
-                <el-select placeholder="请选择" v-model="item.filterType" style="width: 140px;">
+                <el-select placeholder="请选择" v-model="item.sortClass" style="width: 140px;">
                   <el-option label="综合排序" value="0">
                   </el-option>
                 </el-select>
@@ -189,25 +189,25 @@
                   <div class="col col1">
                     <p>
                       <span>价格:</span>&nbsp;
-                      <el-input style="width:120px;" placeholder="请输入价格"></el-input>
+                      <el-input style="width:120px;" v-model="item.priceLow" placeholder="请输入价格"></el-input>
                       —
-                      <el-input style="width:120px;" placeholder="请输入价格"></el-input>&nbsp;元</p>
+                      <el-input style="width:120px;" v-model="item.priceHigh" placeholder="请输入价格"></el-input>&nbsp;元</p>
                     <p>
                       <span>评价数约:</span>&nbsp;
-                      <el-input style="width:120px;" placeholder="请输入数量"></el-input>
+                      <el-input style="width:120px;" v-model="item.favorNum" placeholder="请输入数量"></el-input>
                     </p>
                   </div>
                   <div class="col col2">
                     <p>
                       <span>发货地:</span>&nbsp;
-                      <el-select placeholder="请选择" v-model="item.sendPlace" style="width: 120px;">
-                        <el-option label="中国" value="0">
+                      <el-select placeholder="请选择" v-model="item.postLocation" style="width: 120px;">
+                        <el-option v-for="(address, i) in positionArr" :key="i" :label="address.name" :value="address.name">
                         </el-option>
                       </el-select>
                     </p>
                     <p>
                       <span>目标翻页数:</span>&nbsp;
-                      <el-input style="width:120px;" placeholder="请输入数量"></el-input>
+                      <el-input style="width:120px;" v-model="item.pageNum" placeholder="请输入数量"></el-input>
                     </p>
                   </div>
                   <div class="col col3">
@@ -218,7 +218,7 @@
                   </div>
                 </div>
                 <div class="save">
-                  <button class="btn btn-small">保存</button>
+                  <button class="btn btn-small" @click="saveKey(index)">保存</button>
                 </div>
               </li>
             </transition-group>
@@ -264,44 +264,42 @@
             </td>
           </tr>
         </table>
-        <span class="must">总计25单任务，其中：</span>
+        <span class="must">总计{{ sendTotalNum }}单任务，其中：</span>
         <div class="total">
-          <el-checkbox-group v-model="taskTotal">
-            <div class="checkList">
-              <div class="check">
-                <el-checkbox label="五星+文字好评（6元 / 单）"></el-checkbox>
-              </div>
-              <div class="check">
-                <el-checkbox label="五星+图片+文字好评（8元 / 单）"></el-checkbox>
-              </div>
-              <div class="check">
-                <el-checkbox label="默认好评（4元 / 单）"></el-checkbox>
-              </div>
+          <div class="checkList">
+            <div class="check">
+              <el-checkbox v-model="setFavorNumObj.wordFavor.checked" label="五星+文字好评（6元 / 单）" @change="setFavorNum"></el-checkbox>
             </div>
-          </el-checkbox-group>
+            <div class="check">
+              <el-checkbox v-model="setFavorNumObj.picFavor.checked" label="五星+图片+文字好评（8元 / 单）" @change="setFavorNum"></el-checkbox>
+            </div>
+            <div class="check">
+              <el-checkbox v-model="setFavorNumObj.defaultFavor.checked" label="默认好评（4元 / 单）" @change="setFavorNum(1)"></el-checkbox>
+            </div>
+          </div>
           <div class="checkList">
             <div class="check">
               <span>设置执行人数&nbsp;:&nbsp;</span>
-              <el-input style="width:140px;" placeholder="请输入人数"></el-input>
+              <el-input style="width:140px;" v-model="setFavorNumObj.wordFavor.num" @input="setFavorNum" placeholder="请输入人数"></el-input>
             </div>
             <div class="check">
               <span>设置执行人数&nbsp;:&nbsp;</span>
-              <el-input style="width:140px;" placeholder="请输入人数"></el-input>
+              <el-input style="width:140px;" v-model="setFavorNumObj.picFavor.num" @input="setFavorNum" placeholder="请输入人数"></el-input>
             </div>
             <div class="check">
               <span>设置执行人数&nbsp;:&nbsp;</span>
-              <el-input style="width:140px;" placeholder="请输入人数"></el-input>
+              <el-input style="width:140px;" readonly v-model="setFavorNumObj.defaultFavor.num" placeholder="请输入人数"></el-input>
             </div>
           </div>
         </div>
-        <span class="must">设置买号类型：</span>
+        <span class="must" @click="aaa">设置买号类型：</span>
         <div class="buyerType">
           <el-radio-group v-model="buyerType">
             <p>
-              <el-radio :label="0">全员为plus (+3元 / 单)</el-radio>
+              <el-radio :label="1">全员为plus (+3元 / 单)</el-radio>
             </p>
             <p>
-              <el-radio :label="1">非plus会员</el-radio>
+              <el-radio :label="0">非plus会员</el-radio>
             </p>
           </el-radio-group>
         </div>
@@ -328,17 +326,29 @@ export default {
       // 是否驳回
       isReturnBack: false,
       active: 1,
-      imageUrl: '',
-      classOne: '',
-      classOneArr: [{
-        value: '选项1',
-        label: '黄金糕'
-      }],
-      // 是否包邮
-      isPost: 0,
-      isSuportHuabei: 1,
-      isSuportCard: 1,
-      isSuportTics: 1,
+      // 商品分类对象
+      classObj: {
+        classOne: [],
+        classTwo: [],
+        classThree: []
+      },
+      // 商品选择
+      classValue: {
+        classOne: {
+          className: '',
+          id: ''
+        },
+        classTwo: {
+          className: '',
+          id: ''
+        },
+        classThree: {
+          className: '',
+          id: ''
+        }
+      },
+      // 地址对象数组
+      positionArr: [],
       // 任务开展时间
       taskStarTime: '',
       // 日历数组
@@ -349,65 +359,147 @@ export default {
       buyerType: 0,
       // 关键词数组
       keywordList: [{
-        keywordFrom: '',
         showSearch: true,
-        filterType: '',
-        lowPrice: '',
-        heighPrice: '',
-        sendPlace: '',
-        nowOrder: '',
-        evaluteNum: '',
-        pageNum: ''
+        keyword: '', // 关键词
+        sortClass: '', // 排序方式
+        priceHigh: '', // 价格区间高
+        priceLow: '', // 价格区间低
+        brand: '', // 品牌
+        postLocation: '', // 发货地
+        favorNum: '', // 评价数
+        pageNum: '' // 翻页数
       }],
-      sendObj: {
-        productName: '',
-        productUrl: '',
-        productPicUrl: '',
-        productClassFirstId: '',
-        productClassSecondId: '',
-        productClassThirdId: '',
-        productClassFirstDesc: '',
-        productClassSecondDesc: '',
-        productClassThirdDesc: '',
-        productShowPrice: '',
-        productOrderPrice: '',
-        numPerOrder: '',
-        productFormat: '',
-        isPostageFree: '',
-        isSupportBaiTiao: '',
-        isSupportCredit: '',
-        isSupportTicket: '',
-        searchKeywordList: [{
-          keyowrd: '',
-          sortClass: '',
-          priceHigh: '',
-          priceLow: '',
-          brand: '',
-          postLocation: '',
-          favorNum: '',
-          pageNum: ''
-        }],
-        taskNumList: {
-          time: '',
-          num: ''
+      // 执行人数数组
+      setFavorNumObj: {
+        wordFavor: {
+          checked: false,
+          num: 0
         },
-        totalNum: '',
-        wordFavorNum: '',
-        graphicWordFavorNum: '',
-        plusNum: '',
-        defaultFavorNum: '',
-        sellerTaskId: '',
-        throwTime: ''
+        picFavor: {
+          checked: false,
+          num: 0
+        },
+        defaultFavor: {
+          checked: true,
+          num: 0
+        }
+      },
+      // 创建店铺的信息
+      creatShopInfo: {},
+      sendObj: {
+        productName: '', // 商品标题
+        productUrl: '', // 商品链接
+        productPicUrl: '', // 商品主图url
+        productClassFirstId: '', // 商品一级类目id
+        productClassSecondId: '', // 商品二级类目id
+        productClassThirdId: '', // 商品三级类目id
+        productClassFirstDesc: '', // 商品一级类目详细
+        productClassSecondDesc: '', // 商品二级类目详细
+        productClassThirdDesc: '', // 商品三级类目详细
+        productShowPrice: '', // 商品展示价格
+        productOrderPrice: '', // 商品下单价格
+        numPerOrder: '', // 买家每单拍几件
+        productFormat: '', // 商品规格
+        isPostageFree: '', // 是否包邮 0 - 否，1-是
+        isSupportBaiTiao: '', // 是否支持白条/花呗
+        isSupportCredit: '', // 是否支持信用卡
+        isSupportTicket: '', // 是否支持优惠卷
+        searchKeywordList: [{ // 关键词方案列表
+          keyword: '', // 关键词
+          sortClass: '', // 排序方式
+          priceHigh: '', // 价格区间高
+          priceLow: '', // 价格区间低
+          brand: '', // 品牌
+          postLocation: '', // 发货地
+          favorNum: '', // 评价数
+          pageNum: '' // 翻页数
+        }],
+        taskNumList: [{ // 任务数量列表
+          time: '', // 2017-11-16
+          num: '' // 投放数量
+        }],
+        totalNum: '', // 全部投放数量
+        wordFavorNum: 0, // 文字好评数量
+        graphicWordFavorNum: 0, // 图文好评数量
+        plusNum: '', // plus数量
+        defaultFavorNum: 0, // 默认好评数量
+        sellerTaskId: '', // 商家任务id
+        throwTime: '' // 上线时间2017-11-19
       }
+    }
+  },
+  watch: {
+    sendDateList (val) {
+      this.sendObj.taskNumList = val
+    },
+    sendTotalNum (val) {
+      this.sendObj.totalNum = val
+      // this.setFavorNumObj.defaultFavor.num = this.setFavorNumObj.wordFavor.num - this
+      this.setFavorNum()
+    },
+    sendSearchKeywordList (val) {
+      this.sendObj.searchKeywordList = val
     }
   },
   computed: {
     newTaskStarTime: function () {
       let timeArr = this.taskStarTime.toLocaleString().split('/')
       return timeArr[0] + '年' + timeArr[1] + '月'
+    },
+    sendDateList: function () {
+      let arr = []
+      if (this.timeArr.length !== 0) {
+        for (let i = 0; i < 3; i++) {
+          for (let m of this.timeArr[i].line) {
+            if (m.date !== '') {
+              arr.push({
+                time: m.date,
+                num: m.num
+              })
+            }
+          }
+        }
+      }
+      return arr
+    },
+    sendTotalNum: function () {
+      let totalNum = 0
+      if (this.timeArr.length !== 0) {
+        for (let i = 0; i < 3; i++) {
+          for (let k of this.timeArr[i].line) {
+            if (k.date !== '') {
+              totalNum += k.num
+            }
+          }
+        }
+      }
+      return totalNum
+    },
+    sendSearchKeywordList: function () {
+      let arr = []
+      for (let m of this.keywordList) {
+        arr.push({
+          keyword: m.keyword, // 关键词
+          sortClass: m.sortClass, // 排序方式
+          priceHigh: m.priceHigh, // 价格区间高
+          priceLow: m.priceLow, // 价格区间低
+          brand: m.brand, // 品牌
+          postLocation: m.postLocation, // 发货地
+          favorNum: m.favorNum, // 评价数
+          pageNum: m.pageNum
+        })
+      }
+      return arr
     }
   },
   methods: {
+    aaa () {
+      // console.log(this.sendDateList)
+      // console.log(this.sendTotalNum)
+      // console.log(this.sendSearchKeywordList)
+      // console.log(this.sendObj)
+      // console.log(this.sendObj.searchKeywordList)
+    },
     setMyDate (val) {
       if (val) {
         this.taskStarTime = val
@@ -426,20 +518,24 @@ export default {
       for (let i = 0; i < week; i++) {
         arr.push({
           day: '',
+          date: '',
           num: 1
         })
       }
       for (let i = 0; i < 14; i++) {
         let thisTime = new Date(times).getDate()
+        let date = (new Date(times)).getFullYear() + '-' + ((new Date(times)).getMonth() + 1) + '-' + (new Date(times)).getDate()
         times = new Date(times).setDate(new Date(times).getDate() + 1)
         arr.push({
           day: thisTime,
+          date: date,
           num: 1
         })
       }
       for (let i = 0; i < 7 - week; i++) {
         arr.push({
           day: '',
+          date: '',
           num: 1
         })
       }
@@ -466,7 +562,7 @@ export default {
       this.setMyDate(this.taskStarTime)
     },
     handleAvatarSuccess (res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
+      this.sendObj.productPicUrl = URL.createObjectURL(file.raw)
     },
     beforeAvatarUpload (file) {
       console.log(file)
@@ -490,15 +586,15 @@ export default {
     addKeyArr () {
       if (this.keywordList.length < 5) {
         this.keywordList.push({
-          keywordFrom: '',
           showSearch: true,
-          filterType: '',
-          lowPrice: '',
-          heighPrice: '',
-          sendPlace: '',
-          nowOrder: '',
-          evaluteNum: '',
-          pageNum: ''
+          keyword: '', // 关键词
+          sortClass: '', // 排序方式
+          priceHigh: '', // 价格区间高
+          priceLow: '', // 价格区间低
+          brand: '', // 品牌
+          postLocation: '', // 发货地
+          favorNum: '', // 评价数
+          pageNum: '' // 翻页数
         })
       } else {
         this.$message({
@@ -507,12 +603,169 @@ export default {
         })
       }
     },
+    saveKey (index) {
+      if (this.keywordList[index].priceLow && (this.keywordList[index].priceLow > this.keywordList[index].priceHigh)) {
+        this.$message({
+          message: '最低价不能高于最高价格哦',
+          type: 'warning'
+        })
+      } else {
+        this.keywordList[index].showSearch = false
+      }
+    },
+    // 设置执行人数
+    setFavorNum (index) {
+      if (this.setFavorNumObj.wordFavor.checked) {
+        this.setFavorNumObj.defaultFavor.num = this.sendTotalNum - this.setFavorNumObj.wordFavor.num
+      }
+      if (this.setFavorNumObj.picFavor.checked) {
+        this.setFavorNumObj.defaultFavor.num = this.sendTotalNum - this.setFavorNumObj.picFavor.num
+      }
+      if (this.setFavorNumObj.wordFavor.checked && this.setFavorNumObj.picFavor.checked) {
+        this.setFavorNumObj.defaultFavor.num = this.sendTotalNum - this.setFavorNumObj.wordFavor.num - this.setFavorNumObj.picFavor.num
+      }
+      // 默认好评不可点击取消
+      if (index === 1) {
+        // this.setFavorNumObj.defaultFavor.num = this.sendTotalNum
+        this.setFavorNumObj.defaultFavor.checked = true
+      }
+      if (this.setFavorNumObj.defaultFavor.num < 0) {
+        this.setFavorNumObj.defaultFavor.num = this.sendTotalNum
+        this.setFavorNumObj.wordFavor.num = 0
+        this.setFavorNumObj.picFavor.num = 0
+        this.$message({
+          message: '您已设置超出数量',
+          type: 'warning'
+        })
+      }
+    },
     doNext () {
-      this.$router.push({ name: 'sendTaskThree' })
+      if (this.buyerType === 1) {
+        this.sendObj.plusNum = this.sendTotalNum
+      } else {
+        this.sendObj.plusNum = 0
+      }
+      if (this.setFavorNumObj.wordFavor.checked) {
+        this.sendObj.wordFavorNum = this.setFavorNumObj.wordFavor.num
+      } else {
+        this.sendObj.wordFavorNum = 0
+      }
+      if (this.setFavorNumObj.picFavor.checked) {
+        this.sendObj.graphicWordFavorNum = this.setFavorNumObj.picFavor.num
+      } else {
+        this.sendObj.graphicWordFavorNum = 0
+      }
+      if (this.setFavorNumObj.defaultFavor.checked) {
+        this.sendObj.defaultFavorNum = this.setFavorNumObj.defaultFavor.num
+      } else {
+        this.sendObj.defaultFavorNum = 0
+      }
+      this.sendObj.throwTime = this.sendDateList[0].time
+
+      this.sendObj.productPicUrl = 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1133834497,2619081877&fm=27&gp=0.jpg'
+
+      this.sendObj.sellerTaskId = this.creatShopInfo.sellerTaskId
+      console.log(this.sendObj)
+
+      this.$ajax.post('/api/seller/task/addTaskInfo', this.sendObj).then((data) => {
+        console.log(data)
+        if (data.data.code === '200') {
+          sessionStorage.setItem('creatSellerTaskId', data.data.data.sellerTaskId)
+          this.$router.push({ name: 'sendTaskThree' })
+        } else {
+          this.$message({
+            message: data.data.message,
+            type: 'warning'
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+        this.$message.error('服务器错误！')
+      })
+
+      // this.$router.push({ name: 'sendTaskThree' })
+    },
+    // 获取分类列表
+    getClassApi (url, classIndex, id) {
+      if (classIndex === 1) {
+        this.$ajax.post(url, {
+        }).then((data) => {
+          if (data.data.code === '200') {
+            this.classObj.classOne = data.data.data
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
+      } else if (classIndex === 2) {
+        this.$ajax.post(url, {
+          firstId: id
+        }).then((data) => {
+          if (data.data.code === '200') {
+            this.classObj.classTwo = data.data.data
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
+      } else if (classIndex === 3) {
+        this.$ajax.post(url, {
+          secondId: id
+        }).then((data) => {
+          if (data.data.code === '200') {
+            this.classObj.classThree = data.data.data
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
+      }
+    },
+    // 获取地址
+    getPositionArr () {
+      this.$ajax.post('/api/config/location/getProvinceList', {
+      }).then((data) => {
+        if (data.data.code === '200') {
+          this.positionArr = data.data.data
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    // 当分类选框变化时
+    chooseClass (index) {
+      if (index === 1) {
+        this.classValue.classTwo = {}
+        this.classValue.classThree = {}
+        this.classObj.classThree = ''
+        console.log(this.classValue.classOne)
+        this.getClassApi('/api/config/productClass/getJDSecondClassByFirstid', 2, this.classValue.classOne.id)
+        this.sendObj.productClassFirstId = this.classValue.classOne.id
+        this.sendObj.productClassFirstDesc = this.classValue.classOne.className
+      } else if (index === 2) {
+        this.classValue.classThree = {}
+        console.log(this.classValue.classTwo)
+        this.getClassApi('/api/config/productClass/getThirdClassBySecondId', 3, this.classValue.classTwo.id)
+        this.sendObj.productClassSecondId = this.classValue.classTwo.id
+        this.sendObj.productClassSecondDesc = this.classValue.classTwo.className
+      } else if (index === 3) {
+        console.log(this.classValue.classThree)
+        this.sendObj.productClassThirdId = this.classValue.classThree.id
+        this.sendObj.productClassThirdDesc = this.classValue.classThree.className
+      }
+    },
+    // 获取上一步创建店铺的信息
+    getCreatShopInfo () {
+      if (sessionStorage.getItem('creatShopInfo')) {
+        this.creatShopInfo = JSON.parse(sessionStorage.getItem('creatShopInfo'))
+      }
     }
   },
   mounted () {
     this.setMyDate()
+    // 获取分类列表
+    this.getClassApi('/api/config/productClass/getJDFirstClass', 1)
+    // 获取地址列表
+    this.getPositionArr()
+    // 获取上一步店铺信息
+    this.getCreatShopInfo()
   }
 }
 </script>

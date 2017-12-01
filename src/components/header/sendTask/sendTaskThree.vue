@@ -36,15 +36,15 @@
           </td>
           <td>
             <div>
-              <p>商品: 9.00元*1件 / 单*25单</p>
-              <p>运费备用金: 10.00元 / 单*25单</p>
+              <p>商品: {{ infoObj.productUnitPrice }}元*{{ infoObj.numPerOrder }}件 / 单*{{ infoObj.totalNum }}单</p>
+              <p>运费备用金: {{ infoObj.isPostFree == 0 ? '10.00' : '0' }}元 / 单*{{ infoObj.totalNum }}单</p>
             </div>
           </td>
           <td>
-            <span>19.9元</span>
+            <span>{{ benjin }}元</span>
           </td>
           <td rowspan="2">
-            <span class="red">91.78</span>元
+            <span class="red">{{ infoObj.totalPrice }}</span>元
           </td>
         </tr>
         <tr>
@@ -53,14 +53,14 @@
           </td>
           <td>
             <div>
-              <p>图文好评: 8.00元 / 单*2单</p>
-              <p>纯文字好评: 6.00元 / 单*16单</p>
-              <p>默认五星好评: 4.00元 / 单*2单</p>
-              <p>plus会员: 3.00元 / 单*20单</p>
+              <p>图文好评: {{ infoObj.graphicFavorPrice }}元 / 单*{{ infoObj.graphicFavorNum }}单</p>
+              <p>纯文字好评: {{ infoObj.wordFavorPrice }}元 / 单*{{ infoObj.wordFavorNum }}单</p>
+              <p>默认五星好评: {{ infoObj.defaultFavorPrice }}元 / 单*{{ infoObj.defaultFavorNum }}单</p>
+              <p>plus会员: {{ 0 }}元 / 单*{{ 0 }}单</p>
             </div>
           </td>
           <td>
-            <span>19.9元</span>
+            <span>{{ yongjin }}元</span>
           </td>
         </tr>
       </table>
@@ -96,7 +96,22 @@ export default {
       warnShow: true,
       active: 2,
       way1: true,
-      way2: true
+      way2: true,
+      infoObj: {}
+    }
+  },
+  computed: {
+    benjin: function () {
+      let total = 0
+      total = (this.infoObj.productUnitPrice) * (this.infoObj.numPerOrder) * (this.infoObj.totalNum) + (parseInt(this.infoObj.isPostFree) === 0 ? '10.00' : '0') * (this.infoObj.totalNum)
+      return total
+    },
+    yongjin: function () {
+      let total = 0
+      total += (this.infoObj.graphicFavorPrice) * (this.infoObj.graphicFavorNum)
+      total += (this.infoObj.wordFavorPrice) * (this.infoObj.wordFavorNum)
+      total += (this.infoObj.defaultFavorPrice) * (this.infoObj.defaultFavorNum)
+      return total
     }
   },
   methods: {
@@ -105,7 +120,28 @@ export default {
     },
     doNext () {
       this.$router.push({ name: 'sendTaskFour' })
+    },
+    getInfo () {
+      this.$ajax.post('/api/seller/task/getTaskCost', {
+        sellerTaskId: sessionStorage.getItem('creatSellerTaskId')
+      }).then((data) => {
+        console.log(data)
+        if (data.data.code === '200') {
+          this.infoObj = data.data.data
+        } else {
+          this.$message({
+            message: data.data.message,
+            type: 'warning'
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+        this.$message.error('服务器错误！')
+      })
     }
+  },
+  created () {
+    this.getInfo()
   }
 }
 </script>
@@ -161,7 +197,7 @@ export default {
           border 1px solid #dedede
           vertical-align middle
           >div
-            width 200px
+            width 250px
             margin 0 auto
           p
             line-height 30px

@@ -4,14 +4,14 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
-import ElementUI from 'element-ui'
+// import ElementUI from 'element-ui'
 import axios from './assets/js/http'
 import 'babel-polyfill' // 浏览器兼容
-import 'element-ui/lib/theme-chalk/index.css'
+// import 'element-ui/lib/theme-chalk/index.css'
 import './assets/stylus/index.styl'
 
 Vue.config.productionTip = false
-Vue.use(ElementUI)
+  // Vue.use(ElementUI)
 Vue.prototype.$ajax = axios
 
 /* eslint-disable no-new */
