@@ -4,8 +4,9 @@ export const pageCommon = {
       pageSizeArray: [5, 10, 15, 20],
       pageNo: 1,
       pageSize: 5,
-      pageTotal: null
-        // loadingList: false
+      pageTotal: null,
+      total: null
+      // loadingList: false
     }
   },
   mounted () {
@@ -27,9 +28,9 @@ export const pageCommon = {
     // 修改每页显示的数据数目
     handleSizeChange (val) {
       this.pageSize = val
-        // if (this.pageTotal > val) {
-        //   return false
-        // }
+      // if (this.pageTotal > val) {
+      //   return false
+      // }
     },
     // 设置pageNo
     handleCurrentChange (val) {

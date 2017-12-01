@@ -9,7 +9,7 @@
       <li>
         <span>*</span>举报原因
         <el-select v-model="value" placeholder="请选择">
-          <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+          <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.label">
           </el-option>
         </el-select>
       </li>
@@ -26,37 +26,39 @@
         </el-upload>
       </li>
       <li style="margin-top:130px">
-        <button class="btn">确认举报</button>
+        <button class="btn" @click="sureReport">确认举报</button>
       </li>
     </ul>
+
   </div>
 </template>
 <script type="text/ecmascript-6">
+import { mapGetters } from 'vuex'
 export default {
   name: 'myReport',
   data () {
     return {
       textarea: '',
       input: '',
-      imageUrl: '',
+      imageUrl: '123.jpg',
       options: [{
-        value: '选项1',
-        label: '黄金糕'
+        label: '举报原因1'
       }, {
-        value: '选项2',
-        label: '双皮奶'
+        label: '举报原因2'
       }, {
-        value: '选项3',
         label: '蚵仔煎'
       }, {
-        value: '选项4',
         label: '龙须面'
       }, {
-        value: '选项5',
         label: '北京烤鸭'
       }],
       value: ''
     }
+  },
+  computed: {
+    ...mapGetters([
+      'userInfo'
+    ])
   },
   methods: {
     handleAvatarSuccess (res, file) {
@@ -73,6 +75,31 @@ export default {
         this.$message.error('上传头像图片大小不能超过 2MB!')
       }
       return isJPG && isLt2M
+    },
+    sureReport () {
+      this.$ajax.post('/api/seller/complain/complainBuyer', {
+        chuaqinInfo: this.input,
+        complainReason: this.value,
+        complainComment: this.textarea,
+        picUrls: this.imageUrl,
+        complainId: this.userInfo.sellerUserId,
+        complainPhone: this.userInfo.telephone
+      }).then((data) => {
+        if (data.data.code === '200') {
+          this.$confirm('举报成功', '提示', {
+            confirmButtonText: '查看举报列表',
+            cancelButtonText: '返回上一步',
+            type: 'success'
+          }).then(() => {
+            this.$router.push({ name: 'myReport' })
+          }).catch(() => {
+            window.history.back(-1)
+          })
+        }
+      }).catch((error) => {
+        console.log(error)
+        this.$message.error('未知错误，请重新刷新')
+      })
     }
   }
 }

@@ -10,9 +10,9 @@
       <el-table :data="tableData" style="width: 100%">
         <el-table-column prop="time" align="center" label="提交时间">
         </el-table-column>
-        <el-table-column prop="reporter" align="center" label="举报人">
+        <el-table-column prop="complainPhone" align="center" label="举报人">
         </el-table-column>
-        <el-table-column prop="reported" align="center" label="被举报人">
+        <el-table-column prop="chuaqinInfo" align="center" label="被举报人">
         </el-table-column>
         <el-table-column prop="reason" align="center" label="原因" width="150">
           <template slot-scope="scope">
@@ -25,46 +25,64 @@
           <template slot-scope="scope">
             <span v-if="scope.row.status==1" class="tipDoing tipSmall">处理中</span>
             <span v-if="scope.row.status==2" class="tipSuccess tipSmall">已完成</span>
-            <span v-if="scope.row.status==3" class="tipWait tipSmall">待审核</span>
+            <span v-if="scope.row.status==0" class="tipWait tipSmall">待审核</span>
           </template>
         </el-table-column>
-        <el-table-column prop="result" align="center" label="处理结果" width="150">
-          <template slot-scope="scope">
+        <el-table-column prop="statusDetail" align="center" label="处理结果" width="150">
+          <!-- <template slot-scope="scope">
             <el-tooltip popper-class="tooltipItem" effect="dark" :content="scope.row.result" placement="top">
               <span class="overflow">{{ scope.row.result }}</span>
             </el-tooltip>
-          </template>
+          </template> -->
         </el-table-column>
       </el-table>
       <div class="pager">
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[100, 200, 300, 400]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNo" :page-sizes="pageSizeArray" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="pageTotal">
         </el-pagination>
       </div>
     </div>
   </div>
 </template>
 <script type="text/ecmascript-6">
+import { pageCommon } from '../../assets/js/mixin'
+import { mapGetters } from 'vuex'
 export default {
+  mixins: [pageCommon],
   name: 'report',
   data () {
     return {
       currentPage: 1,
-      tableData: [{
-        time: '2017-10-20 18:50:50',
-        reporter: '18667889965',
-        reported: '18877774445',
-        reason: '海关大厦发生法啊说海关大厦发生法啊说话撒海关大厦发生法啊说话撒海关大厦发生法啊说话撒海关大厦发生法啊说话撒海关大厦发生法啊说话撒话撒',
-        status: 3,
-        result: '高峰时段和沙发上撒海关大厦发生法啊说话撒海关大厦发生法啊说话撒海关大厦发生法啊说话撒海关大厦发生法啊说话撒花洒'
-      }]
+      tableData: [],
+      apiUrl: '/api/seller/complain/getComplainListBySellerUserId'
     }
   },
-  methods: {
-    handleSizeChange (val) {
-      console.log(`每页 ${val} 条`)
+  computed: {
+    params () {
+      return {
+        pageSize: this.pageSize,
+        pageNo: this.pageNo,
+        sellerUserId: this.userInfo.sellerUserId
+      }
     },
-    handleCurrentChange (val) {
-      console.log(`当前页: ${val}`)
+    ...mapGetters([
+      'userInfo'
+    ])
+  },
+  methods: {
+    setList (data) {
+      let arr = []
+      for (let word of data) {
+        let goods = {
+          time: word.time || '暂无数据',
+          complainPhone: word.complainPhone || '暂无数据',
+          chuaqinInfo: word.chuaqinInfo || '暂无数据',
+          reason: word.reason || '暂无数据',
+          status: word.status || '暂无数据',
+          statusDetail: word.statusDetail || '暂无数据'
+        }
+        arr.push(goods)
+      }
+      this.tableData = arr
     }
   }
 }

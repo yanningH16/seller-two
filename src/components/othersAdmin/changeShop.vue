@@ -8,20 +8,20 @@
       <ul class="content_info">
         <li class="site">
           <span>店铺首页网址&nbsp;&nbsp;</span>
-          <el-input v-model="input" placeholder="请输入内容" style="width:384px"></el-input>
+          <el-input v-model="this.GetShopInfo.shopHomePageUrl" placeholder="请输入内容" style="width:384px" disabled></el-input>
           <!-- <span class="shopInfo">读取店铺信息</span> -->
         </li>
         <li class="shopName">
           <span>店铺名称&nbsp;&nbsp;</span>
-          <el-input v-model="input1" placeholder="请输入内容" style="width:384px"></el-input>
+          <el-input v-model="this.GetShopInfo.shopName" placeholder="请输入内容" style="width:384px" disabled></el-input>
         </li>
         <li class="wangwang">
           <span>店铺旺旺ID&nbsp;&nbsp;</span>
-          <el-input v-model="input2" placeholder="请输入内容" style="width:384px"></el-input>
+          <el-input v-model="this.GetShopInfo.productFirstClassId" placeholder="请输入内容" style="width:384px" disabled></el-input>
         </li>
         <li class="type">
           <span>商品所属分类&nbsp;&nbsp;</span>
-          <el-select v-model="value" placeholder="请选择" @change="valueChange">
+          <el-select v-model="this.GetShopInfo.productFirstClassDetail" placeholder="请选择" disabled>
             <el-option v-for="item in shopType" :key="item.value" :label="item.className" :value="item">
             </el-option>
           </el-select>
@@ -33,30 +33,31 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </li>
+        <!-- 发货地址显示部分 -->
         <li class="addContent" v-for="(item,index) in addArr" :key='index'>
           <i class="el-icon-delete" style="float:right;font-size:20px;cursor:pointer" @click="remove(index)"></i>
           <div>发货地址:
-            <span>{{item.itemCode+' '+item.itemCity+' '+item.itemZone}}</span>
+            <span>{{item.province+' '+item.city+' '+item.region}}</span>
           </div>
           <div style="margin-top:10px">街道地址:
-            <span>{{item.jieName}}</span>
+            <span>{{item.address}}</span>
           </div>
           <div style="margin-top:10px">发货电话:
-            <span>{{item.phone}}</span>
+            <span>{{item.telephone}}</span>
           </div>
           <div class="line"></div>
         </li>
         <li class="pullDown" v-show="pull">
           <el-form>
             <el-form-item label="发货地址">
-              <el-select v-model="itemCode" placeholder="省份" @change="provinceChange">
-                <el-option v-for="(item,index) in provinces" :key="index" :label="item.name" :value="item"></el-option>
+              <el-select v-model="itemPro" placeholder="省份" @change="provinceChange" value-key='code'>
+                <el-option v-for="(itemPro,index) in provinces" :key="index" :label="itemPro.name" :value="itemPro"></el-option>
               </el-select>
-              <el-select v-model="itemCity" placeholder="市" style="margin-left:12px;margin-right:12px" @change="cityChange">
-                <el-option v-for="(item,index) in city" :key="index" :label="item.name" :value="item"></el-option>
+              <el-select v-model="itemCity" placeholder="市" style="margin-left:12px;margin-right:12px" @change="cityChange" value-key='code'>
+                <el-option v-for="(itemCity,index) in city" :key="index" :label="itemCity.name" :value="itemCity"></el-option>
               </el-select>
-              <el-select v-model="itemZone" placeholder="区" @change="zoneChange">
-                <el-option v-for="(item,index) in zone" :key="index" :label="item.name" :value="item"></el-option>
+              <el-select v-model="itemZone" placeholder="区" value-key='code'>
+                <el-option v-for="(itemZone,index) in zone" :key="index" :label="itemZone.name" :value="itemZone"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="街道地址">
@@ -100,21 +101,16 @@ export default {
       disable: false,
       // 判断是否有这个类名的存在
       active: true,
+      GetShopInfo: {},
       shopType: [],
       provinces: [],
-      itemCode: null,
+      itemPro: null,
       city: [],
       itemCity: null,
       zone: [],
       itemZone: null,
-      provincesCode: '',
-      cityCode: '',
-      zoneCode: '',
       jieName: '',
       phone: '',
-      input: '',
-      input1: '',
-      input2: '',
       input4: '',
       input5: '',
       input6: '',
@@ -133,8 +129,9 @@ export default {
     ])
   },
   created () {
-    this.shopFirst()
-    this.Provinces()
+    // this.Provinces()
+    this.shopInfo()
+    this.addressInfo()
   },
   methods: {
     handleAvatarSuccess (res, file) {
@@ -152,8 +149,77 @@ export default {
       }
       return isJPG && isLt2M
     },
+    // 当进入的时候进行请求数据进行相应的填充
+    shopInfo () {
+      this.$ajax.post('/api/seller/shop/getShopInfoByShopId', {
+        sellerShopId: this.$route.query.sellerShopId
+      }).then((data) => {
+        console.log(data)
+        let res = data.data
+        if (res.code === '200') {
+          let obj = {
+            shopHomePageUrl: res.data.shopHomePageUrl,
+            shopName: res.data.shopName,
+            productFirstClassId: res.data.productFirstClassId,
+            productFirstClassDetail: res.data.productFirstClassDetail,
+            shopManagePlatformUrls: res.data.shopManagePlatformUrls,
+            contacterName: res.data.contacterName,
+            contacterTelephone: res.data.contacterTelephone,
+            contacterQqNum: res.data.contacterQqNum
+          }
+          this.GetShopInfo = obj
+          this.input4 = obj.contacterName
+          this.input5 = obj.contacterTelephone
+          this.input6 = obj.contacterQqNum
+        } else {
+          this.$message({
+            message: data.data.message,
+            type: 'warning'
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+        this.$message.error('未知错误！')
+      })
+    },
+    // 当进入页面获取发货地址的信息的填充
+    addressInfo () {
+      this.$ajax.post('/api/seller/shop/getPostLocationListByShopId', {
+        sellerShopId: this.$route.query.sellerShopId
+      }).then((data) => {
+        console.log(data)
+        let res = data.data
+        if (res.code === '200') {
+          let arr = []
+          for (let word of res.data) {
+            let goods = {
+              province: word.province,
+              city: word.city,
+              region: word.region,
+              address: word.address,
+              telephone: word.telephone,
+              pCode: word.provinceCode,
+              cCode: word.cityCode,
+              zCode: word.regionCode
+            }
+            arr.push(goods)
+          }
+          this.addArr = arr
+        } else {
+          this.$message({
+            message: data.data.message,
+            type: 'warning'
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+        this.$message.error('服务器错误！')
+      })
+    },
+    // 第二部分的修改，当点击添加发货地址的时候触发事件
     add () {
       this.pull = !this.pull
+      this.Provinces()
     },
     // 当点击保存的时候进行收货地的保存
     save () {
@@ -175,14 +241,14 @@ export default {
           type: 'success'
         })
         this.addArr.push({
-          itemCode: this.itemCode,
-          itemCity: this.itemCity,
-          itemZone: this.itemZone,
-          jieName: this.jieName,
-          phone: this.phone,
-          pCode: this.provincesCode,
-          cCode: this.cityCode,
-          zCode: this.zoneCode
+          province: this.itemPro.name,
+          city: this.itemCity.name,
+          region: this.itemZone.name,
+          address: this.jieName,
+          telephone: this.phone,
+          pCode: this.itemPro.code,
+          cCode: this.itemCity.code,
+          zCode: this.itemZone.code
         })
       }
       this.addContent = true
@@ -190,7 +256,7 @@ export default {
     },
     // 当点击确认绑定的时候做的请求
     addSure () {
-      if (this.input === '' || this.input1 === '' || this.input2 === '' || this.value === '' || this.addArr.length === 0 || this.input4 === '' || this.input5 === '' || this.input6 === '') {
+      if (this.addArr.length === 0 || this.input4 === '' || this.input5 === '' || this.input6 === '') {
         this.$message({
           message: '请正确填写所有内容,不能留空哦...',
           type: 'warning'
@@ -207,34 +273,29 @@ export default {
       let shopArr = []
       for (let i of this.addArr) {
         shopArr.push({
-          province: i.itemCode,
+          province: i.province,
           provinceCode: i.pCode,
-          city: i.itemCity,
+          city: i.city,
           cityCode: i.cCode,
-          region: i.itemZone,
+          region: i.region,
           regionCode: i.zCode,
-          telephone: i.phone,
-          address: i.jieName
+          telephone: i.telephone,
+          address: i.address
         })
       }
-      this.$ajax.post('/api/seller/shop/addShop', {
-        sellerUserId: this.userInfo.sellerUserId,
-        shopHomePage: this.input,
-        shopName: this.input1,
-        productClassId: this.valueCode,
-        screenShot: '123.jpg',
+      this.$ajax.post('/api/seller/shop/changeShop', {
+        sellerShopId: this.$route.query.sellerShopId,
+        // screenShot: '123.jpg',
         postAddressList: JSON.stringify(shopArr),
         concatName: this.input4,
         concatTelephone: this.input5,
-        concatQQ: this.input6,
-        shopType: 0,
-        productClassDetail: this.className
+        concatQQnum: this.input6
       }).then((data) => {
         console.log(data)
         let res = data.data
         if (res.code === '200') {
           this.$message({
-            message: '店铺添加成功',
+            message: '店铺修改成功',
             type: 'success'
           })
           this.$router.push({ name: 'shopAdminList' })
@@ -249,57 +310,16 @@ export default {
         this.$message.error('服务器错误！')
       })
     },
-    // 商品所属的一级分类
-    shopFirst () {
-      this.$ajax.post('/api/config/productClass/getJDFirstClass', {
-      }).then((data) => {
-        // console.log(data)
-        let res = data.data
-        if (res.code === '200') {
-          let arr = []
-          for (let word of res.data) {
-            let goods = {
-              id: word.id,
-              className: word.className
-            }
-            arr.push(goods)
-          }
-          this.shopType = arr
-        } else {
-          this.$message({
-            message: data.data.message,
-            type: 'warning'
-          })
-        }
-      }).catch((err) => {
-        console.log(err)
-        this.$message.error('服务器错误！')
-      })
-    },
     // 检测当省份发生变化出发的改变事件
     provinceChange () {
+      this.itemCity = ''
+      this.itemZone = ''
+      this.zone = []
       this.getCity()
-      this.provincesCode = this.itemCode.code
-      this.itemCode = this.itemCode.name
-      this.itemCity = null
-      this.itemZone = null
     },
     cityChange () {
       this.getZone()
-      this.cityCode = this.itemCity.code
-      this.itemCity = this.itemCity.name
-      this.itemZone = null
-    },
-    zoneChange () {
-      console.log(this.itemZone)
-      this.zoneCode = this.itemZone.code
-      this.itemZone = this.itemZone.name
-    },
-    // 检测一级分类变化的时候出发效果
-    valueChange () {
-      this.valueCode = this.value.id
-      this.className = this.value.className
-      this.value = this.value.className
+      this.itemZone = ''
     },
     // 获取省的接口
     Provinces () {
@@ -332,7 +352,7 @@ export default {
     // 通过省份获取市
     getCity () {
       this.$ajax.post('/api/config/location/getCityListByProvinceCode', {
-        provinceCode: this.itemCode.code
+        provinceCode: this.itemPro.code
       }).then((data) => {
         // console.log(data)
         let res = data.data
@@ -427,6 +447,7 @@ export default {
       text-align center
       margin-top 20px
       min-width 800px
+      max-width 1100px
       .site
         margin-left -28px
       .shopName
@@ -483,9 +504,8 @@ export default {
         padding-bottom 60px
       .addContent
         width 480px
-        display block
+        display inline-block
         margin-top 10px
         padding 40px
-        margin-left 35%
         text-align left
 </style>

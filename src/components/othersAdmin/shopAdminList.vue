@@ -13,7 +13,7 @@
                 <em>{{item.shopName}}</em>
                 <span class="right">状态 :
                   <em>{{item.status}}</em>
-                  <i class="el-icon-document" style="margin-right:10px;margin-left:10px;cursor:pointer"></i>
+                    <i class="el-icon-document" style="margin-right:10px;margin-left:10px;cursor:pointer" @click="change(index)"></i>
                   <i class="el-icon-delete" style="cursor:pointer" @click="open2(index)"></i>
                 </span>
               </i>
@@ -127,6 +127,9 @@ export default {
         console.log(err)
         this.$message.error('未知错误！')
       })
+    },
+    change (index) {
+      this.$router.push({ name: 'changeShop', query: { sellerShopId: this.shopList[index].shopId } })
     }
   }
 }

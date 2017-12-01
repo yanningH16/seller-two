@@ -427,6 +427,7 @@ export default {
       text-align center
       margin-top 20px
       min-width 800px
+      max-width 1100px
       .site
         margin-left -28px
       .shopName
