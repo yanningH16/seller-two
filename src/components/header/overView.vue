@@ -132,24 +132,80 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
+import { mapGetters } from 'vuex'
 export default {
   name: 'overView',
   data () {
     return {
       activeName: 'first',
-      currentPage: 1
+      currentPage: 1,
+      toCheckOrderArr: [],
+      toCheckFavorArr: [],
+      returnBackArr: []
     }
+  },
+  computed: {
+    ...mapGetters([
+      'userInfo'
+    ])
   },
   methods: {
     handleClick (tab, event) {
       console.log(tab, event)
+      console.log(this.activeName)
+      // 获取未通过审核列表
+      if (this.activeName === 'second') {
+        this.getFavorList()
+      }
     },
     handleSizeChange (val) {
       console.log(`每页 ${val} 条`)
     },
     handleCurrentChange (val) {
       console.log(`当前页: ${val}`)
+    },
+    // 获取待确认订单列表
+    getOrderList () {
+      this.$ajax.post('/api/seller/order/getTodoTaskNumListBySellerUserId', {
+        sellerUserId: this.userInfo.sellerUserId
+      }).then((data) => {
+        console.log(data)
+        let res = data.data
+        if (res.code === '200') {
+          this.toCheckOrderArr = res.data.toConfirmOrderList
+          this.toCheckFavorArr = res.data.toConfirmFavorList
+        } else {
+          this.$message({
+            message: res.message,
+            type: 'warning'
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    // 获取未通过审核的列表
+    getFavorList () {
+      this.$ajax.post('/api/seller/task/getRejectTaskListBySellerUserId', {
+        sellerUserId: this.userInfo.sellerUserId
+      }).then((data) => {
+        console.log(data)
+        let res = data.data
+        if (res.code === '200') {
+          this.returnBackArr = res.data
+        } else {
+          this.$message({
+            message: res.message,
+            type: 'warning'
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
     }
+  },
+  mounted () {
+    this.getOrderList()
   }
 }
 </script>

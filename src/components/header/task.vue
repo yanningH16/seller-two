@@ -8,18 +8,20 @@
     </div>
     <div class="tabNav">
       <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
-        <el-tab-pane label="全部任务" name="first">
+        <el-tab-pane label="全部任务" name="all">
         </el-tab-pane>
-        <el-tab-pane label="未支付任务" name="second">
+        <el-tab-pane label="未支付任务" name="toPay">
         </el-tab-pane>
-        <el-tab-pane label="待审核任务" name="third">
+        <el-tab-pane label="待审核任务" name="toCheck">
         </el-tab-pane>
-        <el-tab-pane label="待上线任务" name="fourth">
+        <el-tab-pane label="待上线任务" name="toLine">
         </el-tab-pane>
-        <el-tab-pane label="进行中任务" name="fifth">
+        <el-tab-pane label="进行中任务" name="lined">
         </el-tab-pane>
-        <el-tab-pane label="已完成任务" name="sixth">
+        <el-tab-pane label="已完成任务" name="done">
         </el-tab-pane>
+        <!-- <el-tab-pane label="已撤销任务" name="stop">
+        </el-tab-pane> -->
       </el-tabs>
     </div>
     <div class="search">
@@ -29,6 +31,8 @@
         </el-option>
         <el-option label="垫付" value="0">
         </el-option>
+        <el-option label="浏览" value="1">
+        </el-option>
       </el-select>
       <span>平台：</span>
       <el-select v-model="searchObj.platform" placeholder="请选择" style="margin-right: 20px;width:200px;">
@@ -36,67 +40,80 @@
         </el-option>
         <el-option label="京东" value="0">
         </el-option>
+        <el-option label="淘宝" value="1">
+        </el-option>
+        <el-option label="天猫" value="2">
+        </el-option>
       </el-select>
       <span>关键词：</span>
       <el-input v-model="searchObj.keyword" placeholder="任务编号/商品名称关键词" style="margin-right: 20px;width:200px;"></el-input>
-      <button class="btn" style="margin-left:40px;">查询</button>
+      <button class="btn" style="margin-left:40px;" @click="find">查询</button>
     </div>
     <div class="tabCont">
-      <div class="tabItem" v-for="(item, index) in 5" :key="index">
+      <div class="tabItem" v-for="(item, index) in listArr" :key="index">
         <ul class="head">
           <li style="width:20%">
             <i></i>
-            <strong>&nbsp;&nbsp;挡风沙旗舰店</strong>
+            <strong>&nbsp;&nbsp;{{ item.shopName }}</strong>
           </li>
           <li style="width:30%">
             <span class="gray">任务编号: </span>
-            <span>98444654654654654564564454</span>
-            <span class="blue">[查看任务类型]</span>
+            <span>{{ item.sellerTaskId }}</span>
+            <span class="blue" @click="$router.push({name: 'taskDetail',query: {sellerTaskId: item.sellerTaskId}})">[查看任务详情]</span>
           </li>
           <li style="width:20%">
             <span class="gray">任务类型: </span>
-            <span>图文好评</span>
+            <span>{{ item.taskTypeDesc }}</span>
           </li>
           <li style="width:20%">
             <span class="gray">提交时间: </span>
-            <span>2017-08-25 12:22:11</span>
+            <span>{{ item.throwTime }}</span>
           </li>
         </ul>
         <ul class="cont">
           <li>
-            <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1511344372676&di=efa5889acb8cecfcf8222d867cd5f941&imgtype=0&src=http%3A%2F%2Fimg2.gao7.com%2Ffiles%2Fappleimage%2F277%2F277E8E4B-D0AD-4956-BF23-98987E2ADA88.jpg" alt="">
-            <b>安卓数据线</b>
+            <img :src="item.productPicUrl" alt="商品展示图片">
+            <b>{{ item.productName }}</b>
           </li>
           <li>
             <p>付款价格：
-              <span class="red">9.90</span>
+              <span class="red">{{ item.payment }}</span>
             </p>
-            <p>任务单数：02</p>
+            <p>任务单数：{{ item.throwNum }}</p>
           </li>
           <li>
             <p>待确认订单：
-              <span class="red">99</span>
+              <span class="red">{{ item.toConfirmOrderNum }}</span>
             </p>
-            <p>待确认评价截图：02</p>
+            <p>待确认评价截图：{{ item.toConfirmFavorNum }}</p>
           </li>
           <li>
-            <p>已完成订单：99</p>
+            <p>已完成订单：{{ item.doneNum }}</p>
           </li>
           <li>
             <div class="status">
               <p>状态</p>
-              <span class="tipSuccess">已完成</span>
+              <span v-if="item.taskStatus==1 || item.taskStatus==2" class="tipError">待提交</span>
+              <span v-if="item.taskStatus==3" class="tipError">待支付</span>
+              <span v-if="item.taskStatus==4" class="tipWait">待审核</span>
+              <span v-if="item.taskStatus==5" class="tipWait">待上线</span>
+              <span v-if="item.taskStatus==6" class="tipError">未通过</span>
+              <span v-if="item.taskStatus==7" class="tipError">已撤销</span>
+              <span v-if="item.taskStatus==8" class="tipDoing">进行中</span>
+              <span v-if="item.taskStatus==20" class="tipSuccess">已完成</span>
+              <span v-if="item.taskStatus==21" class="tipSuccess">已结束</span>
             </div>
           </li>
           <li>
             <div class="buttons">
-              <button class="btn btn-small" @click="showCancel=true">撤销</button>
+              <button v-if="item.taskStatus==6" class="btn btn-small" @click="$router.push({name: 'sendTaskTwo',query: {rbSellerTaskId: item.sellerTaskId}})">修改</button>
+              <button v-if="item.taskStatus!=7 || item.taskStatus!=20 || item.taskStatus!=21" class="btn btn-small" @click="cancel(item.sellerTaskId)">撤销</button>
             </div>
           </li>
         </ul>
       </div>
-      <div class="pager">
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[100, 200, 300, 400]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
+      <div class="pager" v-if="total>pageSize">
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizeArray" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
         </el-pagination>
       </div>
     </div>
@@ -130,12 +147,15 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
+import { pageCommon } from '../../assets/js/mixin'
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'task',
+  mixins: [pageCommon],
   data () {
     return {
-      activeName: 'first',
-      currentPage: 1,
+      activeName: 'all',
       showCancel: false,
       // 撤销对象
       cancelObj: {
@@ -145,21 +165,91 @@ export default {
       },
       // 搜索对象
       searchObj: {
-        taskType: '',
-        platform: '',
-        keyword: ''
-      }
+        taskType: '0',
+        platform: '0',
+        keyword: '',
+        keywordType: ''
+      },
+      listArr: [],
+      apiUrl: '/api/seller/task/getTaskListByConditionAndSellerUserId'
     }
+  },
+  computed: {
+    params () {
+      return {
+        sellerUserId: this.userInfo.sellerUserId,
+        taskStatus: this.activeName,
+        taskType: this.searchObj.taskType,
+        shopType: this.searchObj.platform,
+        keyword: this.searchObj.keyword,
+        keywordType: this.searchObj.keywordType,
+        pageNo: this.pageNo,
+        pageSize: this.pageSize
+      }
+    },
+    keyType: function () {
+      if (this.searchObj.keyword) {
+        let end = this.searchObj.keyword.substr(-1, 1)
+        if (isNaN(end)) {
+          return 'keyword'
+        } else {
+          return 'task'
+        }
+      }
+    },
+    ...mapGetters([
+      'userInfo'
+    ])
   },
   methods: {
     handleClick (tab, event) {
       console.log(tab, event)
+      this.getTask()
     },
-    handleSizeChange (val) {
-      console.log(`每页 ${val} 条`)
+    // handleSizeChange (val) {
+    //   console.log(`每页 ${val} 条`)
+    // },
+    // handleCurrentChange (val) {
+    //   console.log(`当前页: ${val}`)
+    // },
+    find () {
+      this.searchObj.keywordType = this.keyType
+      this.getTask()
     },
-    handleCurrentChange (val) {
-      console.log(`当前页: ${val}`)
+    cancel (sellerTaskId) {
+      this.$confirm('确定要撤销该任务?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$ajax.post('/api/platform/task/cancelTask', {
+          sellerTaskId: sellerTaskId
+        }).then((data) => {
+          if (data.data.code === '200') {
+            this.$message({
+              type: 'success',
+              message: '撤销成功!'
+            })
+            this.getTask()
+          } else {
+            this.$message({
+              type: 'warning',
+              message: data.data.message
+            })
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
+      })
+    },
+    setList (data) {
+      console.log(data)
+      this.listArr = data
     }
   }
 }

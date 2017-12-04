@@ -28,6 +28,11 @@ const task = (resolve) => {
     resolve(module)
   })
 }
+const taskDetail = (resolve) => {
+  import('@/components/header/taskDetail').then((module) => {
+    resolve(module)
+  })
+}
 const header = [{
   path: 'header/overView',
   component: OverView,
@@ -58,5 +63,10 @@ const header = [{
   component: task,
   name: 'task',
   meta: { title: '首页-任务管理' }
+}, {
+  path: 'header/taskDetail',
+  component: taskDetail,
+  name: 'taskDetail',
+  meta: { title: '首页-任务管理-垫付任务详情' }
 }]
 export default header

@@ -96,10 +96,10 @@
                 <input type="number" v-model="sendObj.productShowPrice" :disabled="isReturnBack" placeholder="请填写">
               </td>
               <td>
-                <input type="number" v-model="sendObj.productOrderPrice" :disabled="isReturnBack" placeholder="请填写">
+                <input type="number" v-model="sendObj.productOrderPrice" :disabled="isReturnBack" @blur="getPrice" placeholder="请填写">
               </td>
               <td>
-                <input type="number" v-model="sendObj.numPerOrder" :disabled="isReturnBack" placeholder="请填写">
+                <input type="number" v-model="sendObj.numPerOrder" :disabled="isReturnBack" @blur="getPrice" placeholder="请填写">
               </td>
               <td>
                 <input type="text" v-model="sendObj.productFormat" :disabled="isReturnBack" placeholder="任意规格(按照试用价格下单)">
@@ -110,7 +110,7 @@
             <div class="checkBox">
               <el-radio :label="0">
                 <b style="color: #3c3c3c">商品本身不包邮</b>
-                <span class="gray">（买家无需联系客服，商家额外支付10元／单作为运费押金，任务完成后剩余的运费押金将返还给商家）</span>
+                <span class="gray">（买家无需联系客服，商家额外支付{{ priceObj.postPrice || 10 }}元／单作为运费押金，任务完成后剩余的运费押金将返还给商家）</span>
               </el-radio>
             </div>
             <div class="checkBox">
@@ -257,7 +257,7 @@
                 <p>投放数量</p>
                 <div class="numAdd">
                   <span class="l" @click="dele(indexs, index)">－</span>
-                  <input type="number" :value="item.num">
+                  <input type="number" v-model="item.num">
                   <span class="r" @click="add(indexs, index)">+</span>
                 </div>
               </div>
@@ -268,13 +268,19 @@
         <div class="total">
           <div class="checkList">
             <div class="check">
-              <el-checkbox v-model="setFavorNumObj.wordFavor.checked" label="五星+文字好评（6元 / 单）" @change="setFavorNum"></el-checkbox>
+              <el-checkbox v-model="setFavorNumObj.wordFavor.checked" @change="setFavorNum">
+                <span>五星+文字好评（{{ priceObj.wordPrice || 11 }}元 / 单）</span>
+              </el-checkbox>
             </div>
             <div class="check">
-              <el-checkbox v-model="setFavorNumObj.picFavor.checked" label="五星+图片+文字好评（8元 / 单）" @change="setFavorNum"></el-checkbox>
+              <el-checkbox v-model="setFavorNumObj.picFavor.checked" @change="setFavorNum">
+                <span>五星+图片+文字好评（{{ priceObj.graphicPrice || 12 }}元 / 单）</span>
+              </el-checkbox>
             </div>
             <div class="check">
-              <el-checkbox v-model="setFavorNumObj.defaultFavor.checked" label="默认好评（4元 / 单）" @change="setFavorNum(1)"></el-checkbox>
+              <el-checkbox v-model="setFavorNumObj.defaultFavor.checked" @change="setFavorNum(1)">
+                <span>默认好评（{{ priceObj.defaultPrice || 10 }}元 / 单）</span>
+              </el-checkbox>
             </div>
           </div>
           <div class="checkList">
@@ -296,7 +302,7 @@
         <div class="buyerType">
           <el-radio-group v-model="buyerType">
             <p>
-              <el-radio :label="1">全员为plus (+3元 / 单)</el-radio>
+              <el-radio :label="1">全员为plus (+{{ priceObj.plusPrice || 3 }}元 / 单)</el-radio>
             </p>
             <p>
               <el-radio :label="0">非plus会员</el-radio>
@@ -318,6 +324,7 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
+import { getImgSize } from '../../../assets/js/upload'
 export default {
   name: 'sendTaskTwo',
   data () {
@@ -326,6 +333,8 @@ export default {
       // 是否驳回
       isReturnBack: false,
       active: 1,
+      // 获取的价格对象
+      priceObj: {},
       // 商品分类对象
       classObj: {
         classOne: [],
@@ -418,7 +427,7 @@ export default {
           time: '', // 2017-11-16
           num: '' // 投放数量
         }],
-        totalNum: '', // 全部投放数量
+        totalNum: 0, // 全部投放数量
         wordFavorNum: 0, // 文字好评数量
         graphicWordFavorNum: 0, // 图文好评数量
         plusNum: '', // plus数量
@@ -468,7 +477,7 @@ export default {
         for (let i = 0; i < 3; i++) {
           for (let k of this.timeArr[i].line) {
             if (k.date !== '') {
-              totalNum += k.num
+              totalNum += (k.num - 0)
             }
           }
         }
@@ -499,6 +508,21 @@ export default {
       // console.log(this.sendSearchKeywordList)
       // console.log(this.sendObj)
       // console.log(this.sendObj.searchKeywordList)
+    },
+    // 根据价格获取评价的价格
+    getPrice () {
+      if (this.sendObj.productOrderPrice && this.sendObj.numPerOrder) {
+        this.$ajax.post('/api/seller/task/getFavorByPrice', {
+          price: this.sendObj.productOrderPrice * this.sendObj.numPerOrder
+        }).then((data) => {
+          console.log(data)
+          if (data.data.code === '200') {
+            this.priceObj = data.data.data
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
+      }
     },
     setMyDate (val) {
       if (val) {
@@ -562,20 +586,27 @@ export default {
       this.setMyDate(this.taskStarTime)
     },
     handleAvatarSuccess (res, file) {
+      console.log(res, file)
       this.sendObj.productPicUrl = URL.createObjectURL(file.raw)
     },
     beforeAvatarUpload (file) {
       console.log(file)
-      const isJPG = (file.type === 'image/jpeg') || (file.type === 'image/png') || (file.type === 'image/gif')
-      const isLt1M = file.size / 1024 / 1024 < 1
-
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG/PNG/GIF 格式!')
-      }
-      if (!isLt1M) {
-        this.$message.error('上传头像图片大小不能超过 1MB!')
-      }
-      return isJPG && isLt1M
+      getImgSize(file).then((img) => {
+        if (img.width > 600 || img.height > 600) {
+          this.$message.error('商品主图最大为600*600!')
+          return false
+        } else {
+          const isJPG = (file.type === 'image/jpeg') || (file.type === 'image/png') || (file.type === 'image/gif')
+          const isLt1M = file.size / 1024 / 1024 < 1
+          if (!isJPG) {
+            this.$message.error('上传头像图片只能是 JPG/PNG/GIF 格式!')
+          }
+          if (!isLt1M) {
+            this.$message.error('上传头像图片大小不能超过 1MB!')
+          }
+          return isJPG && isLt1M
+        }
+      })
     },
     doPrevent () {
       this.$router.push({ name: 'sendTaskOne' })
@@ -692,6 +723,11 @@ export default {
         }).then((data) => {
           if (data.data.code === '200') {
             this.classObj.classOne = data.data.data
+          } else {
+            this.$message({
+              message: data.data.message,
+              type: 'warning'
+            })
           }
         }).catch((err) => {
           console.log(err)
@@ -702,6 +738,11 @@ export default {
         }).then((data) => {
           if (data.data.code === '200') {
             this.classObj.classTwo = data.data.data
+          } else {
+            this.$message({
+              message: data.data.message,
+              type: 'warning'
+            })
           }
         }).catch((err) => {
           console.log(err)
@@ -712,6 +753,11 @@ export default {
         }).then((data) => {
           if (data.data.code === '200') {
             this.classObj.classThree = data.data.data
+          } else {
+            this.$message({
+              message: data.data.message,
+              type: 'warning'
+            })
           }
         }).catch((err) => {
           console.log(err)
@@ -724,6 +770,11 @@ export default {
       }).then((data) => {
         if (data.data.code === '200') {
           this.positionArr = data.data.data
+        } else {
+          this.$message({
+            message: data.data.message,
+            type: 'warning'
+          })
         }
       }).catch((err) => {
         console.log(err)
@@ -756,9 +807,23 @@ export default {
       if (sessionStorage.getItem('creatShopInfo')) {
         this.creatShopInfo = JSON.parse(sessionStorage.getItem('creatShopInfo'))
       }
+    },
+    // 获取被驳回的信息
+    getReturnBackInfo () {
+      if (this.$route.rbSellerTaskId) {
+        this.isReturnBack = true
+        this.$ajax.post('/api/seller/task/getRejectTaskDetail', {
+          sellerTaskId: this.$route.rbSellerTaskId
+        }).then((data) => {
+          console.log(data)
+        }).catch((err) => {
+          console.log(err)
+        })
+      }
     }
   },
   mounted () {
+    // 设置日期表格
     this.setMyDate()
     // 获取分类列表
     this.getClassApi('/api/config/productClass/getJDFirstClass', 1)
@@ -766,6 +831,8 @@ export default {
     this.getPositionArr()
     // 获取上一步店铺信息
     this.getCreatShopInfo()
+    // 设置被驳回的信息
+    this.getReturnBackInfo()
   }
 }
 </script>

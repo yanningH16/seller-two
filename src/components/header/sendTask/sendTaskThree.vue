@@ -56,7 +56,7 @@
               <p>图文好评: {{ infoObj.graphicFavorPrice }}元 / 单*{{ infoObj.graphicFavorNum }}单</p>
               <p>纯文字好评: {{ infoObj.wordFavorPrice }}元 / 单*{{ infoObj.wordFavorNum }}单</p>
               <p>默认五星好评: {{ infoObj.defaultFavorPrice }}元 / 单*{{ infoObj.defaultFavorNum }}单</p>
-              <p>plus会员: {{ 0 }}元 / 单*{{ 0 }}单</p>
+              <p>plus会员: {{ infoObj.plusNum }}元 / 单*{{ infoObj.plusPrice }}单</p>
             </div>
           </td>
           <td>
@@ -111,6 +111,7 @@ export default {
       total += (this.infoObj.graphicFavorPrice) * (this.infoObj.graphicFavorNum)
       total += (this.infoObj.wordFavorPrice) * (this.infoObj.wordFavorNum)
       total += (this.infoObj.defaultFavorPrice) * (this.infoObj.defaultFavorNum)
+      total += (this.infoObj.plusNum) * (this.infoObj.plusPrice)
       return total
     }
   },
@@ -119,6 +120,21 @@ export default {
       this.$router.push({ name: 'sendTaskTwo' })
     },
     doNext () {
+      this.$ajax.post('/api/seller/task/payTask', {
+        sellerTaskId: sessionStorage.getItem('creatSellerTaskId')
+      }).then((data) => {
+        console.log(data)
+        if (data.data.code === '200') {
+
+        } else {
+          this.$message({
+            message: data.data.message,
+            type: 'warning'
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
       this.$router.push({ name: 'sendTaskFour' })
     },
     getInfo () {

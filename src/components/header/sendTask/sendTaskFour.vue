@@ -38,11 +38,12 @@ export default {
         this.time--
         if (this.time === 0) {
           clearInterval(time)
+          this.lookTask()
         }
       }, 1000)
     },
     lookTask () {
-      this.$router.push({ name: '' })
+      this.$router.push({ name: 'taskDetail' })
     }
   },
   mounted () {
