@@ -163,7 +163,7 @@
         <transition-group name="fade">
           <ul class="keywordList" v-for="(item, index) in keywordList" :key="index">
             <li>
-              <span>关键词来源{{ index+1 }}：让试客在
+              <span class="must">关键词来源{{ index+1 }}：让试客在
                 <b class="red">京东APP</b>搜索关键字&nbsp;&nbsp;</span>
               <el-input style="width:340px;" v-model="item.keyword" placeholder="请输入搜索关键字"></el-input>
               <span v-if="index!==0" class="el-icon-delete deleBtn" @click="deleKeyArr(index)"></span>
@@ -189,31 +189,31 @@
                   <div class="col col1">
                     <p>
                       <span>价格:</span>&nbsp;
-                      <el-input style="width:120px;" v-model="item.priceLow" placeholder="请输入价格"></el-input>
+                      <el-input style="width:140px;" v-model="item.priceLow" placeholder="请输入价格"></el-input>
                       —
-                      <el-input style="width:120px;" v-model="item.priceHigh" placeholder="请输入价格"></el-input>&nbsp;元</p>
+                      <el-input style="width:140px;" v-model="item.priceHigh" placeholder="请输入价格"></el-input>&nbsp;元</p>
                     <p>
                       <span>评价数约:</span>&nbsp;
-                      <el-input style="width:120px;" v-model="item.favorNum" placeholder="请输入数量"></el-input>
+                      <el-input style="width:140px;" v-model="item.favorNum" placeholder="请输入数量"></el-input>
                     </p>
                   </div>
                   <div class="col col2">
                     <p>
                       <span>发货地:</span>&nbsp;
-                      <el-select placeholder="请选择" v-model="item.postLocation" style="width: 120px;">
+                      <el-select placeholder="请选择" v-model="item.postLocation" style="width: 140px;">
                         <el-option v-for="(address, i) in positionArr" :key="i" :label="address.name" :value="address.name">
                         </el-option>
                       </el-select>
                     </p>
                     <p>
                       <span>目标翻页数:</span>&nbsp;
-                      <el-input style="width:120px;" v-model="item.pageNum" placeholder="请输入数量"></el-input>
+                      <el-input style="width:140px;" v-model="item.pageNum" placeholder="请输入数量"></el-input>
                     </p>
                   </div>
                   <div class="col col3">
                     <p>
-                      <span>现有收货/下单人数约:</span>&nbsp;
-                      <el-input style="width:120px;" placeholder="请输入数量"></el-input>
+                      <span>品牌:</span>&nbsp;
+                      <el-input style="width:140px;" v-model="item.brand" placeholder="请输入品牌"></el-input>
                     </p>
                   </div>
                 </div>
@@ -294,7 +294,8 @@
             </div>
             <div class="check">
               <span>设置执行人数&nbsp;:&nbsp;</span>
-              <el-input style="width:140px;" readonly v-model="setFavorNumObj.defaultFavor.num" placeholder="请输入人数"></el-input>
+              <span class="red" style="height:40px;line-height:40px">{{ setFavorNumObj.defaultFavor.num }}</span>人
+              <!-- <el-input style="width:140px;" readonly v-model="setFavorNumObj.defaultFavor.num" placeholder="请输入人数"></el-input> -->
             </div>
           </div>
         </div>
@@ -443,7 +444,7 @@ export default {
     },
     sendTotalNum (val) {
       this.sendObj.totalNum = val
-      // this.setFavorNumObj.defaultFavor.num = this.setFavorNumObj.wordFavor.num - this
+      this.setFavorNumObj.defaultFavor.num = val
       this.setFavorNum()
     },
     sendSearchKeywordList (val) {
@@ -506,7 +507,7 @@ export default {
       // console.log(this.sendDateList)
       // console.log(this.sendTotalNum)
       // console.log(this.sendSearchKeywordList)
-      // console.log(this.sendObj)
+      console.log(this.sendObj)
       // console.log(this.sendObj.searchKeywordList)
     },
     // 根据价格获取评价的价格
@@ -635,7 +636,7 @@ export default {
       }
     },
     saveKey (index) {
-      if (this.keywordList[index].priceLow && (this.keywordList[index].priceLow > this.keywordList[index].priceHigh)) {
+      if ((this.keywordList[index].priceLow) && (this.keywordList[index].priceLow - 0 > this.keywordList[index].priceHigh - 0)) {
         this.$message({
           message: '最低价不能高于最高价格哦',
           type: 'warning'
