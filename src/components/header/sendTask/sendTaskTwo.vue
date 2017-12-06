@@ -53,7 +53,7 @@
             <b class="red">1M</b>以内</span>
           <div class="uploadImg">
             <h3>商品展示图</h3>
-            <el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+            <el-upload class="avatar-uploader" ref="upload" action="" :show-file-list="false" :http-request="uploadImg" :before-upload="beforeAvatarUpload">
               <img v-if="sendObj.productPicUrl" :src="sendObj.productPicUrl" class="avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
@@ -325,12 +325,13 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-import { getImgSize } from '../../../assets/js/upload'
+import { getImgSize, uploadFile, uploadPromise } from '../../../assets/js/upload'
 export default {
   name: 'sendTaskTwo',
   data () {
     return {
       warnShow: true,
+      isCanUpload: false,
       // 是否驳回
       isReturnBack: false,
       active: 1,
@@ -449,6 +450,11 @@ export default {
     },
     sendSearchKeywordList (val) {
       this.sendObj.searchKeywordList = val
+    },
+    isCanUpload (val) {
+      if (val) {
+        this.$refs.upload.submit()
+      }
     }
   },
   computed: {
@@ -586,28 +592,45 @@ export default {
       console.log(this.taskStarTime)
       this.setMyDate(this.taskStarTime)
     },
-    handleAvatarSuccess (res, file) {
-      console.log(res, file)
-      this.sendObj.productPicUrl = URL.createObjectURL(file.raw)
+    uploadImg (img) {
+      if (!this.isCanUpload) {
+        return false
+      }
+      uploadPromise.then((res) => {
+        if (res.statusText === 'OK') {
+          uploadFile(res.data, img.file).then((res) => {
+            // this.imageUrl = res.url
+            this.sendObj.productPicUrl = res
+          }).catch((err) => {
+            this.$message.error('网络错误，请刷新试试')
+          })
+        }
+      }).catch((err) => {
+        this.$message.error('网络错误，请刷新试试')
+      })
     },
     beforeAvatarUpload (file) {
-      console.log(file)
-      getImgSize(file).then((img) => {
-        if (img.width > 600 || img.height > 600) {
-          this.$message.error('商品主图最大为600*600!')
-          return false
-        } else {
-          const isJPG = (file.type === 'image/jpeg') || (file.type === 'image/png') || (file.type === 'image/gif')
-          const isLt1M = file.size / 1024 / 1024 < 1
-          if (!isJPG) {
-            this.$message.error('上传头像图片只能是 JPG/PNG/GIF 格式!')
+      const isJPG = (file.type === 'image/jpeg') || (file.type === 'image/png') || (file.type === 'image/gif')
+      const isLt1M = file.size / 1024 / 1024 < 1
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG/PNG/GIF 格式!')
+        this.isCanUpload = false
+        return false
+      } else if (!isLt1M) {
+        this.$message.error('上传头像图片大小不能超过 1MB!')
+        this.isCanUpload = false
+        return false
+      } else {
+        getImgSize(file).then((img) => {
+          if (img.width > 600 || img.height > 600) {
+            this.$message.error('商品主图大小应为600*600!')
+            this.isCanUpload = false
+            return false
+          } else {
+            this.isCanUpload = true
           }
-          if (!isLt1M) {
-            this.$message.error('上传头像图片大小不能超过 1MB!')
-          }
-          return isJPG && isLt1M
-        }
-      })
+        })
+      }
     },
     doPrevent () {
       this.$router.push({ name: 'sendTaskOne' })
@@ -693,8 +716,6 @@ export default {
         this.sendObj.defaultFavorNum = 0
       }
       this.sendObj.throwTime = this.sendDateList[0].time
-
-      this.sendObj.productPicUrl = 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1133834497,2619081877&fm=27&gp=0.jpg'
 
       this.sendObj.sellerTaskId = this.creatShopInfo.sellerTaskId
       console.log(this.sendObj)

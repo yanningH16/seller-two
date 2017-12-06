@@ -56,7 +56,7 @@
               <p>图文好评: {{ infoObj.graphicFavorPrice }}元 / 单*{{ infoObj.graphicFavorNum }}单</p>
               <p>纯文字好评: {{ infoObj.wordFavorPrice }}元 / 单*{{ infoObj.wordFavorNum }}单</p>
               <p>默认五星好评: {{ infoObj.defaultFavorPrice }}元 / 单*{{ infoObj.defaultFavorNum }}单</p>
-              <p>plus会员: {{ infoObj.plusNum }}元 / 单*{{ infoObj.plusPrice }}单</p>
+              <p>plus会员: {{ infoObj.plusPrice }}元 / 单*{{ infoObj.plusNum }}单</p>
             </div>
           </td>
           <td>
@@ -121,11 +121,13 @@ export default {
     },
     doNext () {
       this.$ajax.post('/api/seller/task/payTask', {
-        sellerTaskId: sessionStorage.getItem('creatSellerTaskId')
+        sellerTaskId: sessionStorage.getItem('creatSellerTaskId'),
+        totalPayAmount: this.infoObj.totalPrice,
+        totalCommissionPayAmount: this.infoObj.totalPrice
       }).then((data) => {
         console.log(data)
         if (data.data.code === '200') {
-
+          this.$router.push({ name: 'sendTaskFour' })
         } else {
           this.$message({
             message: data.data.message,
@@ -135,7 +137,6 @@ export default {
       }).catch((err) => {
         console.log(err)
       })
-      this.$router.push({ name: 'sendTaskFour' })
     },
     getInfo () {
       this.$ajax.post('/api/seller/task/getTaskCost', {

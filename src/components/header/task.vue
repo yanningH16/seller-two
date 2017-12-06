@@ -314,6 +314,12 @@ export default {
             vertical-align middle
           b
             line-height 60px
+            display inline-block
+            width 120px
+            overflow hidden
+            text-overflow ellipsis
+            white-space nowrap
+            vertical-align middle
           p
             line-height 30px
           .status
