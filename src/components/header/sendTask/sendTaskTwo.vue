@@ -601,11 +601,11 @@ export default {
           uploadFile(res.data, img.file).then((res) => {
             // this.imageUrl = res.url
             this.sendObj.productPicUrl = res
-          }).catch((err) => {
+          }).catch(() => {
             this.$message.error('网络错误，请刷新试试')
           })
         }
-      }).catch((err) => {
+      }).catch(() => {
         this.$message.error('网络错误，请刷新试试')
       })
     },
