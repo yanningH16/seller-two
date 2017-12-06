@@ -10,42 +10,97 @@
     <div class="top">
       <div class="top-left">
         <div class="title">
-          <span>京东 | 品炫旗舰店 | 京东App垫付</span>
+          <span>{{ taskInfoObj.shopType == 0 ? '京东' : taskInfoObj.shopType == 1 ? '淘宝' : '天猫' }} | {{ taskInfoObj.shopName }} | {{ taskInfoObj.taskTypeDetail }}</span>
         </div>
         <div class="top-left-cont">
-          <h3>任务编号：5456456466545655</h3>
+          <h3>任务编号：{{ taskInfoObj.sellerTaskId }}</h3>
           <ul class="detail">
             <li>
               <p>付款价格：
-                <span class="red">9</span>
+                <span class="red">{{ taskInfoObj.payment }}</span>
               </p>
               <p>任务数量：
-                <span class="red">9</span>
+                <span class="red">{{ taskInfoObj.throwNum }}</span>
               </p>
             </li>
             <li>
               <p>待确认好评：
-                <span class="red">9</span>
+                <span class="red">{{ taskInfoObj.toConfirmOrderNum }}</span>
               </p>
               <p>待确认评价截图：
-                <span class="red">9</span>
+                <span class="red">{{ taskInfoObj.toConfirmFavorNum }}</span>
               </p>
             </li>
             <li>
               <p>已完成订单：
-                <span class="red">9</span>
+                <span class="red">{{ taskInfoObj.confirmedFavorNum }}</span>
               </p>
             </li>
           </ul>
         </div>
       </div>
-      <div class="top-right">
+      <div class="top-right" v-if="taskInfoObj.status==1 || taskInfoObj.status==2">
+        <h2>任务已选取店铺及任务类型</h2>
+        <p>任务已选取店铺及任务类型<br /> 您需完善商品信息设置：
+          <span class="blue" @click="toDo('finsh')">去完善</span>
+        </p>
+      </div>
+      <div class="top-right" v-if="taskInfoObj.status==3">
+        <h2>任务信息已设置,待支付订单</h2>
+        <p>任务信息已设置,待支付订单<br /> 您需支付该任务：
+          <span class="blue" @click="toDo('pay')">去支付</span>
+        </p>
+      </div>
+      <div class="top-right" v-if="taskInfoObj.status==4">
         <h2>任务已提交，等待客服审核</h2>
         <p>您的任务已提交，客服审核通过之后即可上线<br />
           <span class="red">16:00</span>点之前提交的任务当日审核上线；<br/>
           <span class="red">16:00</span>点之后提交的任务次日
           <span class="red">6:00</span>统一上线<br/> 审核之前您还可以：
-          <span class="blue">撤销任务</span>
+          <span class="blue" @click="toDo('cancel')">撤销任务</span>
+        </p>
+      </div>
+      <div class="top-right" v-if="taskInfoObj.status==5">
+        <h2>任务已通过</h2>
+        <p>任务已通过<br/> 您还可以：
+          <span class="blue" @click="toDo('cancel')">撤销任务</span>
+        </p>
+      </div>
+      <div class="top-right" v-if="taskInfoObj.status==6">
+        <h2>任务未通过审核</h2>
+        <p>任务未通过审核<br/> 您可以：
+          <span class="blue" @click="toDo('return')">去修改</span><br />
+          <span class="blue" @click="toDo('cancel')">撤销任务</span>
+        </p>
+      </div>
+      <div class="top-right" v-if="taskInfoObj.status==7">
+        <h2>任务已被撤销</h2>
+        <p>任务已被撤销<br/> 您可以：
+          <span class="blue" @click="toDo('new')">去发布新任务</span>
+        </p>
+      </div>
+      <div class="top-right" v-if="taskInfoObj.status==8">
+        <h2>任务进行中</h2>
+        <p>任务进行中<br/> 您还可以：
+          <span class="blue" @click="toDo('cancel')">撤销任务</span>
+        </p>
+      </div>
+      <div class="top-right" v-if="taskInfoObj.status==9">
+        <h2>任务已被终止</h2>
+        <p>任务已被终止<br/> 您可以：
+          <span class="blue" @click="toDo('new')">去发布新任务</span>
+        </p>
+      </div>
+      <div class="top-right" v-if="taskInfoObj.status==20">
+        <h2>任务已完成</h2>
+        <p>任务已完成<br/> 您可以：
+          <span class="blue" @click="toDo('new')">去发布新任务</span>
+        </p>
+      </div>
+      <div class="top-right" v-if="taskInfoObj.status==21">
+        <h2>任务已结束</h2>
+        <p>任务已结束<br/> 您可以：
+          <span class="blue" @click="toDo('new')">去发布新任务</span>
         </p>
       </div>
     </div>
@@ -53,78 +108,53 @@
       <div class="step">
         <h2>1.商品信息</h2>
         <div class="step1">
-          <img src="http://pic28.photophoto.cn/20130830/0005018667531249_b.jpg" alt="">
+          <img :src="goodsInfoObj.productPicUrl" alt="商品展示图">
           <div>
             <p>
-              <span>商品名称：安卓数据线</span>
-              所在分类：手机周边
+              <span>商品名称：{{ goodsInfoObj.productName }}</span>
+              所在分类：{{ goodsInfoObj.productClassFirstDetail }}
             </p>
             <p>商品链接：
-              <span class="blue">http:wwwbaidu.com</span>
+              <a class="blue link" target="_blank" :href="goodsInfoObj.productUrl">{{ goodsInfoObj.productUrl }}</a>
+              <!-- <span class="blue link"></span> -->
             </p>
             <p>
-              <span>试客件数 / 人：1件</span>
-              商品单价：9元（包邮）
+              <span>试客件数 / 人：{{ goodsInfoObj.numPerOrder }}件</span>
+              商品单价：{{ goodsInfoObj.productShowPrice }}元（
+              <i v-if="goodsInfoObj.isPostFree==0">不</i>包邮）
             </p>
-            <p>小计：9元</p>
+            <p>小计：{{ goodsInfoObj.productShowPrice * goodsInfoObj.numPerOrder}}元</p>
           </div>
         </div>
       </div>
       <div class="step">
         <h2>2.如何找到商品</h2>
         <ul class="step2">
-          <li>
-            <h3>搜索关键词1：安卓</h3>
+          <li v-for="(item,index) in searchListArr" :key="index">
+            <h3>搜索关键词{{ index+1 }}：{{ item.keyword }}</h3>
             <p>
               <span class="gray">排序方式：</span>
-              综合排序
+              {{ item.sortClass == 0 ? '综合排序' : '其他' }}
             </p>
             <p>
               <span class="gray">价格区间：</span>
-              0.00-100.00元
+              {{ item.priceLow }}-{{ item.priceHigh }}元
             </p>
             <p>
               <span class="gray">品牌：</span>
-              阿迪
+              {{ item.brand }}
             </p>
             <p>
               <span class="gray">发货地：</span>
-              全国
+              {{ item.postLocation }}
             </p>
             <p>
               <span class="gray">评价数（约）：</span>
-              51
+              {{ item.favorNum }}
             </p>
             <p>
               <span class="gray">预计翻页数：</span>
-              5
-            </p>
-          </li>
-          <li>
-            <h3>搜索关键词1：安卓</h3>
-            <p>
-              <span class="gray">排序方式：</span>
-              综合排序
-            </p>
-            <p>
-              <span class="gray">价格区间：</span>
-              0.00-100.00元
-            </p>
-            <p>
-              <span class="gray">品牌：</span>
-              阿迪
-            </p>
-            <p>
-              <span class="gray">发货地：</span>
-              全国
-            </p>
-            <p>
-              <span class="gray">评价数（约）：</span>
-              51
-            </p>
-            <p>
-              <span class="gray">预计翻页数：</span>
-              5
+              {{ item.pageNum }}
             </p>
           </li>
         </ul>
@@ -151,15 +181,15 @@
               </td>
               <td>
                 <div>
-                  <p>商品: 9.00元*1件 / 单*10单</p>
-                  <p>运费备用金: 10元 / 单*10单</p>
+                  <p>商品: {{ totalPriceObj.productUnitPrice }}元*{{ totalPriceObj.numPerOrder }}件 / 单*{{ totalPriceObj.totalNum }}单</p>
+                  <p>运费备用金: {{ totalPriceObj.postPrice }}元 / 单*{{ totalPriceObj.totalNum }}单</p>
                 </div>
               </td>
               <td>
-                <span>10元</span>
+                <span>{{ benjin }}元</span>
               </td>
               <td rowspan="2">
-                <span class="red">10</span>元
+                <span class="red">{{ totalPriceObj.totalPrice }}</span>元
               </td>
             </tr>
             <tr>
@@ -168,14 +198,14 @@
               </td>
               <td>
                 <div>
-                  <p>图文好评: 10元 / 单*10单</p>
-                  <p>纯文字好评: 10元 / 单*10单</p>
-                  <p>默认五星好评: 10元 / 单*10单</p>
-                  <p>plus会员: 10元 / 单*10单</p>
+                  <p>图文好评: {{ totalPriceObj.graphicFavorPrice }}元 / 单*{{ totalPriceObj.graphicFavorNum }}单</p>
+                  <p>纯文字好评: {{ totalPriceObj.wordFavorPrice }}元 / 单*{{ totalPriceObj.wordFavorNum }}单</p>
+                  <p>默认五星好评: {{ totalPriceObj.defaultFavorPrice }}元 / 单*{{ totalPriceObj.defaultFavorNum }}单</p>
+                  <p>plus会员: {{ totalPriceObj.plusPrice }}元 / 单*{{ totalPriceObj.plusNum }}单</p>
                 </div>
               </td>
               <td>
-                <span>10元</span>
+                <span>{{ yongjin }}元</span>
               </td>
             </tr>
           </table>
@@ -184,21 +214,24 @@
       <div class="step">
         <h2>5.申请任务进展</h2>
         <div class="step5">
-          <el-table :data="tableData" style="width: 100%">
-            <el-table-column prop="phone" align="center" label="手机号">
+          <el-table :data="buyerListArr" style="width: 100%">
+            <el-table-column prop="telephone" align="center" label="手机号">
             </el-table-column>
             <el-table-column prop="buyerName" align="center" label="买号">
             </el-table-column>
-            <el-table-column prop="orderNum" align="center" label="订单编号">
+            <el-table-column prop="orderId" align="center" label="订单编号">
             </el-table-column>
-            <el-table-column prop="tryNum" align="center" label="试用编号">
+            <el-table-column prop="taskDayId" align="center" label="试用编号">
             </el-table-column>
-            <el-table-column prop="status" align="center" label="任务状态">
+            <el-table-column align="center" label="任务状态">
+              <template slot-scope="scope">
+                <span>{{ scope.row.status == 1 ? '待下单' : scope.row.status == 2 ? '待修改' : scope.row.status == 3 ? '待审核' : scope.row.status == 4 ? '审核通过' : scope.row.status == 10 ? '待评价' : scope.row.status == 11 ? '待审核评价' : scope.row.status == 12 ? '评价被驳回' : scope.row.status == 13 ? '评价通过待返佣' : '其他状态' }}</span>
+              </template>
             </el-table-column>
           </el-table>
         </div>
         <div class="pager">
-          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[100, 200, 300, 400]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
+          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNo" :page-sizes="pageSizeArray" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="pageTotal">
           </el-pagination>
         </div>
       </div>
@@ -206,12 +239,21 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-let echarts = require('echarts')
+import echarts from 'echarts'
+import { pageCommon } from '../../assets/js/mixin'
 export default {
   name: 'taskDetail',
+  mixins: [pageCommon],
   data () {
     return {
-      currentPage: 1,
+      // 任务信息
+      taskInfoObj: {},
+      // 商品信息
+      goodsInfoObj: {},
+      // 增值服务费用
+      totalPriceObj: {},
+      // 买手列表
+      buyerListArr: [],
       tableData: [{
         phone: '18666554455',
         buyerName: '次u三分',
@@ -271,16 +313,40 @@ export default {
             data: [1, 4, 2, 5, 3, 2, 9]
           }
         ]
+      },
+      apiUrl: '/api/seller/order/getBuyerListBy'
+    }
+  },
+  computed: {
+    searchListArr: function () {
+      let arr = []
+      if (this.goodsInfoObj.searchWordList) {
+        arr = JSON.parse(this.goodsInfoObj.searchWordList)
+      }
+      return arr
+    },
+    benjin: function () {
+      let benjin = 0
+      benjin = (this.totalPriceObj.productUnitPrice) * (this.totalPriceObj.numPerOrder) * (this.totalPriceObj.totalNum) + (this.totalPriceObj.postPrice) * (this.totalPriceObj.totalNum)
+      return benjin
+    },
+    yongjin: function () {
+      let yongjin = 0
+      yongjin = (this.totalPriceObj.graphicFavorPrice) * (this.totalPriceObj.graphicFavorNum) +
+        (this.totalPriceObj.wordFavorPrice) * (this.totalPriceObj.wordFavorNum) +
+        (this.totalPriceObj.defaultFavorPrice) * (this.totalPriceObj.defaultFavorNum) +
+        (this.totalPriceObj.plusPrice) * (this.totalPriceObj.plusNum)
+      return yongjin
+    },
+    params () {
+      return {
+        sellerTaskId: this.$route.query.sellerTaskId,
+        pageNo: this.pageNo,
+        pageSize: this.pageSize
       }
     }
   },
   methods: {
-    handleSizeChange (val) {
-      console.log(`每页 ${val} 条`)
-    },
-    handleCurrentChange (val) {
-      console.log(`当前页: ${val}`)
-    },
     resizeCharts () {
       this.$refs.myChart.style.height = this.$refs.charts.style.height
       this.$refs.myChart.style.width = this.$refs.charts.style.width
@@ -295,10 +361,154 @@ export default {
       this.resizeCharts()
       let myCharts = echarts.init(this.$refs.myChart)
       myCharts.setOption(this.option)
+    },
+    // 根据状态进行可操作
+    toDo (status, sellerTaskId) {
+      switch (status) {
+        case 'finsh': // 去完善信息
+          this.$router.push({ name: 'sendTaskTwo', query: { sellerTaskId: this.taskInfoObj.sellerTaskId } })
+          break
+        case 'pay': // 去支付
+          this.$router.push({ name: 'sendTaskThree', query: { sellerTaskId: this.taskInfoObj.sellerTaskId } })
+          break
+        case 'cancel': // 撤销任务
+          this.getCancel()
+          break
+        case 'return': // 去修改任务
+          this.$router.push({ name: 'sendTaskTwo', query: { rbSellerTaskId: this.taskInfoObj.sellerTaskId } })
+          break
+        case 'new': // 创建新任务
+          this.$router.push({ name: 'sendTaskOne' })
+          break
+        default:
+          break
+      }
+    },
+    // 获取基本信息
+    getTaskInfo () {
+      this.$ajax.post('/api/seller/task/getTaskDetail', {
+        sellerTaskId: this.$route.query.sellerTaskId
+      }).then((data) => {
+        if (data.data.code === '200') {
+          this.taskInfoObj = data.data.data
+        } else {
+          this.$message({
+            type: 'warning',
+            message: data.data.message
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    // 获取商品信息
+    getGoodsInfo () {
+      this.$ajax.post('/api/seller/task/getTaskProductInfo', {
+        sellerTaskId: this.$route.query.sellerTaskId
+      }).then((data) => {
+        if (data.data.code === '200') {
+          this.goodsInfoObj = data.data.data
+        } else {
+          this.$message({
+            type: 'warning',
+            message: data.data.message
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    // 获取任务试用份数
+    getTaskNum () {
+      this.$ajax.post('/api/seller/task/getTrailList', {
+        sellerTaskId: this.$route.query.sellerTaskId
+      }).then((data) => {
+        if (data.data.code === '200') {
+          let dateArr = data.data.data
+          let arrDay = []
+          let actualNumArr = []
+          let throwTimeArr = []
+          for (let m of dateArr) {
+            let date = m.time
+            let formDate = date.substr(4, 2) + '-' + date.substr(6)
+            arrDay.push(formDate)
+            actualNumArr.push(m.actualNum)
+            throwTimeArr.push(m.throwTime)
+          }
+          this.option.xAxis.data = arrDay
+          this.option.series[0].data = throwTimeArr
+          this.option.series[1].data = actualNumArr
+          this.setCharts()
+        } else {
+          this.$message({
+            type: 'warning',
+            message: data.data.message
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    // 获取增值服务费用
+    getTotalPrice () {
+      this.$ajax.post('/api/seller/task/getTaskCost', {
+        sellerTaskId: this.$route.query.sellerTaskId
+      }).then((data) => {
+        if (data.data.code === '200') {
+          console.log(data)
+          this.totalPriceObj = data.data.data
+        } else {
+          this.$message({
+            type: 'warning',
+            message: data.data.message
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    // 获取买手列表
+    setList (data) {
+      this.buyerListArr = data
+    },
+    // 撤销任务请求
+    getCancel () {
+      this.$confirm('确定要撤销该任务?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$ajax.post('/api/platform/task/cancelTask', {
+          sellerTaskId: this.taskInfoObj.sellerTaskId
+        }).then((data) => {
+          if (data.data.code === '200') {
+            this.$message({
+              type: 'success',
+              message: '撤销成功!'
+            })
+            this.getTask()
+          } else {
+            this.$message({
+              type: 'warning',
+              message: data.data.message
+            })
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
+      })
     }
   },
   mounted () {
-    this.setCharts()
+    this.getTaskInfo()
+    this.getGoodsInfo()
+    this.getTaskNum()
+    this.getTotalPrice()
   }
 }
 </script>
@@ -314,6 +524,13 @@ export default {
   .blue
     color #1C95FF
     cursor pointer
+  .link
+    max-width 700px
+    display inline-block
+    overflow hidden
+    text-overflow ellipsis
+    white-space nowrap
+    vertical-align middle
   .gray
     color #666666
   .nav
@@ -324,7 +541,7 @@ export default {
     border-radius 4px
   .top
     display flex
-    justify-content space-between
+    justify-content flex-start
     .top-left
       background #ffffff
       border-radius 4px
@@ -359,6 +576,7 @@ export default {
               border none
     .top-right
       border-radius 4px
+      min-width 300px
       background #ffffff
       box-shadow 0 0 15px rgba(0, 0, 0, 0.07)
       margin-left 20px

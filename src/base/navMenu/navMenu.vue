@@ -60,8 +60,8 @@ export default {
             lines: [
               {
                 text: '总览',
-                link: 'overView',
-                bradge: 12
+                link: 'overView'
+                // bradge: 12
               },
               {
                 text: '任务管理',
@@ -80,8 +80,8 @@ export default {
               },
               {
                 text: '审核评价',
-                link: 'appraiseOrder',
-                bradge: 3
+                link: 'appraiseOrder'
+                // bradge: 3
               }
             ]
           },

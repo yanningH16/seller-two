@@ -107,14 +107,14 @@
           <li>
             <div class="buttons">
               <button v-if="item.taskStatus==6" class="btn btn-small" @click="$router.push({name: 'sendTaskTwo',query: {rbSellerTaskId: item.sellerTaskId}})">修改</button>
-              <button v-if="item.taskStatus==3" class="btn btn-small" @click="$router.push({name: 'sendTaskThree',query: {sellerTaskId: item.sellerTaskId}})">去支付</button>
+              <button v-if="item.taskStatus==3" class="btn btn-small" @click="toPay(item.sellerTaskId)">去支付</button>
               <button v-if="item.taskStatus!=7 || item.taskStatus!=20 || item.taskStatus!=21" class="btn btn-small" @click="cancel(item.sellerTaskId)">撤销</button>
             </div>
           </li>
         </ul>
       </div>
-      <div class="pager" v-if="total>pageSize">
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="pageSizeArray" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="total">
+      <div class="pager">
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNo" :page-sizes="pageSizeArray" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="pageTotal">
         </el-pagination>
       </div>
     </div>
@@ -216,6 +216,10 @@ export default {
     find () {
       this.searchObj.keywordType = this.keyType
       this.getTask()
+    },
+    // 去支付
+    toPay (sellerTaskId) {
+      this.$router.push({ name: 'sendTaskThree', query: { sellerTaskId: sellerTaskId } })
     },
     cancel (sellerTaskId) {
       this.$confirm('确定要撤销该任务?', '提示', {

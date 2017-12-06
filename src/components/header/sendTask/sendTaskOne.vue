@@ -87,15 +87,7 @@ export default {
       }).then((data) => {
         console.log(data)
         if (data.data.code === '200') {
-          window.sessionStorage.setItem('creatShopInfo', JSON.stringify({
-            shopType: this.shop.shopType,
-            shopId: this.shop.shopId,
-            taskType: this.taskType,
-            sellerUserId: this.userInfo.sellerUserId,
-            sellerTaskId: data.data.data.sellerTaskId,
-            shopName: this.shop.shopName
-          }))
-          this.$router.push({ name: 'sendTaskTwo' })
+          this.$router.push({ name: 'sendTaskTwo', query: { sellerTaskId: data.data.data.sellerTaskId } })
         } else {
           this.$message({
             message: data.data.message,

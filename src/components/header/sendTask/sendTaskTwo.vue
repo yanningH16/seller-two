@@ -622,6 +622,7 @@ export default {
         return false
       } else {
         getImgSize(file).then((img) => {
+          console.log(img)
           if (img.width > 600 || img.height > 600) {
             this.$message.error('商品主图大小应为600*600!')
             this.isCanUpload = false
@@ -723,8 +724,7 @@ export default {
       this.$ajax.post('/api/seller/task/addTaskInfo', this.sendObj).then((data) => {
         console.log(data)
         if (data.data.code === '200') {
-          sessionStorage.setItem('creatSellerTaskId', data.data.data.sellerTaskId)
-          this.$router.push({ name: 'sendTaskThree' })
+          this.$router.push({ name: 'sendTaskThree', query: { sellerTaskId: data.data.data.sellerTaskId } })
         } else {
           this.$message({
             message: data.data.message,
@@ -826,9 +826,21 @@ export default {
     },
     // 获取上一步创建店铺的信息
     getCreatShopInfo () {
-      if (sessionStorage.getItem('creatShopInfo')) {
-        this.creatShopInfo = JSON.parse(sessionStorage.getItem('creatShopInfo'))
-      }
+      this.$ajax.post('/api/seller/task/getTaskDetail', {
+        sellerTaskId: this.$route.query.sellerTaskId
+      }).then((data) => {
+        console.log(data)
+        if (data.data.code === '200') {
+          this.creatShopInfo = data.data.data
+        } else {
+          this.$message({
+            type: 'warning',
+            message: data.data.message
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
     },
     // 获取被驳回的信息
     getReturnBackInfo () {

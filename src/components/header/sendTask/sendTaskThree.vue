@@ -112,10 +112,10 @@ export default {
     },
     yongjin: function () {
       let total = 0
-      total += (this.infoObj.graphicFavorPrice) * (this.infoObj.graphicFavorNum)
-      total += (this.infoObj.wordFavorPrice) * (this.infoObj.wordFavorNum)
-      total += (this.infoObj.defaultFavorPrice) * (this.infoObj.defaultFavorNum)
-      total += (this.infoObj.plusNum) * (this.infoObj.plusPrice)
+      total = (this.infoObj.graphicFavorPrice) * (this.infoObj.graphicFavorNum) +
+        (this.infoObj.wordFavorPrice) * (this.infoObj.wordFavorNum) +
+        (this.infoObj.defaultFavorPrice) * (this.infoObj.defaultFavorNum) +
+        (this.infoObj.plusNum) * (this.infoObj.plusPrice)
       return total
     },
     ...mapGetters([
@@ -129,7 +129,7 @@ export default {
     doNext () {
       let sendMoney = ((this.moneyObj.availableCommissionAmount - 0) > (this.infoObj.totalPrice - 0) ? this.infoObj.totalPrice : this.moneyObj.availableCommissionAmount)
       this.$ajax.post('/api/seller/task/payTask', {
-        sellerTaskId: sessionStorage.getItem('creatSellerTaskId'),
+        sellerTaskId: this.$route.query.sellerTaskId,
         totalPayAmount: this.infoObj.totalPrice,
         totalCommissionPayAmount: sendMoney
       }).then((data) => {
@@ -148,7 +148,7 @@ export default {
     // 获取增值服务价格
     getInfo () {
       this.$ajax.post('/api/seller/task/getTaskCost', {
-        sellerTaskId: sessionStorage.getItem('creatSellerTaskId')
+        sellerTaskId: this.$route.query.sellerTaskId
       }).then((data) => {
         console.log(data)
         if (data.data.code === '200') {
