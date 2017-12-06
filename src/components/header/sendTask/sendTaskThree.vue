@@ -68,18 +68,18 @@
       <div class="check">
         <el-checkbox v-model="way1">使用账户余额支付</el-checkbox>
         <span class="gray">(可用余额
-          <b class="red">23</b>元)</span>
+          <b class="red">{{ moneyObj.availableCapitalAmount }}</b>元)</span>
       </div>
       <div class="check">
         <el-checkbox v-model="way2">使用联盟佣金支付</el-checkbox>
         <span class="gray">(可用余额
-          <b class="red">1234</b>元)</span>
+          <b class="red">{{ moneyObj.availableCommissionAmount }}</b>元)</span>
       </div>
       <div class="warn">
         <span>余额不足,请
           <el-button type="text">先充值</el-button>再支付</span>
         <p>支付:
-          <b class="red">91.78</b>元</p>
+          <b class="red">{{ infoObj.totalPrice }}</b>元</p>
       </div>
       <div class="next">
         <button class="btn disabled" @click="doPrevent">上一步</button>
@@ -89,6 +89,7 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
+import { mapGetters } from 'vuex'
 export default {
   name: 'sendTaskThree',
   data () {
@@ -97,7 +98,10 @@ export default {
       active: 2,
       way1: true,
       way2: true,
-      infoObj: {}
+      // 增值服务信息
+      infoObj: {},
+      // 账户余额
+      moneyObj: {}
     }
   },
   computed: {
@@ -113,19 +117,22 @@ export default {
       total += (this.infoObj.defaultFavorPrice) * (this.infoObj.defaultFavorNum)
       total += (this.infoObj.plusNum) * (this.infoObj.plusPrice)
       return total
-    }
+    },
+    ...mapGetters([
+      'userInfo'
+    ])
   },
   methods: {
     doPrevent () {
       this.$router.push({ name: 'sendTaskTwo' })
     },
     doNext () {
+      let sendMoney = ((this.moneyObj.availableCommissionAmount - 0) > (this.infoObj.totalPrice - 0) ? this.infoObj.totalPrice : this.moneyObj.availableCommissionAmount)
       this.$ajax.post('/api/seller/task/payTask', {
         sellerTaskId: sessionStorage.getItem('creatSellerTaskId'),
         totalPayAmount: this.infoObj.totalPrice,
-        totalCommissionPayAmount: this.infoObj.totalPrice
+        totalCommissionPayAmount: sendMoney
       }).then((data) => {
-        console.log(data)
         if (data.data.code === '200') {
           this.$router.push({ name: 'sendTaskFour' })
         } else {
@@ -138,6 +145,7 @@ export default {
         console.log(err)
       })
     },
+    // 获取增值服务价格
     getInfo () {
       this.$ajax.post('/api/seller/task/getTaskCost', {
         sellerTaskId: sessionStorage.getItem('creatSellerTaskId')
@@ -155,10 +163,30 @@ export default {
         console.log(err)
         this.$message.error('服务器错误！')
       })
+    },
+    // 获取卖家用户资金
+    getAccountMoney () {
+      this.$ajax.post('/api/userFund/getSellerUserFund', {
+        sellerUserAccountId: this.userInfo.sellerUserId
+      }).then((data) => {
+        console.log(data)
+        if (data.data.code === '200') {
+          this.moneyObj = data.data.data
+        } else {
+          this.$message({
+            message: data.data.message,
+            type: 'warning'
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+        this.$message.error('服务器错误！')
+      })
     }
   },
   created () {
     this.getInfo()
+    this.getAccountMoney()
   }
 }
 </script>
