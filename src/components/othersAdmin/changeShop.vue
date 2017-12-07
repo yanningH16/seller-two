@@ -28,8 +28,8 @@
         </li>
         <li class="pic">
           <span class="pic_admin">管理后台截图</span>
-          <el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+          <el-upload class="avatar-uploader" :show-file-list="false" :http-request="uploadImg" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" ref="upload" action="">
+            <img v-if="imageUrl" :src="imageUrl" class="avatar" width="182px" height="182px">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </li>
@@ -85,7 +85,7 @@
           <el-input v-model="input6" placeholder="请输入内容" style="width:384px;margin-top:20px"></el-input>
         </li>
         <li>
-          <button class=" btn" style="margin-bottom:60px" @click="addSure">确认绑定</button>
+          <button class=" btn" style="margin-bottom:60px" @click="addSure">确认修改</button>
         </li>
       </ul>
     </div>
@@ -93,6 +93,7 @@
 </template>
 <script type="text/ecmascript-6">
 import { mapGetters } from 'vuex'
+import { getImgSize, uploadFile, uploadPromise } from '../../assets/js/upload'
 export default {
   name: 'shopAdmin',
   data () {
@@ -109,6 +110,7 @@ export default {
       itemCity: null,
       zone: [],
       itemZone: null,
+      isCanUpload: false,
       jieName: '',
       phone: '',
       input4: '',
@@ -135,19 +137,42 @@ export default {
   },
   methods: {
     handleAvatarSuccess (res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
+      // this.imageUrl = URL.createObjectURL(file.raw)
+    },
+    uploadImg (img) {
+      if (!this.isCanUpload) {
+        return false
+      }
+      uploadPromise.then((res) => {
+        if (res.statusText === 'OK') {
+          uploadFile(res.data, img.file).then((res) => {
+            // this.imageUrl = res.url
+            this.imageUrl = res
+          }).catch(() => {
+            this.$message.error('网络错误，请刷新试试')
+          })
+        }
+      }).catch(() => {
+        this.$message.error('网络错误，请刷新试试')
+      })
     },
     beforeAvatarUpload (file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < 2
+      const isJPG = (file.type === 'image/jpeg') || (file.type === 'image/png') || (file.type === 'image/gif')
+      const isLt1M = file.size / 1024 / 1024 < 1
 
       if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!')
+        this.$message.error('上传头像图片只能是 JPG/PNG/GIF 格式!')
+        this.isCanUpload = false
+        return false
+      } else if (!isLt1M) {
+        this.$message.error('上传头像图片大小不能超过 1MB!')
+        this.isCanUpload = false
+        return false
+      } else {
+        getImgSize(file).then((img) => {
+          this.isCanUpload = true
+        })
       }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      return isJPG && isLt2M
     },
     // 当进入的时候进行请求数据进行相应的填充
     shopInfo () {
@@ -171,6 +196,7 @@ export default {
           this.input4 = obj.contacterName
           this.input5 = obj.contacterTelephone
           this.input6 = obj.contacterQqNum
+          this.imageUrl = obj.shopManagePlatformUrls
         } else {
           this.$message({
             message: data.data.message,
@@ -285,7 +311,7 @@ export default {
       }
       this.$ajax.post('/api/seller/shop/changeShop', {
         sellerShopId: this.$route.query.sellerShopId,
-        // screenShot: '123.jpg',
+        // screenShot: this.imageUrl,
         postAddressList: JSON.stringify(shopArr),
         concatName: this.input4,
         concatTelephone: this.input5,

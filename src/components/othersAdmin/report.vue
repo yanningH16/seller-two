@@ -20,9 +20,9 @@
       </li>
       <li class="pic">
         <span class="word">上传截图</span>
-        <el-upload class="avatar-uploader" action="" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-          <img v-if="imageUrl" :src="imageUrl" class="avatar">
-          <i v-else class="upPic el-icon-plus avatar-uploader-icon"></i>
+        <el-upload class="avatar-uploader" :show-file-list="false" :http-request="uploadImg" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" ref="upload" action="">
+          <img v-if="imageUrl" :src="imageUrl" class="avatar" width="122px" height="122">
+          <i v-else class="el-icon-plus avatar-uploader-icon" style="line-height:122px"></i>
         </el-upload>
       </li>
       <li style="margin-top:130px">
@@ -34,11 +34,13 @@
 </template>
 <script type="text/ecmascript-6">
 import { mapGetters } from 'vuex'
+import { getImgSize, uploadFile, uploadPromise } from '../../assets/js/upload'
 export default {
   name: 'myReport',
   data () {
     return {
       textarea: '',
+      isCanUpload: false,
       input: '',
       imageUrl: '',
       options: [{
@@ -62,19 +64,42 @@ export default {
   },
   methods: {
     handleAvatarSuccess (res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
+      // this.imageUrl = URL.createObjectURL(file.raw)
+    },
+    uploadImg (img) {
+      if (!this.isCanUpload) {
+        return false
+      }
+      uploadPromise.then((res) => {
+        if (res.statusText === 'OK') {
+          uploadFile(res.data, img.file).then((res) => {
+            // this.imageUrl = res.url
+            this.imageUrl = res
+          }).catch(() => {
+            this.$message.error('网络错误，请刷新试试')
+          })
+        }
+      }).catch(() => {
+        this.$message.error('网络错误，请刷新试试')
+      })
     },
     beforeAvatarUpload (file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < 2
+      const isJPG = (file.type === 'image/jpeg') || (file.type === 'image/png') || (file.type === 'image/gif')
+      const isLt1M = file.size / 1024 / 1024 < 1
 
       if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!')
+        this.$message.error('上传头像图片只能是 JPG/PNG/GIF 格式!')
+        this.isCanUpload = false
+        return false
+      } else if (!isLt1M) {
+        this.$message.error('上传头像图片大小不能超过 1MB!')
+        this.isCanUpload = false
+        return false
+      } else {
+        getImgSize(file).then((img) => {
+          this.isCanUpload = true
+        })
       }
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      return isJPG && isLt2M
     },
     sureReport () {
       this.$ajax.post('/api/seller/complain/complainBuyer', {
