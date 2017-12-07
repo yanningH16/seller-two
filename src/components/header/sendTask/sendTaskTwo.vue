@@ -325,13 +325,12 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-import { getImgSize, uploadFile, uploadPromise } from '../../../assets/js/upload'
+import { getImgSize, uploadPromise, uploadFile } from '../../../assets/js/upload'
 export default {
   name: 'sendTaskTwo',
   data () {
     return {
       warnShow: true,
-      isCanUpload: false,
       // 是否驳回
       isReturnBack: false,
       active: 1,
@@ -450,11 +449,6 @@ export default {
     },
     sendSearchKeywordList (val) {
       this.sendObj.searchKeywordList = val
-    },
-    isCanUpload (val) {
-      if (val) {
-        this.$refs.upload.submit()
-      }
     }
   },
   computed: {
@@ -593,13 +587,9 @@ export default {
       this.setMyDate(this.taskStarTime)
     },
     uploadImg (img) {
-      if (!this.isCanUpload) {
-        return false
-      }
       uploadPromise.then((res) => {
         if (res.statusText === 'OK') {
           uploadFile(res.data, img.file).then((res) => {
-            // this.imageUrl = res.url
             this.sendObj.productPicUrl = res
           }).catch(() => {
             this.$message.error('网络错误，请刷新试试')
@@ -610,28 +600,30 @@ export default {
       })
     },
     beforeAvatarUpload (file) {
-      const isJPG = (file.type === 'image/jpeg') || (file.type === 'image/png') || (file.type === 'image/gif')
-      const isLt1M = file.size / 1024 / 1024 < 1
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG/PNG/GIF 格式!')
-        this.isCanUpload = false
-        return false
-      } else if (!isLt1M) {
-        this.$message.error('上传头像图片大小不能超过 1MB!')
-        this.isCanUpload = false
-        return false
-      } else {
-        getImgSize(file).then((img) => {
-          console.log(img)
-          if (img.width > 600 || img.height > 600) {
-            this.$message.error('商品主图大小应为600*600!')
-            this.isCanUpload = false
-            return false
-          } else {
-            this.isCanUpload = true
-          }
-        })
-      }
+      return new Promise((resolve, reject) => {
+        console.log(file)
+        const isJPG = (file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png')
+        const isLt1M = file.size / 1024 / 1024 < 1
+        if (!isJPG) {
+          this.$message.error('上传头像图片只能是 JPG,PNG 格式!')
+          reject(new Error('上传头像图片只能是 JPG,PNG 格式!'))
+        } else if (!isLt1M) {
+          this.$message.error('上传头像图片大小不能超过 1MB!')
+          reject(new Error('上传头像图片大小不能超过 1MB!'))
+        } else {
+          getImgSize(file).then((img) => {
+            console.log(file)
+            if (img.width > 600 || img.height > 600) {
+              this.$message.error('展示主图最大为600*600!')
+              reject(new Error('展示主图最大为600*600!'))
+            } else {
+              resolve()
+            }
+          }).catch((error) => {
+            reject(error)
+          })
+        }
+      })
     },
     doPrevent () {
       this.$router.push({ name: 'sendTaskOne' })
