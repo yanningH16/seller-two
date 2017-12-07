@@ -11,7 +11,7 @@ import 'babel-polyfill' // 浏览器兼容
 import './assets/stylus/index.styl'
 
 Vue.config.productionTip = false
-// Vue.use(ElementUI)
+  // Vue.use(ElementUI)
 Vue.prototype.$ajax = axios
 Vue.filter('bankCard', function (value) {
   if (!value) {

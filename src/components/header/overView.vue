@@ -46,7 +46,7 @@
             <h2>待确认垫付订单</h2>
             <div class="toCheck">
               <div class="item" v-for="(item,index) in 6" :key="index">
-                <i></i>
+                <i class="jdIcon"></i>
                 <strong>多大阿旗舰店</strong>
                 <span>(
                   <b class="red">+9</b>)</span>
@@ -55,7 +55,7 @@
             <h2>买家已评价待确认</h2>
             <div class="toSure">
               <div class="item" v-for="(item,index) in 6" :key="index">
-                <i></i>
+                <i class="jdIcon"></i>
                 <strong>多大阿旗舰店</strong>
                 <span>(
                   <b class="red">+9</b>)</span>
@@ -66,64 +66,60 @@
         <el-tab-pane label="任务发布提醒" name="second">
           <div class="returnOrder">
             <h2>未通过审核任务</h2>
-            <div class="listItem" v-for="(item, index) in 3" :key="index">
+            <div class="listItem" v-for="(item, index) in returnBackArr" :key="index">
               <ul class="head">
                 <li style="width:20%">
-                  <i></i>
-                  <strong>&nbsp;&nbsp;挡风沙旗舰店</strong>
+                  <i :class="{'jdIcon': item.shopType==0, 'taobaoIcon': item.shopType==1, 'tianmaoIcon': item.shopType==2}"></i>
+                  <strong>&nbsp;&nbsp;{{ item.shopName }}</strong>
                 </li>
                 <li style="width:40%">
                   <span class="gray">任务编号: </span>
-                  <span>98444654654654654564564454</span>
-                  <span class="blue"> [ 查看任务详情 ] </span>
+                  <span>{{ item.sellerTaskId }}</span>
+                  <span class="blue" @click="toDo('lookDetail', item.sellerTaskId)"> [ 查看任务详情 ] </span>
                 </li>
                 <li style="width:20%">
                   <span class="gray">任务类型: </span>
-                  <span>垫付</span>
+                  <span>{{ item.taskType == '0' ? '垫付任务' : '浏览任务' }}</span>
                 </li>
                 <li style="width:20%">
                   <span class="gray">提交时间: </span>
-                  <span>2017-08-25 12:22:11</span>
+                  <span>{{ item.submitTime }}</span>
                 </li>
               </ul>
               <ul class="cont">
                 <li>
-                  <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1511344372676&di=efa5889acb8cecfcf8222d867cd5f941&imgtype=0&src=http%3A%2F%2Fimg2.gao7.com%2Ffiles%2Fappleimage%2F277%2F277E8E4B-D0AD-4956-BF23-98987E2ADA88.jpg" alt="">
-                  <span>&nbsp;&nbsp;安卓数据线</span>
+                  <img :src="item.productPicUrl" alt="商品图片">
+                  <span>&nbsp;&nbsp;{{ item.productName }}</span>
                 </li>
                 <li>
                   <p>付款价格:
-                    <span class="red">9.90</span>
+                    <span class="red">{{ item.payment }}</span>
                   </p>
-                  <p>任务单数: 02</p>
+                  <p>任务单数: {{ item.totalNum }}</p>
                 </li>
                 <li>
                   <p>待确认订单:
-                    <span class="red">99</span>
+                    <span class="red">{{ item.toConfirmOrderNum }}</span>
                   </p>
-                  <p>待确认评价截图: 0</p>
+                  <p>待确认评价截图: {{ item.toConfirmFavorNum }}</p>
                 </li>
                 <li>
                   <p>已完成订单:
-                    <span class="red">99</span>
+                    <span class="red">{{ item.doneNum }}</span>
                   </p>
-                  <el-tooltip popper-class="tooltipItem" effect="dark" content="未通过原因: 123456577896552" placement="top">
-                    <p class="overflow">未通过原因: 123456577896552</p>
+                  <el-tooltip popper-class="tooltipItem" effect="dark" :content=" '未通过原因:' + item.comment" placement="top">
+                    <p class="overflow">未通过原因: {{ item.comment }}</p>
                   </el-tooltip>
                 </li>
                 <li>
                   <p>
-                    <button class="btn btn-small">修改</button>
+                    <button class="btn btn-small" @click="toDo('toFix',item.sellerTaskId)">修改</button>
                   </p>
                   <p>
-                    <button class="btn btn-small disabled">撤销</button>
+                    <button class="btn btn-small disabled" @click="toDo('cancel',item.sellerTaskId)">撤销</button>
                   </p>
                 </li>
               </ul>
-            </div>
-            <div class="pager">
-              <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[100, 200, 300, 400]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
-              </el-pagination>
             </div>
           </div>
         </el-tab-pane>
@@ -153,16 +149,18 @@ export default {
     handleClick (tab, event) {
       console.log(tab, event)
       console.log(this.activeName)
-      // 获取未通过审核列表
-      if (this.activeName === 'second') {
-        this.getFavorList()
+      if (tab.name === 'second') {
+        this.getReturnBack()
       }
     },
-    handleSizeChange (val) {
-      console.log(`每页 ${val} 条`)
-    },
-    handleCurrentChange (val) {
-      console.log(`当前页: ${val}`)
+    toDo (type, sellerTaskId) {
+      if (type === 'lookDetail') {
+        this.$router.push({ name: 'taskDetail', query: { sellerTaskId: sellerTaskId } })
+      } else if (type === 'toFix') {
+        this.$router.push({ name: 'sendTaskTwo', query: { rbSellerTaskId: sellerTaskId } })
+      } else if (type === 'cancel') {
+        this.doCancel(sellerTaskId)
+      }
     },
     // 获取待确认订单列表
     getOrderList () {
@@ -185,7 +183,7 @@ export default {
       })
     },
     // 获取未通过审核的列表
-    getFavorList () {
+    getReturnBack () {
       this.$ajax.post('/api/seller/task/getRejectTaskListBySellerUserId', {
         sellerUserId: this.userInfo.sellerUserId
       }).then((data) => {
@@ -201,6 +199,39 @@ export default {
         }
       }).catch((err) => {
         console.log(err)
+      })
+    },
+    // 请求撤销任务接口
+    doCancel (sellerTaskId) {
+      this.$confirm('确定要撤销该任务?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$ajax.post('/api/platform/task/cancelTask', {
+          sellerTaskId: sellerTaskId
+        }).then((data) => {
+          console.log(data)
+          if (data.data.code === '200') {
+            this.$message({
+              type: 'success',
+              message: '撤销成功!'
+            })
+            this.getTask()
+          } else {
+            this.$message({
+              type: 'warning',
+              message: data.data.message
+            })
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
       })
     }
   },
@@ -306,7 +337,7 @@ export default {
             display inline-block
             width 20px
             height 20px
-            background red
+            // background red
             vertical-align middle
           strong
             display inline-block
@@ -341,7 +372,6 @@ export default {
           width 16px
           height 16px
           vertical-align middle
-          background red
       .cont
         display flex
         padding 20px

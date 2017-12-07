@@ -24,7 +24,7 @@
     </div>
     <div class="returnBack" v-if="isReturnBack">
       <div>驳回原因：</div>
-      <p>好gas发送啊司法所和萨芬沙发上好gas发送啊司法所和萨芬沙发上好g</p>
+      <p>{{ returnBackObj.comment }}</p>
     </div>
     <div class="cont">
       <div class="choosed">
@@ -317,8 +317,8 @@
         <!-- <button class="btn" :class="{'disabled': !(shop && taskType)}" :disabled="!(shop && taskType)" @click="doNext">下一步</button> -->
       </div>
       <div class="next" v-if="isReturnBack">
-        <button class="btn disabled">取消</button>
-        <button class="btn">确认</button>
+        <button class="btn disabled" @click="$router.push({name: 'overView'})">取消</button>
+        <button class="btn" @click="sureToFix">确认</button>
         <!-- <button class="btn" :class="{'disabled': !(shop && taskType)}" :disabled="!(shop && taskType)" @click="doNext">下一步</button> -->
       </div>
     </div>
@@ -435,7 +435,9 @@ export default {
         defaultFavorNum: 0, // 默认好评数量
         sellerTaskId: '', // 商家任务id
         throwTime: '' // 上线时间2017-11-19
-      }
+      },
+      // 被驳回的信息对象
+      returnBackObj: {}
     }
   },
   watch: {
@@ -504,11 +506,7 @@ export default {
   },
   methods: {
     aaa () {
-      // console.log(this.sendDateList)
-      // console.log(this.sendTotalNum)
-      // console.log(this.sendSearchKeywordList)
       console.log(this.sendObj)
-      // console.log(this.sendObj.searchKeywordList)
     },
     // 根据价格获取评价的价格
     getPrice () {
@@ -601,7 +599,6 @@ export default {
     },
     beforeAvatarUpload (file) {
       return new Promise((resolve, reject) => {
-        console.log(file)
         const isJPG = (file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png')
         const isLt1M = file.size / 1024 / 1024 < 1
         if (!isJPG) {
@@ -800,18 +797,15 @@ export default {
         this.classValue.classTwo = {}
         this.classValue.classThree = {}
         this.classObj.classThree = ''
-        console.log(this.classValue.classOne)
         this.getClassApi('/api/config/productClass/getJDSecondClassByFirstid', 2, this.classValue.classOne.id)
         this.sendObj.productClassFirstId = this.classValue.classOne.id
         this.sendObj.productClassFirstDesc = this.classValue.classOne.className
       } else if (index === 2) {
         this.classValue.classThree = {}
-        console.log(this.classValue.classTwo)
         this.getClassApi('/api/config/productClass/getThirdClassBySecondId', 3, this.classValue.classTwo.id)
         this.sendObj.productClassSecondId = this.classValue.classTwo.id
         this.sendObj.productClassSecondDesc = this.classValue.classTwo.className
       } else if (index === 3) {
-        console.log(this.classValue.classThree)
         this.sendObj.productClassThirdId = this.classValue.classThree.id
         this.sendObj.productClassThirdDesc = this.classValue.classThree.className
       }
@@ -819,9 +813,8 @@ export default {
     // 获取上一步创建店铺的信息
     getCreatShopInfo () {
       this.$ajax.post('/api/seller/task/getTaskDetail', {
-        sellerTaskId: this.$route.query.sellerTaskId
+        sellerTaskId: this.$route.query.sellerTaskId || this.$route.query.rbSellerTaskId
       }).then((data) => {
-        console.log(data)
         if (data.data.code === '200') {
           this.creatShopInfo = data.data.data
         } else {
@@ -836,16 +829,78 @@ export default {
     },
     // 获取被驳回的信息
     getReturnBackInfo () {
-      if (this.$route.rbSellerTaskId) {
-        this.isReturnBack = true
-        this.$ajax.post('/api/seller/task/getRejectTaskDetail', {
-          sellerTaskId: this.$route.rbSellerTaskId
-        }).then((data) => {
-          console.log(data)
-        }).catch((err) => {
-          console.log(err)
-        })
-      }
+      this.$ajax.post('/api/seller/task/getRejectTaskDetail', {
+        sellerTaskId: this.$route.query.rbSellerTaskId
+      }).then((data) => {
+        if (data.data.code === '200') {
+          let rbObj = data.data.data
+          let searchArr = JSON.parse(rbObj.searchWordList)
+          for (let m of searchArr) {
+            m.showSearch = true
+          }
+          this.returnBackObj = rbObj
+          this.sendObj.isPostageFree = rbObj.isPostFree - 0
+          this.sendObj.isSupportBaiTiao = rbObj.isSupportBaitiao - 0
+          this.sendObj.isSupportCredit = rbObj.isSupportCredit - 0
+          this.sendObj.isSupportTicket = rbObj.isSupportTicket - 0
+          this.sendObj.numPerOrder = rbObj.numPerOrder
+          this.sendObj.productFormat = rbObj.productFormat
+          this.sendObj.productName = rbObj.productName
+          this.sendObj.productPicUrl = rbObj.productPicUrl
+          this.sendObj.productShowPrice = rbObj.productShowPrice
+          this.sendObj.productOrderPrice = rbObj.productUnitPrice
+          this.sendObj.productUrl = rbObj.productUrl
+          this.keywordList = searchArr
+          this.sendObj.sellerTaskId = rbObj.sellerTaskId
+          this.classValue.classOne = rbObj.productClassFirstDesc
+          this.classValue.classTwo = rbObj.productClassSecondDesc
+          this.classValue.classThree = rbObj.productClassThirdDesc
+          console.log(this.sendObj)
+        } else {
+          this.$message({
+            type: 'warning',
+            message: data.data.message
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    // 发送修改信息
+    sureToFix () {
+      this.$ajax.post('/api/seller/task/updateRejectTask', {
+        sellerTaskId: this.$route.query.rbSellerTaskId,
+        productName: this.sendObj.productName,
+        productUrl: this.sendObj.productUrl,
+        productPicUrl: this.sendObj.productPicUrl,
+        productFormat: this.sendObj.productFormat,
+        isSupportBaitiao: this.sendObj.isSupportBaiTiao,
+        isSupportCredit: this.sendObj.isSupportCredit,
+        isSupportTickt: this.sendObj.isSupportTicket,
+        searchWordList: this.sendObj.searchKeywordList,
+        productClassFirstId: this.sendObj.productClassFirstId || this.returnBackObj.productClassFirstId,
+        productClassSecondId: this.sendObj.productClassSecondId || this.returnBackObj.productClassSecondId,
+        productClassThirdId: this.sendObj.productClassThirdId || this.returnBackObj.productClassThirdId,
+        productClassFirstDesc: this.sendObj.productClassFirstDesc || this.returnBackObj.productClassFirstDesc,
+        productClassSecondDesc: this.sendObj.productClassSecondDesc || this.returnBackObj.productClassSecondDesc,
+        productClassThirdDesc: this.sendObj.productClassThirdDesc || this.returnBackObj.productClassThirdDesc
+      }).then((data) => {
+        console.log(data)
+        if (data.data.code === '200') {
+          this.$message({
+            type: 'success',
+            message: '修改成功!'
+          })
+          this.$router.push({ name: 'taskDetail', query: { sellerTaskId: data.data.data.sellerTaskId } })
+        } else {
+          this.$message({
+            type: 'warning',
+            message: data.data.message
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
     }
   },
   mounted () {
@@ -857,8 +912,11 @@ export default {
     this.getPositionArr()
     // 获取上一步店铺信息
     this.getCreatShopInfo()
-    // 设置被驳回的信息
-    this.getReturnBackInfo()
+    if (this.$route.query.rbSellerTaskId) {
+      // 设置被驳回的信息
+      this.isReturnBack = true
+      this.getReturnBackInfo()
+    }
   }
 }
 </script>

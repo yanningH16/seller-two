@@ -53,7 +53,7 @@
       <div class="tabItem" v-for="(item, index) in listArr" :key="index">
         <ul class="head">
           <li style="width:20%">
-            <i></i>
+            <i :class="{'jdIcon': item.shopType==0, 'taobaoIcon': item.shopType==1, 'tianmaoIcon': item.shopType==2}"></i>
             <strong>&nbsp;&nbsp;{{ item.shopName }}</strong>
           </li>
           <li style="width:30%">
@@ -253,7 +253,6 @@ export default {
       })
     },
     setList (data) {
-      console.log(data)
       this.listArr = data
     }
   }
@@ -302,7 +301,6 @@ export default {
           width 16px
           height 16px
           vertical-align middle
-          background red
       .cont
         display flex
         padding 14px 0

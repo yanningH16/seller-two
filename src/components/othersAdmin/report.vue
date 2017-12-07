@@ -40,7 +40,7 @@ export default {
     return {
       textarea: '',
       input: '',
-      imageUrl: '123.jpg',
+      imageUrl: '',
       options: [{
         label: '举报原因1'
       }, {

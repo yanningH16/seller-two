@@ -43,7 +43,6 @@ export function getImgSize (file) {
     var reader = new FileReader()
     reader.onload = (theFile) => {
       var image = new Image()
-      image.src = ''
       image.onload = () => {
         resolve(image)
       }

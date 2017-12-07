@@ -40,14 +40,20 @@ export default {
 .admin
   width 100%
   height 100%
-  position fixed
+  // position fixed
   display flex
   .menuBox
     flex 0 0 180px
+    position fixed
+    top 0
+    left 0
+    overflow auto
+    width 180px
     background #0a1727
   .routerBox
     flex 1
     display flex
+    margin-left 180px
     flex-direction column
     // min-width 1200px
     overflow hidden

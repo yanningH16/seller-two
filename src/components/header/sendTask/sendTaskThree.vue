@@ -124,7 +124,7 @@ export default {
   },
   methods: {
     doPrevent () {
-      this.$router.push({ name: 'sendTaskTwo' })
+      this.$router.push({ name: 'sendTaskTwo', query: { sellerTaskId: this.$route.query.rbSellerTaskId } })
     },
     doNext () {
       let sendMoney = ((this.moneyObj.availableCommissionAmount - 0) > (this.infoObj.totalPrice - 0) ? this.infoObj.totalPrice : this.moneyObj.availableCommissionAmount)
@@ -134,7 +134,7 @@ export default {
         totalCommissionPayAmount: sendMoney
       }).then((data) => {
         if (data.data.code === '200') {
-          this.$router.push({ name: 'sendTaskFour' })
+          this.$router.push({ name: 'sendTaskFour', query: { sellerTaskId: data.data.data.sellerTaskId } })
         } else {
           this.$message({
             message: data.data.message,

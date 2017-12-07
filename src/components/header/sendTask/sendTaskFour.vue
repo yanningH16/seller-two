@@ -43,7 +43,7 @@ export default {
       }, 1000)
     },
     lookTask () {
-      this.$router.push({ name: 'taskDetail' })
+      this.$router.push({ name: 'taskDetail', query: { sellerTaskId: this.$route.query.rbSellerTaskId } })
     }
   },
   mounted () {

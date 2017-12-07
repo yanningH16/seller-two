@@ -156,6 +156,9 @@ export default {
 .menu
   background #090723
   height 100%
+  width 180px
+  position fixed
+  overflow auto
   .logo
     height 80px
     text-align center
@@ -222,6 +225,7 @@ export default {
           text-align center
   .state
     margin-top 36px
+    margin-bottom 40px
     text-align center
     color white
     font-size 14px
