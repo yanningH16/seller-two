@@ -225,7 +225,7 @@
             </el-table-column>
             <el-table-column align="center" label="任务状态">
               <template slot-scope="scope">
-                <span>{{ scope.row.status == 1 ? '待下单' : scope.row.status == 2 ? '待修改' : scope.row.status == 3 ? '待审核' : scope.row.status == 4 ? '审核通过' : scope.row.status == 10 ? '待评价' : scope.row.status == 11 ? '待审核评价' : scope.row.status == 12 ? '评价被驳回' : scope.row.status == 13 ? '评价通过待返佣' : '其他状态' }}</span>
+                <span>{{ scope.row.status == 1 ? '待下单' : scope.row.status == 2 ? '待修改' : scope.row.status == 3 ? '待审核' : scope.row.status == 4 ? '审核通过' : scope.row.status == 10 ? '待评价' : scope.row.status == 11 ? '待审核评价' : scope.row.status == 12 ? '评价被驳回' : scope.row.status == 13 ? '评价通过待返佣' : scope.row.status == 19 ? '已取消' : scope.row.status == 20 ? '已完成' : '其他状态'}}</span>
               </template>
             </el-table-column>
           </el-table>
