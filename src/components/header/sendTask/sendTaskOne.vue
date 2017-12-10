@@ -26,7 +26,7 @@
         <h2>第一步: 选择店铺</h2>
         <div class="taskType" v-for="(item, index) in shopListArr" :key="index" style="padding-left:60px;">
           <el-radio v-model="shop" :label="item">
-            <span :class="{'jdIcon': item.shopType==0}"></span>
+            <span :class="{'jdIcon': item.shopType==0 , 'taobaoIcon': item.shopType==1, 'tianmaoIcon': item.shopType==2}"></span>
             <b style="font-size:14px;color:#444444;">{{ item.shopName }}</b>
           </el-radio>
         </div>
@@ -153,7 +153,6 @@ export default {
       display inline-block
       width 14px
       height 14px
-      background red
       vertical-align middle
     .taskType
       height 30px
