@@ -45,11 +45,11 @@
           <div class="orderList">
             <h2>待确认垫付订单</h2>
             <div class="toCheck">
-              <div class="item" v-for="(item,index) in 6" :key="index">
-                <i class="jdIcon"></i>
-                <strong>多大阿旗舰店</strong>
+              <div class="item" v-for="(item,index) in toCheckOrderArr" :key="index">
+                <i :class="{'jdIcon': item.shopType==0, 'taobaoIcon': item.shopType==1, 'tianmaoIcon': item.shopType==2}"></i>
+                <strong>{{ item.shopName }}</strong>
                 <span>(
-                  <b class="red">+9</b>)</span>
+                  <b class="red">+{{ item.num }}</b>)</span>
               </div>
             </div>
             <h2>买家已评价待确认</h2>
