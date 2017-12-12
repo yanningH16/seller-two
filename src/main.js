@@ -11,16 +11,15 @@ import 'babel-polyfill' // 浏览器兼容
 import './assets/stylus/index.styl'
 
 Vue.config.productionTip = false
-  // Vue.use(ElementUI)
+// Vue.use(ElementUI)
 Vue.prototype.$ajax = axios
 Vue.filter('bankCard', function (value) {
   if (!value) {
     return false
   }
   let reg = /^(\d{4})[\d]*(\d{4})$/
-  return value.replace(reg, '$1')
+  return value.replace(reg, '$2')
 })
-
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

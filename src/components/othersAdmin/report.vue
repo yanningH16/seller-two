@@ -21,8 +21,8 @@
       <li class="pic">
         <span class="word">上传截图</span>
         <el-upload class="avatar-uploader" :show-file-list="false" :http-request="uploadImg" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" ref="upload" action="">
-          <img v-if="imageUrl" :src="imageUrl" class="avatar" width="122px" height="122">
-          <i v-else class="el-icon-plus avatar-uploader-icon" style="line-height:122px"></i>
+          <img v-if="imageUrl" :src="imageUrl" class="avatar" width="120px" height="120" style="border-right:1px solid #d9d9d9;border-bottom:1px solid #d9d9d9">
+          <i v-else class="el-icon-plus avatar-uploader-icon" style="line-height:122px;font-size:30px"></i>
         </el-upload>
       </li>
       <li style="margin-top:130px">
@@ -48,13 +48,20 @@ export default {
       }, {
         label: '举报原因2'
       }, {
-        label: '蚵仔煎'
+        label: '举报原因3'
       }, {
-        label: '龙须面'
+        label: '举报原因4'
       }, {
-        label: '北京烤鸭'
+        label: '举报原因5'
       }],
       value: ''
+    }
+  },
+  watch: {
+    isCanUpload (val) {
+      if (val) {
+        this.$refs.upload.submit()
+      }
     }
   },
   computed: {
