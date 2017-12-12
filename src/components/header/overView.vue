@@ -45,7 +45,7 @@
           <div class="orderList">
             <h2>待确认垫付订单</h2>
             <div class="toCheck">
-              <div class="item" v-for="(item,index) in toCheckOrderArr" :key="index">
+              <div class="item" v-for="(item,index) in toCheckOrderArr" :key="index" @click="toCheck">
                 <i :class="{'jdIcon': item.shopType==0, 'taobaoIcon': item.shopType==1, 'tianmaoIcon': item.shopType==2}"></i>
                 <strong>{{ item.shopName }}</strong>
                 <span>(
@@ -152,6 +152,10 @@ export default {
       if (tab.name === 'second') {
         this.getReturnBack()
       }
+    },
+    // 去审核待确认订单
+    toCheck () {
+      this.$router.push({ name: 'auditOrder' })
     },
     toDo (type, sellerTaskId) {
       if (type === 'lookDetail') {

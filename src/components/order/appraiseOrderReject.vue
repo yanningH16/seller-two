@@ -1,5 +1,5 @@
 <template>
-  <div class="order">
+  <div class="order3">
     <ul class="top">
       <li>
         <span>平台:</span>
@@ -130,7 +130,7 @@ export default {
 }
 </script>
 <style lang="stylus" rel="stylesheet/stylus" scoped>
-.order
+.order3
   .top
     margin-top 30px
     display flex
