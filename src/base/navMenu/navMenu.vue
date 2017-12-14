@@ -258,14 +258,15 @@ export default {
       color white
     .animate
       transition all 0.5s
+      transform-origin 40px -80px
     .slide-enter-active
-      transform translate3d(0, 0, 0)
+      transform rotate(0deg)
       opacity 1
     .slide-enter
-      transform translate3d(0, -80px, 0)
+      transform rotate(90deg)
       opacity 0
     .slide-leave-active
-      transform translate3d(0, -80px, 0)
+      transform rotate(90deg)
       opacity 0
     .slide-leave
       opacity 1

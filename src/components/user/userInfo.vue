@@ -5,29 +5,31 @@
     </div>
     <div class="personInfo">
       <div class="pic">
-        <el-upload class="avatar-uploader" action="" :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+        <el-upload class="avatar-uploader" action="" :show-file-list="false" :http-request="uploadImg" :before-upload="beforeAvatarUpload">
           <img v-if="imageUrl" :src="imageUrl" class="avatar">
           <i v-else class="upPic">点击上传图片</i>
         </el-upload>
       </div>
       <div class="id">
         <span>账户ID</span>
-        <p style="margin-top:16px">15037183341</p>
+        <p style="margin-top:16px">{{ userInfo.telephone }}&nbsp;&nbsp;
+          <span class="link" @click="showPhone=true">修改</span>
+        </p>
       </div>
       <ul class="infoMsg">
         <li>
           登陆密码
-          <span class="span">已设置</span>
+          <span class="span blue">已设置</span>
           <button class="btn" @click="showPass=true">修改</button>
         </li>
         <li v-if="!userInfo.withdrawPassword">
           提现密码
-          <span class="span">未设置</span>
+          <span class="span red">未设置</span>
           <button class="btn" @click="showWithdraw=true">设置</button>
         </li>
         <li v-else>
           提现密码
-          <span class="span">已设置</span>
+          <span class="span blue">已设置</span>
           <button class="btn" @click="showWithdraw=true">修改</button>
         </li>
         <li class="phone">联系方式
@@ -44,10 +46,6 @@
         <li>
           <span style="margin-right:64px">邮箱</span>
           <el-input v-model="userObj.email" placeholder="请输入内容"></el-input>
-        </li>
-        <li>
-          <span style="margin-right:64px"> 手机</span>
-          <el-input v-model="userObj.telephone" placeholder="请输入内容"></el-input>
         </li>
         <li class="choose">
           <button class="btn" style="margin-right:32px" @click="sureToChangeName(1)">保存</button>
@@ -104,17 +102,37 @@
           <button class="btn disabled" @click="showWithdraw = false">取消</button>
         </div>
       </el-dialog>
+      <!-- 修改手机号码提示框 -->
+      <el-dialog class="alertReturn" title="修改手机号码" :modal-append-to-body="false" :visible.sync="showPhone" width="600px">
+        <ul class="cont">
+          <li>
+            <span>新的手机号</span>
+            <el-input type="number" v-model="phoneObj.phone" placeholder="请输入新的手机号" style="width: 320px;"></el-input>
+            <p></p>
+          </li>
+          <li>
+            <span>输入验证码</span>
+            <el-input type="number" v-model="phoneObj.key" placeholder="请再次输入验证码" style="width: 160px;"></el-input>
+            <strong class="testKey" :class="{ 'canClick': canClick }" @click="getKey">{{ phoneObj.text }}</strong>
+            <p></p>
+          </li>
+        </ul>
+        <div class="footBtns">
+          <button class="btn" @click="sureToFixPhone">确认</button>
+          <button class="btn disabled" @click="showPhone = false">取消</button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
 <script type="text/ecmascript-6">
 import { mapGetters, mapActions } from 'vuex'
+import { uploadPromise, uploadFile } from '../../assets/js/upload'
 import md5 from 'md5'
 export default {
   name: 'usrInfo',
   data () {
     return {
-      imageUrl: 'http://bj.bcebos.com/v1/scalp/1508758557625c601fdea9f4b5fdf805d07334d1aff77u%3D2738007598%2C2643466217%26fm%3D27%26gp%3D0.jpg',
       // 密码修改
       showPass: false,
       passObj: {
@@ -134,7 +152,15 @@ export default {
         warn1: '',
         warn2: '',
         warn3: ''
-      }
+      },
+      // 显示修改手机号吗
+      showPhone: false,
+      phoneObj: {
+        phone: '',
+        key: '',
+        text: '获取验证码'
+      },
+      canClick: true
     }
   },
   computed: {
@@ -143,29 +169,65 @@ export default {
       let obj = {
         userName: userInfo.userName,
         qqNum: userInfo.qqNum,
-        email: userInfo.email,
-        telephone: userInfo.telephone
+        email: userInfo.email
       }
       return obj
+    },
+    imageUrl: function () {
+      let userInfo = this.userInfo
+      let url = userInfo.avatarPicId || 'http://bj.bcebos.com/v1/scalp/1508758557625c601fdea9f4b5fdf805d07334d1aff77u%3D2738007598%2C2643466217%26fm%3D27%26gp%3D0.jpg'
+      return url
     },
     ...mapGetters([
       'userInfo'
     ])
   },
   methods: {
-    handleAvatarSuccess (res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
-    },
     beforeAvatarUpload (file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < 2
+      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 1
       if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!')
+        this.$message.error('上传头像图片只能是 JPG/PNG 格式!')
       }
       if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
+        this.$message.error('上传头像图片大小不能超过 1MB!')
       }
       return isJPG && isLt2M
+    },
+    uploadImg (img) {
+      uploadPromise.then((res) => {
+        if (res.statusText === 'OK') {
+          uploadFile(res.data, img.file).then((res) => {
+            this.imageUrl = res
+            this.changeImg(res)
+          }).catch(() => {
+            this.$message.error('网络错误，请刷新试试')
+          })
+        }
+      }).catch(() => {
+        this.$message.error('网络错误，请刷新试试')
+      })
+    },
+    changeImg (url) {
+      this.$ajax.post('/api/sellerAccout/updateHeaderImage', {
+        avatarPicId: url,
+        sellerUserId: this.userInfo.sellerUserId
+      }).then((data) => {
+        if (data.data.code === '200') {
+          this.$message({
+            type: 'success',
+            message: '修改成功!'
+          })
+          this.refresh()
+        } else {
+          this.$message({
+            type: 'warning',
+            message: data.data.message
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
     },
     clearWarn (index) {
       switch (index) {
@@ -306,6 +368,109 @@ export default {
         })
       }
     },
+    sureToFixPhone () {
+      if (this.phoneObj.phone === this.userInfo.telephone) {
+        this.$message({
+          type: 'warning',
+          message: '输入的手机号码与原手机号一致!'
+        })
+      } else if (this.phoneObj.phone === '') {
+        this.$message({
+          type: 'warning',
+          message: '请输入手机号码!'
+        })
+      } else if (this.phoneObj.key === '') {
+        this.$message({
+          type: 'warning',
+          message: '请输入验证码!'
+        })
+      } else {
+        this.$ajax.post('/api/config/sms/vertify', {
+          type: 1,
+          code: this.phoneObj.key,
+          telephone: this.phoneObj.phone
+        }).then((data) => {
+          if (data.data.code === '200') {
+            this.testKeySuccess()
+          } else {
+            this.$message({
+              type: 'warning',
+              message: data.data.message
+            })
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
+      }
+    },
+    getKey () {
+      if (this.canClick) {
+        if (this.phoneObj.phone === '') {
+          this.$message({
+            type: 'warning',
+            message: '请输入手机号码!'
+          })
+        } else if (this.phoneObj.phone === this.userInfo.telephone) {
+          this.$message({
+            type: 'warning',
+            message: '输入的手机号码与原手机号一致!'
+          })
+        } else {
+          this.$ajax.post('/api/config/sms/sendSms', {
+            telephone: this.phoneObj.phone,
+            type: 1
+          }).then((data) => {
+            if (data.data.code === '200') {
+              let leastTime = 59
+              this.canClick = false
+              let time = setInterval(() => {
+                this.phoneObj.text = '获取验证码（' + leastTime + '秒）'
+                leastTime--
+                if (leastTime <= 0) {
+                  clearInterval(time)
+                  this.canClick = true
+                  this.phoneObj.text = '重新获取'
+                }
+              }, 1000)
+            } else {
+              this.$message({
+                type: 'warning',
+                message: data.data.message
+              })
+            }
+          }).catch((err) => {
+            console.log(err)
+          })
+        }
+      }
+    },
+    testKeySuccess () {
+      this.$ajax.post('/api/sellerAccout/updateUserTelephone', {
+        sellerUserId: this.userInfo.sellerUserId,
+        telephone: this.phoneObj.phone
+      }).then((data) => {
+        if (data.data.code === '200') {
+          this.showPhone = false
+          this.$message({
+            type: 'success',
+            message: '修改成功!'
+          })
+          this.phoneObj = {
+            phone: '',
+            key: '',
+            text: '获取验证码'
+          }
+          this.$router.push({ name: 'login' })
+        } else {
+          this.$message({
+            type: 'warning',
+            message: data.data.message
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
     // 修改姓名信息
     sureToChangeName (type) {
       if (type === 0) {
@@ -318,7 +483,6 @@ export default {
           userName: this.userObj.userName,
           qqNum: this.userObj.qqNum,
           email: this.userObj.email,
-          telephone: this.userObj.telephone,
           sellerUserId: this.userInfo.sellerUserId
         }).then((data) => {
           if (data.data.code === '200') {
@@ -368,6 +532,11 @@ export default {
   padding 0 20px 0 20px
   .red
     color #FF2933
+  .blue
+    color #029E4A
+  .link
+    color #1083E6
+    cursor pointer
   .shop
     background #fff
     height 36px
@@ -407,7 +576,9 @@ export default {
       margin-top -80px
       margin-left 150px
       font-size 14px
-      color rgba(155, 155, 155, 1)
+      color #444444
+      >span
+        color #9B9B9B
     .infoMsg
       margin-top 51px
       li
@@ -439,4 +610,20 @@ export default {
     .footBtns
       margin-top 20px
       text-align center
+    .testKey
+      display inline-block
+      width 140px
+      height 36px
+      line-height 36px
+      background #DEDEDE
+      font-size 14px
+      border-radius 4px
+      color #9B9B9B
+      text-align center
+      margin-left 15px
+      cursor not-allowed
+    .canClick
+      background #FF2933
+      color #ffffff
+      cursor pointer
 </style>
