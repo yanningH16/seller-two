@@ -7,6 +7,9 @@ const mutations = {
   [types.SET_USER_TOKEN] (state, query) {
     state.userToken = query
   },
+  [types.SET_USER_MONEY] (state, query) {
+    state.userMoney = query
+  },
   [types.CLEAR_USER_INFO] (state) {
     state.userInfo = clearUserInfo()
   },

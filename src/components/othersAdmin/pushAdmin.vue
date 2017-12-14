@@ -1,5 +1,5 @@
 <template>
-  <div class="wrap">
+  <div class="wrap pushAdmin">
     <div class="shop">
       <em class="gray">账号信息</em>
     </div>

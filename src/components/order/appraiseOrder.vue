@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">
     <div class="shop">
-      <em class="gray">订单管理</em>>审核评价
+      <em class="gray" style="background: none">订单管理</em>>审核评价
     </div>
     <div class="personBank">
       <el-tabs v-model="activeName" @tab-click="handleClick">
@@ -49,7 +49,8 @@
               <div class="content">
                 <div class="header">
                   <p style="color:#444444">
-                    <i :class="{ 'jdIcon': item.shopType==0, 'taobaoIcon': item.shopType==1, 'tianmaoIcon': item.shopType==2 }" class="icon"></i>商品名字
+                    <i :class="{ 'jdIcon': item.shopType==0, 'taobaoIcon': item.shopType==1, 'tianmaoIcon': item.shopType==2 }" class="icon"></i>
+                    {{ item.shopName }}
                   </p>
                   <p>任务编号:
                     <span>{{ item.buyerTaskId }}</span>
@@ -105,13 +106,13 @@
                 </ul>
               </div>
               <div class="work">
-                <button class=" btn gray">驳回</button>
-                <button class="btn small">返佣</button>
+                <button class=" btn gray" @click="toReject(item.buyerTaskId)">驳回</button>
+                <button class="btn small" @click="toConfirm(item.buyerTaskId)">返佣</button>
               </div>
             </div>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="通过的评价" name="13">
+        <el-tab-pane label="通过的评价" name="20">
           <div class="order2">
             <ul class="top">
               <li>
@@ -155,62 +156,58 @@
               <div class="content">
                 <div class="header">
                   <p style="color:#444444">
-                    <i :class="{ 'jdIcon': item.shopType==0, 'taobaoIcon': item.shopType==1, 'tianmaoIcon': item.shopType==2 }" class="icon"></i>商品名字
+                    <i :class="{ 'jdIcon': item.shopType==0, 'taobaoIcon': item.shopType==1, 'tianmaoIcon': item.shopType==2 }" class="icon"></i>
+                    {{ item.shopName }}
                   </p>
                   <p>任务编号:
-                    <span>4646464654646</span>
+                    <span>{{ item.buyerTaskId }}</span>
                   </p>
                   <p>京东订单编号:
-                    <span>5656856565656</span>
+                    <span>{{ item.realOrderId }}</span>
                   </p>
                   <p>任务类型:
-                    <span>图文好评</span>
-                    <!-- <span>文字好评</span> -->
+                    <span>{{ item.favorTaskType == 0 ? '默认好评' : item.favorTaskType == 1 ? '五星文字好评' : item.favorTaskType == 2 ? '图文好评' : '其他' }}</span>
                   </p>
                   <p>提交时间:
-                    <span>2017-08-25 12:23:23</span>
+                    <span>{{ item.submitTime }}</span>
                   </p>
                 </div>
                 <!-- 里面内容部分 -->
                 <ul class="text">
                   <li>
-                    <img class="float_img" src="http://img1.3lian.com/2015/w10/21/d/1.jpg" alt="" width="60px" height="60px">
+                    <img class="float_img" :src="item.productPicUrl" alt="pic" width="60px" height="60px">
                     <div class="float">
                       <p>姓名:
-                        <span>黄军</span>
+                        <span>{{ item.buyerName }}</span>
                       </p>
                       <p style="margin-top:15px">京东用户名:
-                        <span>哈哈哈哈哈或</span>
+                        <span>{{ item.jdUserName }}</span>
                       </p>
                       <p style="margin-top:15px">手机号:
-                        <span>15037183341</span>
+                        <span>{{ item.telephone }}</span>
                       </p>
                       <p style="margin-top:15px">子任务编号:
-                        <span>5465656856</span>
+                        <span>{{ item.taskDayId }}</span>
                       </p>
                     </div>
                   </li>
                   <!-- 中间部分 -->
                   <li class="midd">
                     <p style="width:300px">
-                      <!-- <span>图文好评</span> -->
-                      <span>文字好评</span>
-                      <em>东西很不错,下次继续光</em>
+                      <span>{{ item.favorTaskType == 0 ? '默认好评' : item.favorTaskType == 1 ? '五星文字好评' : item.favorTaskType == 2 ? '图文好评' : '其他' }}</span>
+                      <em>{{ item.sellerFavor }}</em>
                     </p>
-                    <div class="midd_img">
-                      <img src="http://pic.35pic.com/normal/06/99/77/7254496_155434853000_2.jpg" alt="">
-                      <img src="http://pic.35pic.com/normal/06/99/77/7254496_155434853000_2.jpg" alt="">
-                      <img src="http://pic.35pic.com/normal/06/99/77/7254496_155434853000_2.jpg" alt="">
-                      <img src="http://pic.35pic.com/normal/06/99/77/7254496_155434853000_2.jpg" alt="">
+                    <div class="midd_img" v-if="item.favorTaskType==2">
+                      <img v-for="(m,i) in JSON.parse(item.sellerFavorPic) || []" :key="i" @click="lookImg(m)" :src="m" alt="pic">
                     </div>
                   </li>
                   <!-- 右边部分 -->
                   <li class="right">
                     <p style="float:left">
-                      <em>评价截图:</em><br><img src="http://pic.35pic.com/normal/06/99/77/7254496_155434853000_2.jpg" alt="" width="60px" height="100px">
+                      <em>评价截图:</em><br><img @click="lookImg(JSON.parse(item.buyerFavorPic) || '')" :src="JSON.parse(item.buyerFavorPic) || ''" alt="pic" width="60px" height="100px">
                     </p>
                     <p style="float:left;margin-left:46px">
-                      <em>物流截图:</em><br><img src="http://pic.35pic.com/normal/06/99/77/7254496_155434853000_2.jpg" alt="" width="60px" height="100px">
+                      <em>物流截图:</em><br><img @click="lookImg(JSON.parse(item.logisticsPicId) || '')" :src="JSON.parse(item.logisticsPicId) || ''" alt="pic" width="60px" height="100px">
                     </p>
                   </li>
                 </ul>
@@ -262,47 +259,47 @@
               <div class="content">
                 <div class="header">
                   <p style="color:#444444">
-                    <i :class="{ 'jdIcon': item.shopType==0, 'taobaoIcon': item.shopType==1, 'tianmaoIcon': item.shopType==2 }" class="icon"></i>商品名字
+                    <i :class="{ 'jdIcon': item.shopType==0, 'taobaoIcon': item.shopType==1, 'tianmaoIcon': item.shopType==2 }" class="icon"></i>
+                    {{ item.shopName }}
                   </p>
                   <p>任务编号:
-                    <span>4646464654646</span>
+                    <span>{{ item.buyerTaskId }}</span>
                   </p>
                   <p>任务类型:
-                    <span>图文好评</span>
-                    <!-- <span>文字好评</span> -->
+                    <span>{{ item.favorTaskType == 0 ? '默认好评' : item.favorTaskType == 1 ? '五星文字好评' : item.favorTaskType == 2 ? '图文好评' : '其他' }}</span>
                   </p>
                   <p>提交时间:
-                    <span>2017-08-25 12:23:23</span>
+                    <span>{{ item.submitTime }}</span>
                   </p>
                 </div>
                 <!-- 左边内容部分 -->
                 <ul class="text">
                   <li>
-                    <img class="float_img" src="http://img1.3lian.com/2015/w10/21/d/1.jpg" alt="" width="60px" height="60px">
+                    <img class="float_img" :src="item.productPicUrl" alt="pic" width="60px" height="60px">
                     <div class="float">
                       <p>
-                        <span>商品的名字</span>
+                        <span>{{ item.productName }}</span>
                       </p>
                       <p style="margin-top:15px">子任务编号:
-                        <span>5465656856</span>
+                        <span>{{ item.taskDayId }}</span>
                       </p>
                     </div>
                   </li>
                   <!-- 中间部分 -->
                   <li class="midd">
-                    <img class="midd_img" src="http://img1.3lian.com/2015/w10/21/d/1.jpg" alt="" width="60px" height="60px">
+                    <img v-for="(m,i) in JSON.parse(item.realOrderPicUrl) || []" :key="i" @click="lookImg(m)" class="midd_img" :src="m" alt="pic" width="60px" height="60px">
                     <div class="float_content">
                       <p>姓名:
-                        <span>黄军</span>
+                        <span>{{ item.buyerName }}</span>
                       </p>
                       <p style="margin-top:15px">京东订单编号:
-                        <span>54654656565656256</span>
+                        <span>{{ item.realOrderId }}</span>
                       </p>
                       <p style="margin-top:15px">京东用户名:
-                        <span>哈哈哈哈哈或</span>
+                        <span>{{ item.jdUserName }}</span>
                       </p>
                       <p style="margin-top:15px">手机号:
-                        <span>15037183341</span>
+                        <span>{{ item.telephone }}</span>
                       </p>
                     </div>
                   </li>
@@ -310,14 +307,14 @@
                   <li class="right">
                     <p style="padding-bottom:20px">
                       驳回原因:
-                      <el-tooltip effect="dark" popper-class="tooltipItem" content="绝地反击噢k京东foe见覅返利积分狂蜂浪蝶首付款is啊放假哦IE佛教开始了对方诶费劲儿" placement="top-start">
-                        <span class="right_text">绝地反击噢k京东foe见覅返利积分狂蜂浪蝶首付款is啊放假哦IE佛教开始了对方诶费劲儿</span>
+                      <el-tooltip effect="dark" popper-class="tooltipItem" :content="item.rejectReason || '暂未填写原因'" placement="top-start">
+                        <span class="right_text">{{ item.rejectReason || '暂未填写原因' }}</span>
                       </el-tooltip>
                     </p>
                     <p class="right_first">
-                      解决方案:
-                      <el-tooltip popper-class="tooltipItem" effect="dark" content="超出部分显示内容" placement="top-start">
-                        <span class="right_text">绝地反击噢诶费劲儿</span>
+                      备注:
+                      <el-tooltip popper-class="tooltipItem" effect="dark" :content="item.comment || '暂无填写备注'" placement="top-start">
+                        <span class="right_text">{{ item.comment || '暂无填写备注' }}</span>
                       </el-tooltip>
                     </p>
                   </li>
@@ -334,6 +331,38 @@
         <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNo" :page-sizes="pageSizeArray" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="pageTotal">
         </el-pagination>
       </div>
+    </div>
+    <div class="alertGroup">
+      <!-- 驳回提示框 -->
+      <el-dialog class="alertReturn" title="确认驳回订单" :modal-append-to-body="false" :visible.sync="showReturn" width="600px">
+        <h2>客服会在 12 小时内联系买家处理，若买家不予处理，将扣除买家佣金！</h2>
+        <ul class="cont">
+          <li>
+            <span>驳回理由</span>
+            <el-select v-model="returnBackObj.reason" placeholder="请选择驳回理由" style="width:320px;">
+              <el-option v-for="(item,index) in rejectReasonList" :key="index" :label="item.rejectReason" :value="item.rejectReason">
+              </el-option>
+            </el-select>
+          </li>
+          <li>
+            <span>理由备注</span>
+            <el-input type="textarea" :rows="2" placeholder="请输入驳回理由备注" v-model="returnBackObj.common" style="width:320px;" resize="none">
+            </el-input>
+          </li>
+        </ul>
+        <div class="footBtns">
+          <button class="btn" @click="sureToReject">确认</button>
+          <button class="btn disabled" @click="showReturn = false">取消</button>
+        </div>
+      </el-dialog>
+      <!-- 确认通过订单 -->
+      <el-dialog class="alertConfirm" title="确认通过订单" :modal-append-to-body="false" :visible.sync="showConfirm" width="600px">
+        <h3 style="text-align:center;">此操作确认通过评价并返佣金给买家！</h3>
+        <div class="footBtns">
+          <button class="btn" @click="sureToConfirm">确认</button>
+          <button class="btn disabled" @click="showConfirm = false">取消</button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -358,8 +387,16 @@ export default {
       apiUrl: '/api/seller/order/getFavorOrderListByStatus',
       toCheckList: [],
       rejectList: [],
+      rejectReasonList: [],
       passList: [],
       showLookImg: false,
+      // 驳回弹窗
+      showReturn: false,
+      returnBackObj: {
+        reason: '',
+        common: ''
+      },
+      showConfirm: false,
       lookImgUrl: ''
     }
   },
@@ -389,6 +426,79 @@ export default {
       this.showLookImg = true
       this.lookImgUrl = url
     },
+    // 点击驳回按钮触发
+    toReject (buyerTaskId) {
+      sessionStorage.setItem('__buyerTaskId__', buyerTaskId)
+      this.showReturn = true
+      this.$ajax.post('/api/config/rejectReason/getReasonList', {
+        rejectType: 1 // type : 0 下单  1 评价
+      }).then((data) => {
+        if (data.data.code === '200') {
+          this.rejectReasonList = data.data.data
+        } else {
+          this.$message({
+            type: 'warning',
+            message: data.data.message
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    sureToReject () {
+      this.$ajax.post('/api/seller/order/rejectFavorOrder', {
+        buyerTaskId: sessionStorage.getItem('__buyerTaskId__') || '',
+        rejectReason: this.returnBackObj.reason || '',
+        comment: this.returnBackObj.common || ''
+      }).then((data) => {
+        if (data.data.code === '200') {
+          this.showReturn = false
+          this.$message({
+            type: 'success',
+            message: '驳回成功!'
+          })
+          this.returnBackObj = {
+            reason: '',
+            common: ''
+          }
+          this.getTask()
+        } else {
+          this.$message({
+            type: 'warning',
+            message: data.data.message
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    toConfirm (buyerTaskId) {
+      this.showConfirm = true
+      sessionStorage.setItem('__buyerTaskId__', buyerTaskId)
+    },
+    // 确认好评
+    sureToConfirm () {
+      let buyerTaskId = sessionStorage.getItem('__buyerTaskId__') || ''
+      this.$ajax.post('/api/seller/order/passFavorOrder', {
+        buyerTaskId: buyerTaskId
+      }).then((data) => {
+        if (data.data.code === '200') {
+          this.showConfirm = false
+          this.$message({
+            type: 'success',
+            message: '确认评价成功!'
+          })
+          this.getTask()
+        } else {
+          this.$message({
+            type: 'warning',
+            message: data.data.message
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
     // 获取店铺列表
     getShopList () {
       this.$ajax.post('/api/seller/shop/getShopListBySellerUserId', {
@@ -413,7 +523,7 @@ export default {
         this.toCheckList = data
       } else if (this.activeName === '12') {
         this.rejectList = data
-      } else if (this.activeName === '13') {
+      } else if (this.activeName === '20') {
         this.passList = data
       }
     }
@@ -634,10 +744,66 @@ export default {
               text-overflow ellipsis
               white-space nowrap
               display inline-block
+              vertical-align middle
           .midd
             margin-top 30px
             border-left 1px solid #dedede
             border-right 1px solid #dedede
             padding-left 60px
             padding-right 70px
+  .alertGroup
+    .footBtns
+      text-align center
+    .alertReturn
+      h2
+        padding 0 20px
+        font-size 16px
+        color #9b9b9b
+      .cont
+        padding 20px
+        li
+          margin-bottom 12px
+          span
+            margin-right 24px
+            vertical-align top
+            line-height 30px
+    .alertConfirm
+      .footBtns
+        margin-top 60px
+      h3
+        font-size 14px
+        padding 0 20px
+        font-weight 600
+      .cont
+        padding 20px
+        margin-bottom 20px
+        display flex
+        li
+          span
+            line-height 30px
+          &:first-child
+            width 70px
+          &:last-child
+            flex 1
+            .imgCont
+              margin-top 12px
+              .imgUpload
+                display inline-block
+                vertical-align top
+                width 120px
+                height 120px
+                background #fafafa
+                border-radius 4px
+                text-align center
+                border 1px solid #dedede
+                .add
+                  width 120px
+                  height 120px
+                  font-size 60px
+                  line-height 120px
+                  color #dedede
+              .avatar
+                width 120px
+                height 120px
+                margin-right 12px
 </style>

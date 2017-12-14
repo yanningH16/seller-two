@@ -19,19 +19,21 @@
     <div class="state">
       <img :src="srcPic" alt="" class="pic">
       <p class="phone" @click="personInfo">
-        <span>15037183341</span>
+        <span>{{ userInfo.telephone }}</span>
         <i class="el-icon-caret-bottom"></i>
       </p>
-      <div v-show="pull">
-        <router-link :to="{name:'userInfo'}">
-          <p class="info">账号信息</p>
-        </router-link>
-        <router-link :to="{name:'login'}">
-          <p class="info">退出登陆</p>
-        </router-link>
-      </div>
+      <transition name="slide" appear="true">
+        <div class="animate" v-show="pull">
+          <router-link :to="{name:'userInfo'}">
+            <p class="info">账号信息</p>
+          </router-link>
+          <router-link :to="{name:'login'}">
+            <p class="info">退出登陆</p>
+          </router-link>
+        </div>
+      </transition>
       <p class="balance">账户余额:
-        <span>120.00</span>
+        <span>{{ userMoney.totalCapitalAmount }}</span>
       </p>
       <router-link :to="{name:'coinPay'}">
         <p class="pay">立即充值</p>
@@ -40,13 +42,13 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
+import { mapGetters } from 'vuex'
 export default {
   name: 'navMenu',
   data () {
     return {
       pull: false,
-      isActive: 0,
-      srcPic: 'http://scimg.jb51.net/allimg/130929/2-1309292141522I.jpg'
+      isActive: 0
     }
   },
   computed: {
@@ -128,7 +130,15 @@ export default {
       set (val) {
         return val
       }
-    }
+    },
+    srcPic: function () {
+      let pic = this.userInfo.avatarPicId || 'http://bj.bcebos.com/v1/scalp/1508758557625c601fdea9f4b5fdf805d07334d1aff77u%3D2738007598%2C2643466217%26fm%3D27%26gp%3D0.jpg'
+      return pic
+    },
+    ...mapGetters([
+      'userInfo',
+      'userMoney'
+    ])
   },
   methods: {
     setRouterActive () {
@@ -246,4 +256,17 @@ export default {
       line-height 40px
       cursor pointer
       color white
+    .animate
+      transition all 0.5s
+    .slide-enter-active
+      transform translate3d(0, 0, 0)
+      opacity 1
+    .slide-enter
+      transform translate3d(0, -80px, 0)
+      opacity 0
+    .slide-leave-active
+      transform translate3d(0, -80px, 0)
+      opacity 0
+    .slide-leave
+      opacity 1
 </style>

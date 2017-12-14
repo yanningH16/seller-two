@@ -1,5 +1,5 @@
 <template>
-  <div class="wrap">
+  <div class="wrap coinApply">
     <div class="shop">
       <em class="gray">资金管理</em>>资金记录
     </div>

@@ -271,14 +271,14 @@
                 <li>
                   <div>
                     <b class="gray">驳回原因：</b>
-                    <el-tooltip popper-class="tooltipItem" effect="dark" :content="item.rejectReason" placement="top" style="400px">
-                      <p>{{ item.rejectReason }}</p>
+                    <el-tooltip popper-class="tooltipItem" effect="dark" :content="item.rejectReason || '暂未填写驳回原因'" placement="top" style="400px">
+                      <p>{{ item.rejectReason || '暂未填写驳回原因' }}</p>
                     </el-tooltip>
                   </div>
                   <div>
                     <b class="gray">解决方案：</b>
-                    <el-tooltip popper-class="tooltipItem" effect="dark" :content="item.solution" placement="top" style="400px">
-                      <p>{{ item.solution }}</p>
+                    <el-tooltip popper-class="tooltipItem" effect="dark" :content="item.solution || '暂未填写解决方案'" placement="top" style="400px">
+                      <p>{{ item.solution || '暂未填写解决方案' }}</p>
                     </el-tooltip>
                   </div>
                 </li>
@@ -472,6 +472,7 @@ export default {
         this.$message.error('网络错误，请刷新试试')
       })
     },
+    // 点击驳回按钮触发
     toReject (buyerTaskId) {
       sessionStorage.setItem('__buyerTaskId__', buyerTaskId)
       this.showReturn = true

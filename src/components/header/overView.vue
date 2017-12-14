@@ -9,30 +9,30 @@
     <div class="moneyList">
       <ul class="leftMoney">
         <li>
-          <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1511344372676&di=efa5889acb8cecfcf8222d867cd5f941&imgtype=0&src=http%3A%2F%2Fimg2.gao7.com%2Ffiles%2Fappleimage%2F277%2F277E8E4B-D0AD-4956-BF23-98987E2ADA88.jpg" alt="">
+          <img src="../../assets/image/benjin.png" alt="">
           <div>
             <h3>本金</h3>
-            <h2 style="color:#179FFF;">1492.73</h2>
+            <h2 style="color:#179FFF;">{{ moneyObj.availableCapitalAmount }}</h2>
           </div>
         </li>
         <li>
-          <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1511344372676&di=efa5889acb8cecfcf8222d867cd5f941&imgtype=0&src=http%3A%2F%2Fimg2.gao7.com%2Ffiles%2Fappleimage%2F277%2F277E8E4B-D0AD-4956-BF23-98987E2ADA88.jpg" alt="">
+          <img src="../../assets/image/yongjin.png" alt="">
           <div>
             <h3>冻结押金(元)</h3>
-            <h2 style="color:#FF2933;">1492.73</h2>
+            <h2 style="color:#FF2933;">{{ moneyObj.frozenCapitalAmount }}</h2>
           </div>
         </li>
         <li>
-          <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1511344372676&di=efa5889acb8cecfcf8222d867cd5f941&imgtype=0&src=http%3A%2F%2Fimg2.gao7.com%2Ffiles%2Fappleimage%2F277%2F277E8E4B-D0AD-4956-BF23-98987E2ADA88.jpg" alt="">
+          <img src="../../assets/image/lianmeng.png" alt="">
           <div>
             <h3>联盟佣金(元)</h3>
-            <h2 style="color:#FF8A22;">1492.73</h2>
+            <h2 style="color:#FF8A22;">{{ moneyObj.totalCommissionAmount }}</h2>
           </div>
         </li>
       </ul>
       <ul class="rightCtrl">
         <li>
-          <button class="btn disabled">充值本金</button>
+          <button class="btn disabled" @click="$router.push({name: 'coinPay'})">充值本金</button>
         </li>
         <li>
           <button class="btn" @click="$router.push({name: 'sendTaskOne'})">发布垫付任务</button>
@@ -54,11 +54,11 @@
             </div>
             <h2>买家已评价待确认</h2>
             <div class="toSure">
-              <div class="item" v-for="(item,index) in 6" :key="index">
-                <i class="jdIcon"></i>
-                <strong>多大阿旗舰店</strong>
+              <div class="item" v-for="(item,index) in toCheckFavorArr" :key="index" @click="toFavor">
+                <i :class="{'jdIcon': item.shopType==0, 'taobaoIcon': item.shopType==1, 'tianmaoIcon': item.shopType==2}"></i>
+                <strong>{{ item.shopName }}</strong>
                 <span>(
-                  <b class="red">+9</b>)</span>
+                  <b class="red">+{{ item.num }}</b>)</span>
               </div>
             </div>
           </div>
@@ -128,7 +128,7 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'overView',
   data () {
@@ -137,7 +137,8 @@ export default {
       currentPage: 1,
       toCheckOrderArr: [],
       toCheckFavorArr: [],
-      returnBackArr: []
+      returnBackArr: [],
+      moneyObj: {}
     }
   },
   computed: {
@@ -156,6 +157,9 @@ export default {
     // 去审核待确认订单
     toCheck () {
       this.$router.push({ name: 'auditOrder' })
+    },
+    toFavor () {
+      this.$router.push({ name: 'appraiseOrder' })
     },
     toDo (type, sellerTaskId) {
       if (type === 'lookDetail') {
@@ -237,10 +241,33 @@ export default {
           message: '已取消'
         })
       })
-    }
+    },
+    // 获取资金
+    getMoney () {
+      this.$ajax.post('/api/userFund/getSellerUserFund', {
+        sellerUserAccountId: this.userInfo.sellerUserId
+      }).then((data) => {
+        if (data.data.code === '200') {
+          let res = data.data.data
+          this.moneyObj = res
+          this.setUserMoney(res)
+        } else {
+          this.$message({
+            type: 'warning',
+            message: data.data.message
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    ...mapActions([
+      'setUserMoney'
+    ])
   },
   mounted () {
     this.getOrderList()
+    this.getMoney()
   }
 }
 </script>
