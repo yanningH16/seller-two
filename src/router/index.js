@@ -24,17 +24,11 @@ let router = new Router({
 
 // 设置title
 router.beforeEach((to, from, next) => {
-  if (to.matched.length === 0) {
-    from.name ? next({ name: from.name }) : next('/home/header/overView') // 未定义路由条状到error
+  if (to.meta.title || to.params.message) {
+    document.title = to.meta.title || to.params.message.title
   } else {
-    let routerTitle = ''
-    if (to.meta.title) {
-      routerTitle = to.meta.title
-    } else {
-      routerTitle = 'SD项目'
-    }
-    document.title = routerTitle
-    next()
+    document.title = 'SD项目'
   }
+  next()
 })
 export default router
