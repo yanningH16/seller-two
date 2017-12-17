@@ -32,12 +32,14 @@
           </router-link>
         </div>
       </transition>
-      <p class="balance">账户余额:
-        <span>{{ userMoney.totalCapitalAmount }}</span>
-      </p>
-      <router-link :to="{name:'coinPay'}">
-        <p class="pay">立即充值</p>
-      </router-link>
+      <div :class="{ 'slideDown': pull, 'slideUp':!pull }">
+        <p class="balance">账户余额:
+          <span>{{ userMoney.totalCapitalAmount }}</span>
+        </p>
+        <router-link :to="{name:'coinPay'}">
+          <p class="pay">立即充值</p>
+        </router-link>
+      </div>
     </div>
   </div>
 </template>
@@ -270,4 +272,18 @@ export default {
       opacity 0
     .slide-leave
       opacity 1
+    .slideDown
+      animation down 0.5s
+      @keyframes down
+        from
+          transform translate3d(0, -80px, 0)
+        to
+          transform translate3d(0, 0, 0)
+    .slideUp
+      animation up 0.5s
+      @keyframes up
+        from
+          transform translate3d(0, 0, 0)
+        to
+          transform translate3d(0, -80px, 0)
 </style>
