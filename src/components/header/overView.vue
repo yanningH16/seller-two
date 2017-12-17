@@ -45,6 +45,7 @@
           <div class="orderList">
             <h2>待确认垫付订单</h2>
             <div class="toCheck">
+              <noCont class="smallNoCont" v-if="toCheckOrderArr.length===0"></noCont>
               <div class="item" v-for="(item,index) in toCheckOrderArr" :key="index" @click="toCheck">
                 <i :class="{'jdIcon': item.shopType==0, 'taobaoIcon': item.shopType==1, 'tianmaoIcon': item.shopType==2}"></i>
                 <strong>{{ item.shopName }}</strong>
@@ -54,6 +55,7 @@
             </div>
             <h2>买家已评价待确认</h2>
             <div class="toSure">
+              <noCont class="smallNoCont" v-if="toCheckFavorArr.length===0"></noCont>
               <div class="item" v-for="(item,index) in toCheckFavorArr" :key="index" @click="toFavor">
                 <i :class="{'jdIcon': item.shopType==0, 'taobaoIcon': item.shopType==1, 'tianmaoIcon': item.shopType==2}"></i>
                 <strong>{{ item.shopName }}</strong>
@@ -66,6 +68,7 @@
         <el-tab-pane label="任务发布提醒" name="second">
           <div class="returnOrder">
             <h2>未通过审核任务</h2>
+            <noCont v-if="returnBackArr.length===0"></noCont>
             <div class="listItem" v-for="(item, index) in returnBackArr" :key="index">
               <ul class="head">
                 <li style="width:20%">
@@ -129,8 +132,12 @@
 </template>
 <script type="text/ecmascript-6">
 import { mapGetters, mapActions } from 'vuex'
+import NoCont from '../../base/noCont/noCont'
 export default {
   name: 'overView',
+  components: {
+    NoCont
+  },
   data () {
     return {
       activeName: 'first',
@@ -148,8 +155,6 @@ export default {
   },
   methods: {
     handleClick (tab, event) {
-      console.log(tab, event)
-      console.log(this.activeName)
       if (tab.name === 'second') {
         this.getReturnBack()
       }
@@ -175,7 +180,6 @@ export default {
       this.$ajax.post('/api/seller/order/getTodoTaskNumListBySellerUserId', {
         sellerUserId: this.userInfo.sellerUserId
       }).then((data) => {
-        console.log(data)
         let res = data.data
         if (res.code === '200') {
           this.toCheckOrderArr = res.data.toConfirmOrderList
@@ -195,7 +199,6 @@ export default {
       this.$ajax.post('/api/seller/task/getRejectTaskListBySellerUserId', {
         sellerUserId: this.userInfo.sellerUserId
       }).then((data) => {
-        console.log(data)
         let res = data.data
         if (res.code === '200') {
           this.returnBackArr = res.data
@@ -219,7 +222,6 @@ export default {
         this.$ajax.post('/api/platform/task/cancelTask', {
           sellerTaskId: sellerTaskId
         }).then((data) => {
-          console.log(data)
           if (data.data.code === '200') {
             this.$message({
               type: 'success',

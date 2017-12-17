@@ -113,7 +113,8 @@
           </li>
         </ul>
       </div>
-      <div class="pager">
+      <noCont v-if="listArr.length===0"></noCont>
+      <div class="pager" v-if="listArr.length!==0">
         <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNo" :page-sizes="pageSizeArray" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="pageTotal">
         </el-pagination>
       </div>
@@ -150,10 +151,14 @@
 <script type="text/ecmascript-6">
 import { pageCommon } from '../../assets/js/mixin'
 import { mapGetters } from 'vuex'
+import NoCont from '../../base/noCont/noCont'
 
 export default {
   name: 'task',
   mixins: [pageCommon],
+  components: {
+    NoCont
+  },
   data () {
     return {
       activeName: 'all',
@@ -204,15 +209,8 @@ export default {
   },
   methods: {
     handleClick (tab, event) {
-      console.log(tab, event)
       this.getTask()
     },
-    // handleSizeChange (val) {
-    //   console.log(`每页 ${val} 条`)
-    // },
-    // handleCurrentChange (val) {
-    //   console.log(`当前页: ${val}`)
-    // },
     find () {
       this.searchObj.keywordType = this.keyType
       this.getTask()

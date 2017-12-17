@@ -45,6 +45,7 @@
             </ul>
             <!-- <el-button plain v-if="0" style="margin-top:20px">导出到Excel</el-button> -->
             <!-- 内容部分 -->
+            <noCont v-if="toCheckList.length===0"></noCont>
             <div v-for="(item,index) in toCheckList" :key="index">
               <div class="content">
                 <div class="header">
@@ -152,6 +153,7 @@
             </ul>
             <!-- <el-button plain style="margin-top:20px">导出到Excel</el-button> -->
             <!-- 内容部分 -->
+            <noCont v-if="passList.length===0"></noCont>
             <div v-for="(item,index) in passList" :key="index">
               <div class="content">
                 <div class="header">
@@ -255,6 +257,7 @@
             </ul>
             <!-- <el-button plain style="margin-top:20px">导出到Excel</el-button> -->
             <!-- 内容部分 -->
+            <noCont v-if="rejectList.length===0"></noCont>
             <div v-for="(item,index) in rejectList" :key="index">
               <div class="content">
                 <div class="header">
@@ -327,7 +330,7 @@
       <div v-show="showLookImg">
         <lookImg :imgUrl="lookImgUrl" @close="showLookImg=false"></lookImg>
       </div>
-      <div class="pager">
+      <div class="pager" v-if="showPager">
         <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNo" :page-sizes="pageSizeArray" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="pageTotal">
         </el-pagination>
       </div>
@@ -370,11 +373,13 @@
 import { pageCommon } from '../../assets/js/mixin'
 import { mapGetters } from 'vuex'
 import LookImg from '../../base/lookImg/lookImg'
+import NoCont from '../../base/noCont/noCont'
 export default {
   name: 'appraiseOrder',
   mixins: [pageCommon],
   components: {
-    LookImg
+    LookImg,
+    NoCont
   },
   data () {
     return {
@@ -401,6 +406,17 @@ export default {
     }
   },
   computed: {
+    showPager: function () {
+      if (this.activeName === '11' && this.toCheckList.length !== 0) {
+        return true
+      } else if (this.activeName === '20' && this.passList.length !== 0) {
+        return true
+      } else if (this.activeName === '12' && this.rejectList.length !== 0) {
+        return true
+      } else {
+        return false
+      }
+    },
     params () {
       return {
         sellerUserId: this.userInfo.sellerUserId,

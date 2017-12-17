@@ -7,7 +7,7 @@
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="邀请员工账号" name="first">
           <div class="accountTab">
-            <el-table :data="tableDataSell" style="width: 100%">
+            <el-table :data="tableDataSell" style="width: 100%" v-if="tableDataSell.length!==0">
               <el-table-column prop="name" align="center" label="姓名">
               </el-table-column>
               <el-table-column prop="number" align="center" label="账号名">
@@ -24,11 +24,12 @@
               <el-table-column prop="time" align="center" label="注册时间">
               </el-table-column>
             </el-table>
+            <noCont v-if="tableDataSell.length===0"></noCont>
           </div>
         </el-tab-pane>
         <el-tab-pane label="邀请买手账号" name="second">
           <div class="accountTab">
-            <el-table :data="tableDataBuy" style="width: 100%">
+            <el-table :data="tableDataBuy" style="width: 100%" v-if="tableDataBuy.length!==0">
               <el-table-column prop="name" align="center" label="姓名">
               </el-table-column>
               <el-table-column prop="number" align="center" label="账号名">
@@ -45,11 +46,12 @@
               <el-table-column prop="time" align="center" label="注册时间">
               </el-table-column>
             </el-table>
+            <noCont v-if="tableDataBuy.length===0"></noCont>
           </div>
         </el-tab-pane>
         <el-tab-pane label="管理员账号" name="third">
           <div class="accountTab">
-            <el-table :data="tableDataAdmin" style="width: 100%">
+            <el-table :data="tableDataAdmin" style="width: 100%" v-if="tableDataAdmin.length!==0">
               <el-table-column prop="name" align="center" label="姓名">
               </el-table-column>
               <el-table-column prop="number" align="center" label="手机号">
@@ -62,10 +64,11 @@
                 </template>
               </el-table-column>
             </el-table>
+            <noCont v-if="tableDataAdmin.length===0"></noCont>
           </div>
         </el-tab-pane>
         <!-- 分页 -->
-        <div class="pager">
+        <div class="pager" v-if="showPager">
           <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[1, 5, 10, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalCount">
           </el-pagination>
         </div>
@@ -74,8 +77,25 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
+import NoCont from '../../base/noCont/noCont'
 export default {
   name: 'pushAdmin',
+  components: {
+    NoCont
+  },
+  computed: {
+    showPager: function () {
+      if (this.activeName === 'first' && this.tableDataSell.length !== 0) {
+        return true
+      } else if (this.activeName === 'second' && this.tableDataBuy.length !== 0) {
+        return true
+      } else if (this.activeName === 'second' && this.tableDataAdmin.length !== 0) {
+        return true
+      } else {
+        return false
+      }
+    }
+  },
   data () {
     return {
       activeName: 'first',
@@ -130,5 +150,5 @@ export default {
     margin-top 24px
     padding 0 20px 20px
     .pager
-      float right 
+      float right
 </style>

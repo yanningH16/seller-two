@@ -7,7 +7,7 @@
       </el-breadcrumb>
     </div>
     <div class="tabs">
-      <el-table :data="tableData" style="width: 100%">
+      <el-table :data="tableData" style="width: 100%" v-if="tableData.length!==0">
         <el-table-column prop="time" align="center" label="提交时间">
         </el-table-column>
         <el-table-column prop="complainPhone" align="center" label="举报人">
@@ -36,7 +36,8 @@
           </template> -->
         </el-table-column>
       </el-table>
-      <div class="pager">
+      <noCont v-if="tableData.length===0"></noCont>
+      <div class="pager" v-if="tableData.length!==0">
         <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNo" :page-sizes="pageSizeArray" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="pageTotal">
         </el-pagination>
       </div>
@@ -46,9 +47,13 @@
 <script type="text/ecmascript-6">
 import { pageCommon } from '../../assets/js/mixin'
 import { mapGetters } from 'vuex'
+import NoCont from '../../base/noCont/noCont'
 export default {
-  mixins: [pageCommon],
   name: 'report',
+  mixins: [pageCommon],
+  components: {
+    NoCont
+  },
   data () {
     return {
       currentPage: 1,

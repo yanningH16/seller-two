@@ -46,6 +46,7 @@
             <el-button plain v-if="0">
               <span style="font-weight:600">导出excel</span>
             </el-button>
+            <noCont v-if="toCheckOrderList.length===0"></noCont>
             <div class="tabItem" v-for="(item, index) in toCheckOrderList" :key="index">
               <ul class="head">
                 <li style="width:20%">
@@ -135,6 +136,7 @@
               </el-input>
               <button class="btn" style="margin-left:40px;" @click="getTask">查询</button>
             </div>
+            <noCont v-if="toFavorList.length===0"></noCont>
             <div class="tabItem" v-for="(item, index) in toFavorList" :key="index">
               <ul class="head">
                 <li style="width:20%">
@@ -226,6 +228,7 @@
               </el-input>
               <button class="btn" style="margin-left:40px;" @click="getTask">查询</button>
             </div>
+            <noCont v-if="rejectOrderList.length===0"></noCont>
             <div class="tabItem" v-for="(item, index) in rejectOrderList" :key="index">
               <ul class="head">
                 <li style="width:20%">
@@ -287,7 +290,7 @@
           </div>
         </el-tab-pane>
       </el-tabs>
-      <div class="pager">
+      <div class="pager" v-if="showPager">
         <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNo" :page-sizes="pageSizeArray" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="pageTotal">
         </el-pagination>
       </div>
@@ -331,7 +334,7 @@
             <span>评价方式：</span>
           </li>
           <li v-if="favorType==0">
-            <span>默认好评，买家无序做任何操作，确认后本金和佣金会打至买家平台账号</span>
+            <span>默认好评，买家无需做任何操作，确认后本金和佣金会打至买家平台账号</span>
           </li>
           <li v-if="favorType==1">
             <span>五星+文字好评</span>
@@ -366,6 +369,7 @@
 import { pageCommon } from '../../assets/js/mixin'
 import { mapGetters } from 'vuex'
 import LookImg from '../../base/lookImg/lookImg'
+import NoCont from '../../base/noCont/noCont'
 import { uploadPromise, uploadFile } from '../../assets/js/upload'
 import Clipboard from 'clipboard'
 // import Md5 from 'md5'
@@ -373,7 +377,8 @@ export default {
   name: 'auditOrder',
   mixins: [pageCommon],
   components: {
-    LookImg
+    LookImg,
+    NoCont
   },
   data () {
     return {
@@ -410,6 +415,17 @@ export default {
     }
   },
   computed: {
+    showPager: function () {
+      if (this.activeName === 'first' && this.toCheckOrderList.length !== 0) {
+        return true
+      } else if (this.activeName === 'second' && this.toFavorList.length !== 0) {
+        return true
+      } else if (this.activeName === 'third' && this.rejectOrderList.length !== 0) {
+        return true
+      } else {
+        return false
+      }
+    },
     params () {
       return {
         shopType: this.platform,
@@ -479,7 +495,6 @@ export default {
       this.$ajax.post('/api/config/rejectReason/getReasonList', {
         rejectType: 0 // type : 0 下单  1 评价
       }).then((data) => {
-        console.log(data)
         if (data.data.code === '200') {
           this.rejectReasonList = data.data.data
         } else {
@@ -503,7 +518,6 @@ export default {
         solution: this.returnBackObj.plan,
         step: step
       }).then((data) => {
-        console.log(data)
         if (data.data.code === '200') {
           this.showReturn = false
           this.$message({
@@ -528,7 +542,12 @@ export default {
     },
     // 确认订单并填写好评
     sureToConfirm () {
-      if (this.confirmObj.imgArr.length === 0 && parseInt(this.favorType) === 2) {
+      if (this.confirmObj.evaluteText === '' && parseInt(this.favorType) !== 0) {
+        this.$message({
+          type: 'warning',
+          message: '请填写好评文字!'
+        })
+      } else if (this.confirmObj.imgArr.length === 0 && parseInt(this.favorType) === 2) {
         this.$message({
           type: 'warning',
           message: '请上传好评图片!'
@@ -563,11 +582,9 @@ export default {
       }
     },
     handleClick (tab, event) {
-      console.log(tab, event)
       this.getTask()
     },
     beforeAvatarUpload (file) {
-      console.log(file)
       const isJPG = file.type === 'image/jpeg'
       const isLt2M = file.size / 1024 / 1024 < 2
       if (!isJPG) {
@@ -584,7 +601,6 @@ export default {
         sellerUserId: this.userInfo.sellerUserId,
         shopType: 3
       }).then((data) => {
-        console.log(data)
         if (data.data.code === '200') {
           this.shopList = data.data.data
         } else {

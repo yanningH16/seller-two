@@ -28,7 +28,8 @@
             </li>
           </ul>
           <div class="actTab">
-            <el-table :data="tableData" style="width: 100%">
+            <noCont v-if="tableData.length===0"></noCont>
+            <el-table :data="tableData" style="width: 100%" v-if="tableData.length!==0">
               <el-table-column prop="sureTime" align="center" label="确认时间">
               </el-table-column>
               <el-table-column prop="revenue" align="center" label="入款">
@@ -65,7 +66,8 @@
             </li>
           </ul>
           <div class="actTab">
-            <el-table :data="tableData_1" style="width: 100%">
+            <noCont v-if="tableData_1.length===0"></noCont>
+            <el-table :data="tableData_1" style="width: 100%" v-if="tableData_1.length!==0">
               <el-table-column prop="number" align="center" label="流水编号">
               </el-table-column>
               <el-table-column prop="pay" align="center" label="充值">
@@ -84,7 +86,7 @@
           </div>
         </el-tab-pane>
       </el-tabs>
-      <div class="pager">
+      <div class="pager" v-if="showPager">
         <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[5, 10, 15, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalCount">
         </el-pagination>
       </div>
@@ -93,8 +95,12 @@
 </template>
 <script type="text/ecmascript-6">
 import { mapGetters } from 'vuex'
+import NoCont from '../../base/noCont/noCont'
 export default {
   name: 'coinApply',
+  components: {
+    NoCont
+  },
   data () {
     return {
       activeName: 'first',
@@ -104,6 +110,7 @@ export default {
       totalCount: 0,
       pageSize: 5,
       tableData: [],
+      tableData_1: [],
       options: [{
         value: '',
         label: '全部'
@@ -118,6 +125,15 @@ export default {
     }
   },
   computed: {
+    showPager: function () {
+      if (this.activeName === 'first' && this.tableData.length !== 0) {
+        return true
+      } else if (this.activeName === 'second' && this.tableData_1.length !== 0) {
+        return true
+      } else {
+        return false
+      }
+    },
     ...mapGetters([
       'userInfo',
       'userToken'
