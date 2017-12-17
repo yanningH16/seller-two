@@ -30,7 +30,7 @@
     <div class="contentDelit">
       <h3>待处理充值
         <span class="balance">您的押金账户余额:
-          <em style="color:rgba(255,51,65,1)">39</em>元</span>
+          <em style="color:rgba(255,51,65,1)">{{this.userMoney.availableCapitalAmount}}</em>元</span>
       </h3>
       <div class="line"></div>
       <div class="actTab">
@@ -66,7 +66,7 @@
       </div>
     </div>
     <!-- 弹框部分 -->
-    <el-dialog title="生产充值单" :visible.sync="dialogVisible" width="30%" :modal-append-to-body='false'>
+    <el-dialog title="生产充值单" :visible.sync="dialogVisible" width="600px" :modal-append-to-body='false'>
       <p style="font-size:16px;color:#333">请使用尾号
         <span style="color:#ff0020">{{objDate.sellerBankCardNo |bankCard}}</span>的
         <span style="color:#ff0020">{{objDate.sellerBankName }}
@@ -105,7 +105,7 @@
       </span>
     </el-dialog>
     <!-- 充值单详情的弹窗 -->
-    <el-dialog title="充值单详情" :visible.sync="toview" width="30%" :modal-append-to-body='false'>
+    <el-dialog title="充值单详情" :visible.sync="toview" width="600px" :modal-append-to-body='false'>
       <div class="line"></div>
       <ul class="payPar">
         <li>
@@ -200,7 +200,8 @@ export default {
       }
     },
     ...mapGetters([
-      'userInfo'
+      'userInfo',
+      'userMoney'
     ])
   },
   methods: {

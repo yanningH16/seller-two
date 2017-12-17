@@ -78,12 +78,16 @@
 </template>
 <script type="text/ecmascript-6">
 import NoCont from '../../base/noCont/noCont'
+import { mapGetters } from 'vuex'
 export default {
   name: 'pushAdmin',
   components: {
     NoCont
   },
   computed: {
+    ...mapGetters([
+      'userInfo'
+    ]),
     showPager: function () {
       if (this.activeName === 'first' && this.tableDataSell.length !== 0) {
         return true
@@ -107,6 +111,9 @@ export default {
       tableDataAdmin: []
     }
   },
+  created () {
+    this.sercherOne(1, this.pageSize)
+  },
   methods: {
     handleClick (tab, event) {
       console.log(tab, event)
@@ -129,6 +136,106 @@ export default {
       } else if (this.activeName === 'three') {
         this.sercherThree(val, this.pageSize)
       }
+    },
+    sercherOne (pageNo, pageSize) {
+      this.$ajax.post('/api/buyerAccount/getEmployeeListBySellerUserId', {
+        pageNo: pageNo,
+        pageSize: pageSize,
+        sellerUserId: this.userInfo.sellerUserId
+      }).then((data) => {
+        console.log(data)
+        let res = data.data
+        this.totalCount = res.data.totalCount
+        if (res.code === '200') {
+          let arr = []
+          for (let word of res.data.employees) {
+            let goods = {
+              name: word.userName,
+              number: word.buyerUserAccountid,
+              deduct: word.pay,
+              numberType: word.buyerType,
+              admin: word.sellerManagerId,
+              JDStatus: word.buyerType === '1' ? '正常' : '冻结',
+              time: word.gmtCreate
+            }
+            arr.push(goods)
+          }
+          this.tableDataSell = arr
+        } else {
+          this.$message({
+            message: res.message,
+            type: 'warning'
+          })
+        }
+      }).catch(() => {
+        this.$message.error('网络错误，刷新下试试')
+      })
+    },
+    sercherTwo (pageNo, pageSize) {
+      this.$ajax.post('/api/buyerAccount/getBuyerListBySellerUserId', {
+        pageNo: pageNo,
+        pageSize: pageSize,
+        sellerUserId: this.userInfo.sellerUserId
+      }).then((data) => {
+        console.log(data)
+        let res = data.data
+        this.totalCount = res.data.totalCount
+        if (res.code === '200') {
+          let arr = []
+          for (let word of res.data.employees) {
+            let goods = {
+              name: word.userName,
+              number: word.buyerUserAccountid,
+              deduct: word.pay,
+              numberType: word.buyerType,
+              admin: word.sellerManagerId,
+              JDStatus: word.buyerType === '1' ? '正常' : '冻结',
+              time: word.gmtCreate
+            }
+            arr.push(goods)
+          }
+          this.tableDataBuy = arr
+        } else {
+          this.$message({
+            message: res.message,
+            type: 'warning'
+          })
+        }
+      }).catch(() => {
+        this.$message.error('网络错误，刷新下试试')
+      })
+    },
+    sercherThree (pageNo, pageSize) {
+      this.$ajax.post('/api/sellerManagerAccount/getManagerListBySellerUserId', {
+        pageNo: pageNo,
+        pageSize: pageSize,
+        sellerUserId: this.userInfo.sellerUserId
+      }).then((data) => {
+        console.log(data)
+        let res = data.data
+        this.totalCount = res.data.totalCount
+        if (res.code === '200') {
+          let arr = []
+          for (let word of res.data.employees) {
+            let goods = {
+              name: word.userName,
+              number: word.telephone,
+              deduct: word.pay,
+              numberType: word.buyerType,
+              JDStatus: word.buyerType === '1' ? '正常' : '冻结'
+            }
+            arr.push(goods)
+          }
+          this.tableDataBuy = arr
+        } else {
+          this.$message({
+            message: res.message,
+            type: 'warning'
+          })
+        }
+      }).catch(() => {
+        this.$message.error('网络错误，刷新下试试')
+      })
     }
   }
 }
