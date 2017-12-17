@@ -528,32 +528,39 @@ export default {
     },
     // 确认订单并填写好评
     sureToConfirm () {
-      let buyerTaskId = sessionStorage.getItem('__buyerTaskId__') || ''
-      this.$ajax.post('/api/seller/order/confirmOrder', {
-        buyerTaskId: buyerTaskId,
-        sellerFavor: this.confirmObj.evaluteText,
-        sellerFavorPicUrl: this.confirmObj.imgArr
-      }).then((data) => {
-        if (data.data.code === '200') {
-          this.showConfirm = false
-          this.confirmObj = {
-            evaluteText: '',
-            imgArr: []
+      if (this.confirmObj.imgArr.length === 0 && parseInt(this.favorType) === 2) {
+        this.$message({
+          type: 'warning',
+          message: '请上传好评图片!'
+        })
+      } else {
+        let buyerTaskId = sessionStorage.getItem('__buyerTaskId__') || ''
+        this.$ajax.post('/api/seller/order/confirmOrder', {
+          buyerTaskId: buyerTaskId,
+          sellerFavor: this.confirmObj.evaluteText,
+          sellerFavorPicUrl: this.confirmObj.imgArr
+        }).then((data) => {
+          if (data.data.code === '200') {
+            this.showConfirm = false
+            this.confirmObj = {
+              evaluteText: '',
+              imgArr: []
+            }
+            this.$message({
+              type: 'success',
+              message: '确认订单成功!'
+            })
+            this.getTask()
+          } else {
+            this.$message({
+              type: 'warning',
+              message: data.data.message
+            })
           }
-          this.$message({
-            type: 'success',
-            message: '确认订单成功!'
-          })
-          this.getTask()
-        } else {
-          this.$message({
-            type: 'warning',
-            message: data.data.message
-          })
-        }
-      }).catch((err) => {
-        console.log(err)
-      })
+        }).catch((err) => {
+          console.log(err)
+        })
+      }
     },
     handleClick (tab, event) {
       console.log(tab, event)
