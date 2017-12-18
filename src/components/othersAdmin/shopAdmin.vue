@@ -29,7 +29,7 @@
         <li class="pic">
           <span class="pic_admin">管理后台截图</span>
           <el-upload class="avatar-uploader" :show-file-list="false" :http-request="uploadImg" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" ref="upload" action="">
-            <img v-if="imageUrl" :src="imageUrl" class="avatar" width="182px" height="182">
+            <img v-if="imageUrl" :src="imageUrl" class="avatar" width="182px" height="182" style="border-right:1px solid #D4D5D8; border-bottom:1px solid #D4D5D8">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </li>
