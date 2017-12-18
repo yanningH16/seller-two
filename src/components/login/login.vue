@@ -10,7 +10,7 @@
       </div> -->
       <div class="board">
         <h2>登&nbsp;录</h2>
-        <div class="inputCont">
+        <div class="inputCont" @keyup.13="login">
           <div class="input">
             <span class="el-icon-edit"></span>
             <input type="number" placeholder="输入手机号" v-model="username">

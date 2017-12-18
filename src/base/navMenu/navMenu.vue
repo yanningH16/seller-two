@@ -258,6 +258,8 @@ export default {
       line-height 40px
       cursor pointer
       color white
+      &:hover
+        color red
     .animate
       transition all 0.5s
       transform-origin 40px -80px

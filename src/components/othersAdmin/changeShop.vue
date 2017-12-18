@@ -28,7 +28,7 @@
         </li>
         <li class="pic">
           <span class="pic_admin">管理后台截图</span>
-          <el-upload class="avatar-uploader" :show-file-list="false" :http-request="uploadImg" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" ref="upload" action="">
+          <el-upload disabled class="avatar-uploader" :show-file-list="false" :http-request="uploadImg" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" ref="upload" action="">
             <img v-if="imageUrl" :src="imageUrl" class="avatar" width="182px" height="182px">
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
@@ -494,6 +494,7 @@ export default {
         margin-left 12px
       .pic
         margin-top 20px
+        // background rgba(0, 0, 0, 0.5)
         .pic_admin
           margin-left -418px
           margin-top 13px
