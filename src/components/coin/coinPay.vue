@@ -34,7 +34,6 @@
       </h3>
       <div class="line"></div>
       <div class="actTab">
-        <noCont v-if="tableData.length===0"></noCont>
         <el-table :data="tableData" style="width: 100%">
           <el-table-column prop="payWater" align="center" label="充值单号">
           </el-table-column>
@@ -59,6 +58,7 @@
             </template>
           </el-table-column>
         </el-table>
+        <noCont v-if="tableData.length===0"></noCont>
         <div class="pager" v-if="tableData.length!==0">
           <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[5, 10, 15, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="pageTotal">
           </el-pagination>
