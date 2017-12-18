@@ -26,7 +26,7 @@
           <img src="../../assets/image/lianmeng.png" alt="">
           <div>
             <h3>联盟佣金(元)</h3>
-            <h2 style="color:#FF8A22;">{{ moneyObj.totalCommissionAmount }}</h2>
+            <h2 style="color:#FF8A22;">{{ moneyObj.availableCommissionAmount }}</h2>
           </div>
         </li>
       </ul>
