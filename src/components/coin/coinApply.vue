@@ -4,7 +4,7 @@
       <em class="gray">资金管理</em>>资金记录
     </div>
     <div class="contentShop">
-      <el-tabs v-model="activeName" @tab-click="handleClick">
+      <el-tabs v-model="activeName" @tab-click="handleClick" type="border-card">
         <el-tab-pane label="消费明细" name="first">
           <ul>
             <li>

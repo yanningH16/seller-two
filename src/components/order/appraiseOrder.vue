@@ -4,7 +4,7 @@
       <em class="gray" style="background: none">订单管理</em>>审核评价
     </div>
     <div class="personBank">
-      <el-tabs v-model="activeName" @tab-click="handleClick">
+      <el-tabs v-model="activeName" @tab-click="handleClick" type="border-card">
         <el-tab-pane label="待审核评价" name="11">
           <div class="order1">
             <ul class="top">

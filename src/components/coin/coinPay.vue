@@ -9,7 +9,7 @@
       <div style="margin-top:20px">
         <span class="account">付款账户</span>
         <el-select v-model="item" placeholder="请选择" value-key="value">
-          <el-option v-for="(item,index) in options" :key="index" :label="item.label" :value="item">
+          <el-option v-for="(item,index) in options" :key="index" :label="item.label+' '+item.bankCardNo" :value="item">
           </el-option>
         </el-select>
         <router-link :to="{name:'coinList'}">
@@ -235,7 +235,7 @@ export default {
           let goods = {
             chargeAmount: res.data.chargeAmount,
             memo: res.data.memo,
-            platformCardBankCardName: res.data.platformCardBankCardName,
+            platformCardBankCardName: res.data.platformCardBankName,
             platformCardBankName: res.data.platformCardBankName,
             platformCardNo: res.data.platformCardNo,
             platformCardUserName: res.data.platformCardUserName,
@@ -309,7 +309,8 @@ export default {
           for (let word of res.data) {
             let goods = {
               label: word.bankName,
-              value: word.sellerBankCardId
+              value: word.sellerBankCardId,
+              bankCardNo: word.bankCardNo
             }
             arr.push(goods)
           }

@@ -124,7 +124,7 @@ export default {
       className: '',
       valueCode: '',
       imageUrl: '',
-      pull: false,
+      pull: true,
       addArr: [],
       addContent: false
     }
@@ -216,6 +216,8 @@ export default {
           cCode: this.cityCode,
           zCode: this.zoneCode
         })
+        this.jieName = ''
+        this.phone = ''
       }
       this.addContent = true
       this.pull = false
