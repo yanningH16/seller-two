@@ -542,7 +542,7 @@ export default {
         arr.push({
           day: '',
           date: '',
-          num: 1
+          num: 0
         })
       }
       for (let i = 0; i < 14; i++) {
@@ -575,6 +575,15 @@ export default {
       } else {
         this.timeArr[lineIndex].line[arrIndex].num--
       }
+      // if (this.timeArr[lineIndex].line[arrIndex].num = 0) {
+      //   if (lineIndex === 0) {
+
+      //   } else if (lineIndex === 1) {
+
+      //   } else if (lineIndex === 2) {
+
+      //   }
+      // }
     },
     add (lineIndex, arrIndex) {
       this.timeArr[lineIndex].line[arrIndex].num++
