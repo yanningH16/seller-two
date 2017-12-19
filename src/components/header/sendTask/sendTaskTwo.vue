@@ -30,7 +30,7 @@
       <div class="choosed">
         <span>已选择: </span>
         <b>{{ creatShopInfo.taskType == 1 ? '手机京东' : '微信京东' }}&nbsp;&nbsp;垫付任务</b>
-        <i></i>
+        <i :class="{ 'jdIcon': creatShopInfo.shopType==0, 'taobaoIcon': creatShopInfo.shopType==1, 'tianmaoIcon': creatShopInfo.shopType==2 }"></i>
         <span>{{ creatShopInfo.shopName }}</span>
       </div>
       <h2>第一步: 填写商品信息</h2>
@@ -73,7 +73,7 @@
           </el-select>
           <div class="setFormat">
             <span class="must">设置商品规格
-              <b class="gray">（若手机淘宝和pc端的价格不一致，请填写手机端价格）</b>
+              <b class="gray">（若手机京东和pc端的价格不一致，请填写手机端价格）</b>
             </span>
           </div>
           <table class="table">
@@ -409,7 +409,7 @@ export default {
         productShowPrice: '', // 商品展示价格
         productOrderPrice: '', // 商品下单价格
         numPerOrder: '', // 买家每单拍几件
-        productFormat: '', // 商品规格
+        productFormat: '任意规格', // 商品规格
         isPostageFree: '', // 是否包邮 0 - 否，1-是
         isSupportBaiTiao: '', // 是否支持白条/花呗
         isSupportCredit: '', // 是否支持信用卡
@@ -542,7 +542,7 @@ export default {
         arr.push({
           day: '',
           date: '',
-          num: 1
+          num: 0
         })
       }
       for (let i = 0; i < 14; i++) {
@@ -552,14 +552,14 @@ export default {
         arr.push({
           day: thisTime,
           date: date,
-          num: 1
+          num: 0
         })
       }
       for (let i = 0; i < 7 - week; i++) {
         arr.push({
           day: '',
           date: '',
-          num: 1
+          num: 0
         })
       }
       for (let i = 0; i < 3; i++) {
@@ -575,13 +575,69 @@ export default {
       } else {
         this.timeArr[lineIndex].line[arrIndex].num--
       }
+      // 连续规则
+      if (this.timeArr[lineIndex].line[arrIndex].num === 0) {
+        if (lineIndex === 0) {
+          for (let i = arrIndex; i < 7; i++) {
+            this.timeArr[0].line[i].num = 0
+          }
+          for (let i = 0; i < 7; i++) {
+            this.timeArr[1].line[i].num = 0
+            this.timeArr[2].line[i].num = 0
+          }
+        } else if (lineIndex === 1) {
+          for (let i = arrIndex; i < 7; i++) {
+            this.timeArr[1].line[i].num = 0
+          }
+          for (let i = 0; i < 7; i++) {
+            this.timeArr[2].line[i].num = 0
+          }
+        } else if (lineIndex === 2) {
+          for (let i = arrIndex; i < 7; i++) {
+            this.timeArr[2].line[i].num = 0
+          }
+        }
+      }
     },
     add (lineIndex, arrIndex) {
       this.timeArr[lineIndex].line[arrIndex].num++
+      if (lineIndex === 0) {
+        for (let i = 0; i < arrIndex; i++) {
+          if (parseInt(this.timeArr[0].line[i].num) === 0) {
+            this.timeArr[0].line[i].num = 1
+          }
+        }
+      } else if (lineIndex === 1) {
+        for (let i = 0; i < 7; i++) {
+          if (parseInt(this.timeArr[0].line[i].num) === 0) {
+            this.timeArr[0].line[i].num = 1
+          }
+        }
+        for (let i = 0; i < arrIndex; i++) {
+          if (parseInt(this.timeArr[1].line[i].num) === 0) {
+            this.timeArr[1].line[i].num = 1
+          }
+        }
+      } else if (lineIndex === 2) {
+        for (let i = 0; i < 7; i++) {
+          if (parseInt(this.timeArr[0].line[i].num) === 0) {
+            this.timeArr[0].line[i].num = 1
+          }
+        }
+        for (let i = 0; i < 7; i++) {
+          if (parseInt(this.timeArr[1].line[i].num) === 0) {
+            this.timeArr[1].line[i].num = 1
+          }
+        }
+        for (let i = 0; i < arrIndex; i++) {
+          if (parseInt(this.timeArr[2].line[i].num) === 0) {
+            this.timeArr[2].line[i].num = 1
+          }
+        }
+      }
     },
     // 改变任务开展时间时设置
     setTaskStarTime () {
-      console.log(this.taskStarTime)
       this.setMyDate(this.taskStarTime)
     },
     uploadImg (img) {
@@ -685,46 +741,50 @@ export default {
       }
     },
     doNext () {
-      if (this.buyerType === 1) {
-        this.sendObj.plusNum = this.sendTotalNum
+      if (this.$route.query.syb) {
+        window.history.go(-1)
       } else {
-        this.sendObj.plusNum = 0
-      }
-      if (this.setFavorNumObj.wordFavor.checked) {
-        this.sendObj.wordFavorNum = this.setFavorNumObj.wordFavor.num
-      } else {
-        this.sendObj.wordFavorNum = 0
-      }
-      if (this.setFavorNumObj.picFavor.checked) {
-        this.sendObj.graphicWordFavorNum = this.setFavorNumObj.picFavor.num
-      } else {
-        this.sendObj.graphicWordFavorNum = 0
-      }
-      if (this.setFavorNumObj.defaultFavor.checked) {
-        this.sendObj.defaultFavorNum = this.setFavorNumObj.defaultFavor.num
-      } else {
-        this.sendObj.defaultFavorNum = 0
-      }
-      this.sendObj.throwTime = this.sendDateList[0].time
-
-      this.sendObj.sellerTaskId = this.creatShopInfo.sellerTaskId
-      console.log(this.sendObj)
-
-      this.$ajax.post('/api/seller/task/addTaskInfo', this.sendObj).then((data) => {
-        console.log(data)
-        if (data.data.code === '200') {
-          this.$router.push({ name: 'sendTaskThree', query: { sellerTaskId: data.data.data.sellerTaskId } })
+        if (this.buyerType === 1) {
+          this.sendObj.plusNum = this.sendTotalNum
         } else {
-          this.$message({
-            message: data.data.message,
-            type: 'warning'
-          })
+          this.sendObj.plusNum = 0
         }
-      }).catch((err) => {
-        console.log(err)
-        this.$message.error('服务器错误！')
-      })
+        if (this.setFavorNumObj.wordFavor.checked) {
+          this.sendObj.wordFavorNum = this.setFavorNumObj.wordFavor.num
+        } else {
+          this.sendObj.wordFavorNum = 0
+        }
+        if (this.setFavorNumObj.picFavor.checked) {
+          this.sendObj.graphicWordFavorNum = this.setFavorNumObj.picFavor.num
+        } else {
+          this.sendObj.graphicWordFavorNum = 0
+        }
+        if (this.setFavorNumObj.defaultFavor.checked) {
+          this.sendObj.defaultFavorNum = this.setFavorNumObj.defaultFavor.num
+        } else {
+          this.sendObj.defaultFavorNum = 0
+        }
+        this.sendObj.throwTime = this.sendDateList[0].time
 
+        this.sendObj.sellerTaskId = this.creatShopInfo.sellerTaskId
+        console.log(this.sendObj)
+        sessionStorage.setItem('taskTwo_sendObj', JSON.stringify(this.sendObj))
+
+        this.$ajax.post('/api/seller/task/addTaskInfo', this.sendObj).then((data) => {
+          console.log(data)
+          if (data.data.code === '200') {
+            this.$router.push({ name: 'sendTaskThree', query: { sellerTaskId: data.data.data.sellerTaskId } })
+          } else {
+            this.$message({
+              message: data.data.message,
+              type: 'warning'
+            })
+          }
+        }).catch((err) => {
+          console.log(err)
+          this.$message.error('服务器错误！')
+        })
+      }
       // this.$router.push({ name: 'sendTaskThree' })
     },
     // 获取分类列表
@@ -917,6 +977,9 @@ export default {
       this.isReturnBack = true
       this.getReturnBackInfo()
     }
+    if (this.$route.query.syb && sessionStorage.getItem('taskTwo_sendObj')) {
+      this.sendObj = JSON.parse(sessionStorage.getItem('taskTwo_sendObj'))
+    }
   }
 }
 </script>
@@ -990,7 +1053,6 @@ export default {
         display inline-block
         width 20px
         height 20px
-        background red
         vertical-align middle
     h2
       font-size 16px

@@ -1,8 +1,8 @@
 <template>
   <div class="login">
     <div class="logo">
-      <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1510149804507&di=38dc2b1b6be35acb5c774289b83f10fd&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F0124f358cec437a801219c77cd9b01.jpg%40900w_1l_2o_100sh.jpg" alt="logo">
-      <span>刷 单 项 目</span>
+      <!-- <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1510149804507&di=38dc2b1b6be35acb5c774289b83f10fd&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F0124f358cec437a801219c77cd9b01.jpg%40900w_1l_2o_100sh.jpg" alt="logo"> -->
+      <span>Y C H 项 目</span>
     </div>
     <div class="cont">
       <!-- <div class="text">
@@ -97,7 +97,7 @@ export default {
   min-width 800px
   width 100%
   height 100%
-  background rgba(16, 6, 59, 0.5)
+  background #f8f8f8
   .logo
     color #ffffff
     height 33px
@@ -114,6 +114,7 @@ export default {
       font-size 18px
       line-height 33px
       margin-left 12px
+      color #000000
   .cont
     display flex
     justify-content space-around

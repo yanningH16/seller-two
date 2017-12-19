@@ -26,7 +26,7 @@
           <img src="../../assets/image/lianmeng.png" alt="">
           <div>
             <h3>联盟佣金(元)</h3>
-            <h2 style="color:#FF8A22;">{{ moneyObj.totalCommissionAmount }}</h2>
+            <h2 style="color:#FF8A22;">{{ moneyObj.availableCommissionAmount }}</h2>
           </div>
         </li>
       </ul>
@@ -35,7 +35,7 @@
           <button class="btn disabled" @click="$router.push({name: 'coinPay'})">充值本金</button>
         </li>
         <li>
-          <button class="btn" @click="$router.push({name: 'sendTaskOne'})">发布垫付任务</button>
+          <button class="btn" @click="toPushTask">发布垫付任务</button>
         </li>
       </ul>
     </div>
@@ -158,6 +158,33 @@ export default {
       if (tab.name === 'second') {
         this.getReturnBack()
       }
+    },
+    toPushTask () {
+      this.$ajax.post('/api/seller/shop/getShopListBySellerUserId', {
+        sellerUserId: this.userInfo.sellerUserId,
+        shopType: 3
+      }).then((data) => {
+        let res = data.data
+        if (res.code === '200') {
+          console.log(data)
+          if (res.data) {
+            this.$router.push({ name: 'sendTaskOne' })
+          } else {
+            this.$message({
+              message: '您还未绑定店铺,请先绑定店铺',
+              type: 'warning'
+            })
+            this.$router.push({ name: 'shopAdminList' })
+          }
+        } else {
+          this.$message({
+            message: res.message,
+            type: 'warning'
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
     },
     // 去审核待确认订单
     toCheck () {

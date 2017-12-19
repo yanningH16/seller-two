@@ -1,8 +1,8 @@
 <template>
   <div class="login">
     <div class="logo">
-      <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1510149804507&di=38dc2b1b6be35acb5c774289b83f10fd&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F0124f358cec437a801219c77cd9b01.jpg%40900w_1l_2o_100sh.jpg" alt="logo">
-      <span>刷 单 项 目</span>
+      <!-- <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1510149804507&di=38dc2b1b6be35acb5c774289b83f10fd&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F0124f358cec437a801219c77cd9b01.jpg%40900w_1l_2o_100sh.jpg" alt="logo"> -->
+      <span>Y C H 项 目</span>
     </div>
     <div class="cont">
       <!-- <div class="text">
@@ -18,7 +18,7 @@
           <div class="inputCode">
             <div class="smInput" :class="{'actives':focusCode}">
               <span class="el-icon-edit-outline"></span>
-              <input type="password" placeholder="输入验证码" @focus="focusCode=true" @blur="focusCode=false">
+              <input type="password" v-model="code" placeholder="输入验证码" @focus="focusCode=true" @blur="focusCode=false">
             </div>
             <span class="testButton" v-show="!isCan">
               验证码
@@ -48,7 +48,7 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-// import md5 from 'md5'
+import md5 from 'md5'
 export default {
   name: 'reg',
   data () {
@@ -77,69 +77,85 @@ export default {
       }
     },
     send () {
-      // this.isSendMsg = false
-      // this.$ajax.post('/api/sms/sendVcode', {
-      //   telephone: this.phoneNum,
-      //   type: 2
-      // }).then(data => {
-      //   console.log(data)
-      //   if (data.data.code === '200') {
-      //     this.$message({
-      //       message: '发送成功',
-      //       type: 'success'
-      //     })
-      //     let me = this
-      //     me.show = false
-      //     let interval = window.setInterval(function () {
-      //       if ((me.time--) <= 0) {
-      //         me.time = 60
-      //         me.show = true
-      //         this.isCan = true
-      //         window.clearInterval(interval)
-      //       }
-      //     }, 1000)
-      //   } else {
-      //     this.$message({
-      //       message: data.data.message,
-      //       type: 'warning'
-      //     })
-      //   }
-      // }).catch(() => {
-      //   this.$message.error('服务器错误！')
-      // })
+      this.isSendMsg = false
+      this.$ajax.post('/api/config/sms/sendSms', {
+        telephone: this.phoneNum,
+        type: 2
+      }).then((data) => {
+        if (data.data.code === '200') {
+          this.$message({
+            message: '发送成功',
+            type: 'success'
+          })
+          let me = this
+          me.show = false
+          let interval = window.setInterval(function () {
+            if ((me.time--) <= 0) {
+              me.time = 60
+              me.show = true
+              this.isCan = true
+              window.clearInterval(interval)
+            }
+          }, 1000)
+        } else {
+          this.$message({
+            message: data.data.message,
+            type: 'warning'
+          })
+        }
+      }).catch(() => {
+        this.$message.error('服务器错误！')
+      })
+    },
+    testCode () {
+      this.$ajax.post('/api/config/sms/vertify', {
+        telephone: this.phoneNum,
+        type: 2,
+        code: this.code
+      }).then((data) => {
+        if (data.data.code === '200') {
+          this.$ajax.post('/api/sellerAccout/resetPassword', {
+            telephone: this.phoneNum,
+            newPassword: md5(this.newpass),
+            oldPassword: md5(this.agpass)
+          }).then(data => {
+            console.log(data)
+            if (data.data.code === '200') {
+              this.$message({
+                message: data.data.message,
+                type: 'success',
+                onClose: () => {
+                  this.$router.push({ name: 'login' })
+                }
+              })
+            } else {
+              this.$message({
+                message: data.data.message,
+                type: 'warning'
+              })
+            }
+          }).catch(() => {
+            this.$message.error('服务器错误！')
+          })
+        } else {
+          this.$message({
+            message: data.data.message,
+            type: 'warning'
+          })
+        }
+      }).catch(() => {
+        this.$message.error('服务器错误！')
+      })
     },
     submit () {
-      // if (this.newpass !== this.agpass) {
-      //   this.$message({
-      //     message: '两次密码不一致,请重新输入',
-      //     type: 'warning'
-      //   })
-      //   return false
-      // }
-      // this.$ajax.post('/api/user/resetPwd', {
-      //   telephone: this.phoneNum,
-      //   code: this.code,
-      //   password: md5(this.newpass),
-      //   repeatPwd: md5(this.agpass)
-      // }).then(data => {
-      //   console.log(data)
-      //   if (data.data.code === '200') {
-      //     this.$message({
-      //       message: data.data.message,
-      //       type: 'success',
-      //       onClose: () => {
-      //         this.$router.push({ name: 'login' })
-      //       }
-      //     })
-      //   } else {
-      //     this.$message({
-      //       message: data.data.message,
-      //       type: 'warning'
-      //     })
-      //   }
-      // }).catch(() => {
-      //   this.$message.error('服务器错误！')
-      // })
+      if (this.newpass !== this.agpass) {
+        this.$message({
+          message: '两次密码不一致,请重新输入',
+          type: 'warning'
+        })
+        return false
+      }
+      this.testCode()
     }
   }
 }
@@ -150,7 +166,7 @@ export default {
   min-width 800px
   width 100%
   height 100%
-  background rgba(16, 6, 59, 0.5)
+  background #f8f8f8
   // background url('../../assets/images/bg.png')
   .logo
     color #ffffff
@@ -168,6 +184,7 @@ export default {
       font-size 18px
       line-height 33px
       margin-left 12px
+      color #000000
   .cont
     display flex
     justify-content space-around
