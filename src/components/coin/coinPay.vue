@@ -84,7 +84,7 @@
           <span class="blue copy" :data-clipboard-text='objDate.platformCardNo' @click="doCopy">复制</span>
         </li>
         <li class="detali">
-          收款账户详情&nbsp;&nbsp;
+          银行卡&nbsp;&nbsp;
           <span>{{objDate.platformCardBankCardName}}</span>
         </li>
         <li class="detali">
