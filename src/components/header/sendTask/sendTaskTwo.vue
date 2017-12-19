@@ -73,7 +73,7 @@
           </el-select>
           <div class="setFormat">
             <span class="must">设置商品规格
-              <b class="gray">（若手机淘宝和pc端的价格不一致，请填写手机端价格）</b>
+              <b class="gray">（若手机京东和pc端的价格不一致，请填写手机端价格）</b>
             </span>
           </div>
           <table class="table">
@@ -409,7 +409,7 @@ export default {
         productShowPrice: '', // 商品展示价格
         productOrderPrice: '', // 商品下单价格
         numPerOrder: '', // 买家每单拍几件
-        productFormat: '', // 商品规格
+        productFormat: '任意规格', // 商品规格
         isPostageFree: '', // 是否包邮 0 - 否，1-是
         isSupportBaiTiao: '', // 是否支持白条/花呗
         isSupportCredit: '', // 是否支持信用卡

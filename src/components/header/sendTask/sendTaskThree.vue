@@ -76,8 +76,8 @@
           <b class="red">{{ moneyObj.availableCommissionAmount }}</b>元)</span>
       </div>
       <div class="warn">
-        <span>余额不足,请
-          <el-button type="text">先充值</el-button>再支付</span>
+        <span v-if="noMoney">余额不足,请
+          <el-button type="text" @click="toAddMoney">先充值</el-button>再支付</span>
         <p>支付:
           <b class="red">{{ infoObj.totalPrice }}</b>元</p>
       </div>
@@ -98,6 +98,7 @@ export default {
       active: 2,
       way1: true,
       way2: true,
+      noMoney: false,
       // 增值服务信息
       infoObj: {},
       // 账户余额
@@ -125,6 +126,9 @@ export default {
   methods: {
     doPrevent () {
       this.$router.push({ name: 'sendTaskTwo', query: { sellerTaskId: this.$route.query.rbSellerTaskId } })
+    },
+    toAddMoney () {
+      this.$router.push({ name: 'coinPay' })
     },
     doNext () {
       let sendMoney = ((this.moneyObj.availableCommissionAmount - 0) > (this.infoObj.totalPrice - 0) ? this.infoObj.totalPrice : this.moneyObj.availableCommissionAmount)
@@ -184,7 +188,7 @@ export default {
       })
     }
   },
-  created () {
+  mounted () {
     this.getInfo()
     this.getAccountMoney()
   }

@@ -91,7 +91,7 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { getImgSize, uploadFile, uploadPromise } from '../../assets/js/upload'
 export default {
   name: 'shopAdmin',
@@ -269,7 +269,27 @@ export default {
             message: '店铺添加成功',
             type: 'success'
           })
+          // this.refresh()
           this.$router.push({ name: 'shopAdminList' })
+        } else {
+          this.$message({
+            message: data.data.message,
+            type: 'warning'
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+        this.$message.error('服务器错误！')
+      })
+    },
+    // 刷新本地用户信息
+    refresh () {
+      this.$ajax.post('/api/buyerAccount/refresh', {
+        telephone: this.userInfo.telephone
+      }).then((data) => {
+        let res = data.data
+        if (res.code === '200') {
+          this.setUserInfo(res.data)
         } else {
           this.$message({
             message: data.data.message,
@@ -423,7 +443,10 @@ export default {
     },
     remove (index) {
       this.addArr.splice(index, 1)
-    }
+    },
+    ...mapActions([
+      'setUserInfo'
+    ])
   }
 }
 </script>

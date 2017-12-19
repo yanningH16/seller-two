@@ -40,7 +40,7 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'shopAdminList',
   data () {
@@ -76,6 +76,7 @@ export default {
               type: 'success',
               message: '删除成功!'
             })
+            // this.refresh()
             this.shoplist()
           } else {
             this.$message({
@@ -92,6 +93,25 @@ export default {
           type: 'info',
           message: '已取消删除'
         })
+      })
+    },
+    // 刷新本地用户信息
+    refresh () {
+      this.$ajax.post('/api/buyerAccount/refresh', {
+        telephone: this.userInfo.telephone
+      }).then((data) => {
+        let res = data.data
+        if (res.code === '200') {
+          this.setUserInfo(res.data)
+        } else {
+          this.$message({
+            message: data.data.message,
+            type: 'warning'
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+        this.$message.error('服务器错误！')
       })
     },
     // 获取店铺列表的接口
@@ -130,7 +150,10 @@ export default {
     },
     change (index) {
       this.$router.push({ name: 'changeShop', query: { sellerShopId: this.shopList[index].shopId } })
-    }
+    },
+    ...mapActions([
+      'setUserInfo'
+    ])
   }
 }
 </script>

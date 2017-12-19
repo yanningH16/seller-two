@@ -435,7 +435,6 @@ export default {
   },
   methods: {
     handleClick (tab, event) {
-      // console.log(tab, event)
       this.getTask()
     },
     lookImg (url) {
@@ -521,7 +520,6 @@ export default {
         sellerUserId: this.userInfo.sellerUserId,
         shopType: 3
       }).then((data) => {
-        console.log(data)
         if (data.data.code === '200') {
           this.shopList = data.data.data
         } else {
