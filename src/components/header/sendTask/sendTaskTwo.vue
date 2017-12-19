@@ -552,14 +552,14 @@ export default {
         arr.push({
           day: thisTime,
           date: date,
-          num: 1
+          num: 0
         })
       }
       for (let i = 0; i < 7 - week; i++) {
         arr.push({
           day: '',
           date: '',
-          num: 1
+          num: 0
         })
       }
       for (let i = 0; i < 3; i++) {
@@ -575,22 +575,69 @@ export default {
       } else {
         this.timeArr[lineIndex].line[arrIndex].num--
       }
-      // if (this.timeArr[lineIndex].line[arrIndex].num = 0) {
-      //   if (lineIndex === 0) {
-
-      //   } else if (lineIndex === 1) {
-
-      //   } else if (lineIndex === 2) {
-
-      //   }
-      // }
+      // 连续规则
+      if (this.timeArr[lineIndex].line[arrIndex].num === 0) {
+        if (lineIndex === 0) {
+          for (let i = arrIndex; i < 7; i++) {
+            this.timeArr[0].line[i].num = 0
+          }
+          for (let i = 0; i < 7; i++) {
+            this.timeArr[1].line[i].num = 0
+            this.timeArr[2].line[i].num = 0
+          }
+        } else if (lineIndex === 1) {
+          for (let i = arrIndex; i < 7; i++) {
+            this.timeArr[1].line[i].num = 0
+          }
+          for (let i = 0; i < 7; i++) {
+            this.timeArr[2].line[i].num = 0
+          }
+        } else if (lineIndex === 2) {
+          for (let i = arrIndex; i < 7; i++) {
+            this.timeArr[2].line[i].num = 0
+          }
+        }
+      }
     },
     add (lineIndex, arrIndex) {
       this.timeArr[lineIndex].line[arrIndex].num++
+      if (lineIndex === 0) {
+        for (let i = 0; i < arrIndex; i++) {
+          if (parseInt(this.timeArr[0].line[i].num) === 0) {
+            this.timeArr[0].line[i].num = 1
+          }
+        }
+      } else if (lineIndex === 1) {
+        for (let i = 0; i < 7; i++) {
+          if (parseInt(this.timeArr[0].line[i].num) === 0) {
+            this.timeArr[0].line[i].num = 1
+          }
+        }
+        for (let i = 0; i < arrIndex; i++) {
+          if (parseInt(this.timeArr[1].line[i].num) === 0) {
+            this.timeArr[1].line[i].num = 1
+          }
+        }
+      } else if (lineIndex === 2) {
+        for (let i = 0; i < 7; i++) {
+          if (parseInt(this.timeArr[0].line[i].num) === 0) {
+            this.timeArr[0].line[i].num = 1
+          }
+        }
+        for (let i = 0; i < 7; i++) {
+          if (parseInt(this.timeArr[1].line[i].num) === 0) {
+            this.timeArr[1].line[i].num = 1
+          }
+        }
+        for (let i = 0; i < arrIndex; i++) {
+          if (parseInt(this.timeArr[2].line[i].num) === 0) {
+            this.timeArr[2].line[i].num = 1
+          }
+        }
+      }
     },
     // 改变任务开展时间时设置
     setTaskStarTime () {
-      console.log(this.taskStarTime)
       this.setMyDate(this.taskStarTime)
     },
     uploadImg (img) {
