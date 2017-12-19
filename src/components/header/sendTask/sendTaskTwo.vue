@@ -30,7 +30,7 @@
       <div class="choosed">
         <span>已选择: </span>
         <b>{{ creatShopInfo.taskType == 1 ? '手机京东' : '微信京东' }}&nbsp;&nbsp;垫付任务</b>
-        <i></i>
+        <i :class="{ 'jdIcon': creatShopInfo.shopType==0, 'taobaoIcon': creatShopInfo.shopType==1, 'tianmaoIcon': creatShopInfo.shopType==2 }"></i>
         <span>{{ creatShopInfo.shopName }}</span>
       </div>
       <h2>第一步: 填写商品信息</h2>
@@ -685,46 +685,50 @@ export default {
       }
     },
     doNext () {
-      if (this.buyerType === 1) {
-        this.sendObj.plusNum = this.sendTotalNum
+      if (this.$route.query.syb) {
+        window.history.go(-1)
       } else {
-        this.sendObj.plusNum = 0
-      }
-      if (this.setFavorNumObj.wordFavor.checked) {
-        this.sendObj.wordFavorNum = this.setFavorNumObj.wordFavor.num
-      } else {
-        this.sendObj.wordFavorNum = 0
-      }
-      if (this.setFavorNumObj.picFavor.checked) {
-        this.sendObj.graphicWordFavorNum = this.setFavorNumObj.picFavor.num
-      } else {
-        this.sendObj.graphicWordFavorNum = 0
-      }
-      if (this.setFavorNumObj.defaultFavor.checked) {
-        this.sendObj.defaultFavorNum = this.setFavorNumObj.defaultFavor.num
-      } else {
-        this.sendObj.defaultFavorNum = 0
-      }
-      this.sendObj.throwTime = this.sendDateList[0].time
-
-      this.sendObj.sellerTaskId = this.creatShopInfo.sellerTaskId
-      console.log(this.sendObj)
-
-      this.$ajax.post('/api/seller/task/addTaskInfo', this.sendObj).then((data) => {
-        console.log(data)
-        if (data.data.code === '200') {
-          this.$router.push({ name: 'sendTaskThree', query: { sellerTaskId: data.data.data.sellerTaskId } })
+        if (this.buyerType === 1) {
+          this.sendObj.plusNum = this.sendTotalNum
         } else {
-          this.$message({
-            message: data.data.message,
-            type: 'warning'
-          })
+          this.sendObj.plusNum = 0
         }
-      }).catch((err) => {
-        console.log(err)
-        this.$message.error('服务器错误！')
-      })
+        if (this.setFavorNumObj.wordFavor.checked) {
+          this.sendObj.wordFavorNum = this.setFavorNumObj.wordFavor.num
+        } else {
+          this.sendObj.wordFavorNum = 0
+        }
+        if (this.setFavorNumObj.picFavor.checked) {
+          this.sendObj.graphicWordFavorNum = this.setFavorNumObj.picFavor.num
+        } else {
+          this.sendObj.graphicWordFavorNum = 0
+        }
+        if (this.setFavorNumObj.defaultFavor.checked) {
+          this.sendObj.defaultFavorNum = this.setFavorNumObj.defaultFavor.num
+        } else {
+          this.sendObj.defaultFavorNum = 0
+        }
+        this.sendObj.throwTime = this.sendDateList[0].time
 
+        this.sendObj.sellerTaskId = this.creatShopInfo.sellerTaskId
+        console.log(this.sendObj)
+        sessionStorage.setItem('taskTwo_sendObj', JSON.stringify(this.sendObj))
+
+        this.$ajax.post('/api/seller/task/addTaskInfo', this.sendObj).then((data) => {
+          console.log(data)
+          if (data.data.code === '200') {
+            this.$router.push({ name: 'sendTaskThree', query: { sellerTaskId: data.data.data.sellerTaskId } })
+          } else {
+            this.$message({
+              message: data.data.message,
+              type: 'warning'
+            })
+          }
+        }).catch((err) => {
+          console.log(err)
+          this.$message.error('服务器错误！')
+        })
+      }
       // this.$router.push({ name: 'sendTaskThree' })
     },
     // 获取分类列表
@@ -917,6 +921,9 @@ export default {
       this.isReturnBack = true
       this.getReturnBackInfo()
     }
+    if (this.$route.query.syb && sessionStorage.getItem('taskTwo_sendObj')) {
+      this.sendObj = JSON.parse(sessionStorage.getItem('taskTwo_sendObj'))
+    }
   }
 }
 </script>
@@ -990,7 +997,6 @@ export default {
         display inline-block
         width 20px
         height 20px
-        background red
         vertical-align middle
     h2
       font-size 16px

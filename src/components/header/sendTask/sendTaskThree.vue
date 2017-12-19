@@ -109,6 +109,7 @@ export default {
     benjin: function () {
       let total = 0
       total = (this.infoObj.productUnitPrice) * (this.infoObj.numPerOrder) * (this.infoObj.totalNum) + (parseInt(this.infoObj.isPostFree) === 0 ? '10.00' : '0') * (this.infoObj.totalNum)
+      total = total.toFixed(2)
       return total
     },
     yongjin: function () {
@@ -117,6 +118,7 @@ export default {
         (this.infoObj.wordFavorPrice) * (this.infoObj.wordFavorNum) +
         (this.infoObj.defaultFavorPrice) * (this.infoObj.defaultFavorNum) +
         (this.infoObj.plusNum) * (this.infoObj.plusPrice)
+      total = total.toFixed(2)
       return total
     },
     ...mapGetters([
@@ -125,7 +127,7 @@ export default {
   },
   methods: {
     doPrevent () {
-      this.$router.push({ name: 'sendTaskTwo', query: { sellerTaskId: this.$route.query.rbSellerTaskId } })
+      this.$router.push({ name: 'sendTaskTwo', query: { sellerTaskId: (this.$route.query.rbSellerTaskId || this.$route.query.sellerTaskId), syb: 1 } })
     },
     toAddMoney () {
       this.$router.push({ name: 'coinPay' })
@@ -186,11 +188,27 @@ export default {
         console.log(err)
         this.$message.error('服务器错误！')
       })
+    },
+    // 判断支付方式及余额判断
+    payWay () {
+      let allMoney = this.moneyObj.availableCapitalAmount + this.moneyObj.availableCommissionAmount
+      if (allMoney < this.infoObj.totalPrice) {
+        this.noMoney = true
+        this.way1 = false
+        this.way2 = false
+      } else if (this.moneyObj.availableCommissionAmount > this.infoObj.totalPrice) {
+        this.way1 = false
+        this.way2 = true
+      } else if (this.moneyObj.availableCommissionAmount < this.infoObj.totalPrice && allMoney >= this.infoObj.totalPrice > this.infoObj.totalPrice) {
+        this.way1 = true
+        this.way2 = true
+      }
     }
   },
   mounted () {
     this.getInfo()
     this.getAccountMoney()
+    this.payWay()
   }
 }
 </script>
