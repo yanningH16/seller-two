@@ -257,7 +257,7 @@
                 <p>投放数量</p>
                 <div class="numAdd">
                   <span class="l" @click="dele(indexs, index)">－</span>
-                  <input type="number" v-model="item.num">
+                  <input type="number" v-model="item.num" @input="watchNum(indexs, index, item.num)">
                   <span class="r" @click="add(indexs, index)">+</span>
                 </div>
               </div>
@@ -576,7 +576,7 @@ export default {
         this.timeArr[lineIndex].line[arrIndex].num--
       }
       // 连续规则
-      if (this.timeArr[lineIndex].line[arrIndex].num === 0) {
+      if (parseInt(this.timeArr[lineIndex].line[arrIndex].num) === 0) {
         if (lineIndex === 0) {
           for (let i = arrIndex; i < 7; i++) {
             this.timeArr[0].line[i].num = 0
@@ -632,6 +632,69 @@ export default {
         for (let i = 0; i < arrIndex; i++) {
           if (parseInt(this.timeArr[2].line[i].num) === 0) {
             this.timeArr[2].line[i].num = 1
+          }
+        }
+      }
+    },
+    // 检测填写的数量符合规则
+    watchNum (lineIndex, arrIndex, inputNum) {
+      // 连续规则
+      if (parseInt(this.timeArr[lineIndex].line[arrIndex].num) === 0) {
+        if (lineIndex === 0) {
+          for (let i = arrIndex; i < 7; i++) {
+            this.timeArr[0].line[i].num = 0
+          }
+          for (let i = 0; i < 7; i++) {
+            this.timeArr[1].line[i].num = 0
+            this.timeArr[2].line[i].num = 0
+          }
+        } else if (lineIndex === 1) {
+          for (let i = arrIndex; i < 7; i++) {
+            this.timeArr[1].line[i].num = 0
+          }
+          for (let i = 0; i < 7; i++) {
+            this.timeArr[2].line[i].num = 0
+          }
+        } else if (lineIndex === 2) {
+          for (let i = arrIndex; i < 7; i++) {
+            this.timeArr[2].line[i].num = 0
+          }
+        }
+      } else if (this.timeArr[lineIndex].line[arrIndex].num < 0) {
+        this.timeArr[lineIndex].line[arrIndex].num = 0
+      } else {
+        if (lineIndex === 0) {
+          for (let i = 0; i < arrIndex; i++) {
+            if (parseInt(this.timeArr[0].line[i].num) === 0) {
+              this.timeArr[0].line[i].num = 1
+            }
+          }
+        } else if (lineIndex === 1) {
+          for (let i = 0; i < 7; i++) {
+            if (parseInt(this.timeArr[0].line[i].num) === 0) {
+              this.timeArr[0].line[i].num = 1
+            }
+          }
+          for (let i = 0; i < arrIndex; i++) {
+            if (parseInt(this.timeArr[1].line[i].num) === 0) {
+              this.timeArr[1].line[i].num = 1
+            }
+          }
+        } else if (lineIndex === 2) {
+          for (let i = 0; i < 7; i++) {
+            if (parseInt(this.timeArr[0].line[i].num) === 0) {
+              this.timeArr[0].line[i].num = 1
+            }
+          }
+          for (let i = 0; i < 7; i++) {
+            if (parseInt(this.timeArr[1].line[i].num) === 0) {
+              this.timeArr[1].line[i].num = 1
+            }
+          }
+          for (let i = 0; i < arrIndex; i++) {
+            if (parseInt(this.timeArr[2].line[i].num) === 0) {
+              this.timeArr[2].line[i].num = 1
+            }
           }
         }
       }
