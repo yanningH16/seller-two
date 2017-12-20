@@ -10,26 +10,28 @@
 .el-table
   border none
 .el-tabs__item
-  width 124px
+  // width 124px
+  max-width 124px
+  min-width 80px
   box-sizing content-box
   text-align center
 .task .el-tabs__item
   width 70px
 .el-tabs--border-card
-  border none 
-  box-shadow none 
+  border none
+  box-shadow none
 .el-tabs--border-card>.el-tabs__header .el-tabs__item:hover
   color #ff3341
 .el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active
   color #ff3341
-  border-top 4px solid red;
+  border-top 4px solid red
 .el-tabs--border-card>.el-tabs__header .el-tabs__item
-  border-top 4px solid transparent 
+  border-top 4px solid transparent
 .el-table::after, .el-table::before
   background-color #fff
 .el-table td, .el-table th
   height 50px
-.el-table th,.el-table__footer-wrapper thead div, .el-table__header-wrapper thead div
+.el-table th, .el-table__footer-wrapper thead div, .el-table__header-wrapper thead div
   background #fff
   font-weight bold
 .el-breadcrumb__item .el-breadcrumb__item__inner
@@ -38,18 +40,18 @@
   color #ff3341
 .el-breadcrumb__item:last-child .el-breadcrumb__item__inner
   color #333
-// .el-select .el-input 
-//   width 110px
+// .el-select .el-input
+// width 110px
 .el-radio__input.is-checked .el-radio__inner
   border-color #FF2933
   background #FF2933
 .el-radio__input.is-checked+.el-radio__label
-    color #444444
+  color #444444
 .el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate .el-checkbox__inner
-    background-color #FF2933
-    border-color #FF2933
+  background-color #FF2933
+  border-color #FF2933
 .el-checkbox__input.is-checked+.el-checkbox__label
-    color #444444
+  color #444444
 // 面包屑
 .el-breadcrumb__inner, .el-breadcrumb__inner a
   color #898989
@@ -57,4 +59,4 @@
   color #3c3c3c
   font-weight 600
 .tooltipItem
-  max-width: 400px
+  max-width 400px
