@@ -199,7 +199,7 @@ export default {
       } else if (this.moneyObj.availableCommissionAmount > this.infoObj.totalPrice) {
         this.way1 = false
         this.way2 = true
-      } else if (this.moneyObj.availableCommissionAmount < this.infoObj.totalPrice && allMoney >= this.infoObj.totalPrice > this.infoObj.totalPrice) {
+      } else if (this.moneyObj.availableCommissionAmount < this.infoObj.totalPrice && allMoney >= this.infoObj.totalPrice) {
         this.way1 = true
         this.way2 = true
       }
