@@ -310,11 +310,13 @@ export default {
             let goods = {
               label: word.bankName,
               value: word.sellerBankCardId,
-              bankCardNo: word.bankCardNo
+              bankCardNo: word.bankCardNo,
+              isDefault: word.isDefault
             }
             arr.push(goods)
           }
           this.options = arr
+          this.item = this.options[0]
         } else {
           this.$message({
             message: data.data.message,
