@@ -134,7 +134,7 @@
             <h3>搜索关键词{{ index+1 }}：{{ item.keyword }}</h3>
             <p>
               <span class="gray">排序方式：</span>
-              {{ item.sortClass == 0 ? '综合排序' : '其他' }}
+              {{ item.sortClass || '其他' }}
             </p>
             <p>
               <span class="gray">价格区间：</span>

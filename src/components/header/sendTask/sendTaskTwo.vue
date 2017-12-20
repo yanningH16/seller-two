@@ -176,7 +176,9 @@
               <li class="searchBox" v-show="item.showSearch" :key="index">
                 <span>排序方式：</span>
                 <el-select placeholder="请选择" v-model="item.sortClass" style="width: 140px;">
-                  <el-option label="综合排序" value="0">
+                  <el-option label="综合排序" value="综合排序">
+                  </el-option>
+                  <el-option label="价格排序" value="价格排序">
                   </el-option>
                 </el-select>
                 <b class="gray">
@@ -410,10 +412,10 @@ export default {
         productOrderPrice: '', // 商品下单价格
         numPerOrder: '', // 买家每单拍几件
         productFormat: '任意规格', // 商品规格
-        isPostageFree: '', // 是否包邮 0 - 否，1-是
-        isSupportBaiTiao: '', // 是否支持白条/花呗
-        isSupportCredit: '', // 是否支持信用卡
-        isSupportTicket: '', // 是否支持优惠卷
+        isPostageFree: 1, // 是否包邮 0 - 否，1-是
+        isSupportBaiTiao: 0, // 是否支持白条/花呗
+        isSupportCredit: 0, // 是否支持信用卡
+        isSupportTicket: 0, // 是否支持优惠卷
         searchKeywordList: [{ // 关键词方案列表
           keyword: '', // 关键词
           sortClass: '', // 排序方式
