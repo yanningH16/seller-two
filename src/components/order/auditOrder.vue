@@ -56,6 +56,7 @@
                 <li style="width:30%">
                   <span class="gray">任务编号: </span>
                   <span>{{ item.buyerTaskId }}</span>
+                  <span class="blue" @click="$router.push({name: 'taskDetail',query:{sellerTaskId: item.sellerTaskId}})">[查看任务详情]</span>
                 </li>
                 <li style="width:20%">
                   <span class="gray">任务类型: </span>
@@ -146,6 +147,7 @@
                 <li style="width:30%">
                   <span class="gray">任务编号: </span>
                   <span>{{ item.buyerTaskId }}</span>
+                  <span class="blue" @click="$router.push({name: 'taskDetail',query:{sellerTaskId: item.sellerTaskId}})">[查看任务详情]</span>
                 </li>
                 <li style="width:20%">
                   <span class="gray">任务类型: </span>
@@ -238,6 +240,7 @@
                 <li style="width:30%">
                   <span class="gray">任务编号: </span>
                   <span>{{ item.buyerTaskId }}</span>
+                  <span class="blue" @click="$router.push({name: 'taskDetail',query:{sellerTaskId: item.sellerTaskId}})">[查看任务详情]</span>
                 </li>
                 <li style="width:20%">
                   <span class="gray">任务类型: </span>

@@ -59,6 +59,9 @@
                   <p>京东订单编号:
                     <span>{{ item.realOrderId }}</span>
                   </p>
+                  <p>
+                    <span class="blue" @click="$router.push({name: 'taskDetail',query:{sellerTaskId: item.sellerTaskId}})">[查看任务详情]</span>
+                  </p>
                   <p>任务类型:
                     <span>{{ item.favorTaskType==0?'默认好评' : item.favorTaskType==1?'文字好评':item.favorTaskType==2?'图文好评' : '其他'}}</span>
                   </p>
@@ -167,6 +170,9 @@
                   <p>京东订单编号:
                     <span>{{ item.realOrderId }}</span>
                   </p>
+                  <p>
+                    <span class="blue" @click="$router.push({name: 'taskDetail',query:{sellerTaskId: item.sellerTaskId}})">[查看任务详情]</span>
+                  </p>
                   <p>任务类型:
                     <span>{{ item.favorTaskType == 0 ? '默认好评' : item.favorTaskType == 1 ? '五星文字好评' : item.favorTaskType == 2 ? '图文好评' : '其他' }}</span>
                   </p>
@@ -267,6 +273,9 @@
                   </p>
                   <p>任务编号:
                     <span>{{ item.buyerTaskId }}</span>
+                  </p>
+                  <p>
+                    <span class="blue" @click="$router.push({name: 'taskDetail',query:{sellerTaskId: item.sellerTaskId}})">[查看任务详情]</span>
                   </p>
                   <p>任务类型:
                     <span>{{ item.favorTaskType == 0 ? '默认好评' : item.favorTaskType == 1 ? '五星文字好评' : item.favorTaskType == 2 ? '图文好评' : '其他' }}</span>
@@ -564,6 +573,9 @@ export default {
     width 60px
     height 22px
     line-height 22px
+  .link
+    color #179FFF
+    cursor pointer
   .shop
     background #fff
     height 36px
