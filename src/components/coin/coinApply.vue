@@ -13,7 +13,7 @@
               </el-date-picker>
             </li>
             <li>
-              备注:
+              类型:
               <el-select v-model="value" placeholder="请选择">
                 <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                 </el-option>
@@ -265,7 +265,7 @@ export default {
   .contentShop
     background #fff
     margin-top 24px
-    padding 0 20px 20px
+    // padding 0 20px 20px
     font-size 14px
     color rgba(155, 155, 155, 1)
     overflow hidden
