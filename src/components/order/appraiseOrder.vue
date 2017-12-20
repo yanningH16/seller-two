@@ -576,20 +576,21 @@ export default {
   .personBank
     background #fff
     margin-top 24px
-    padding 0 20px 20px
+    // padding 0 20px 20px
     font-size 14px
     color rgba(155, 155, 155, 1)
     overflow hidden
     .order1
+      padding 0 20px 20px
       .top
-        margin-top 30px
-        margin-bottom 30px
+        margin-top 20px
+        margin-bottom 20px
         display flex
         min-width 1300px
         li
           margin-right 20px
       .content
-        padding-bottom 20px
+        // padding 20px
         border 1px solid rgba(198, 223, 243, 0.6)
         margin-top 12px
         .header
@@ -643,9 +644,10 @@ export default {
         margin-top 16px
         float right
     .order2
+      padding 0 20px 20px
       .top
-        margin-top 30px
-        margin-bottom 30px
+        margin-top 20px
+        margin-bottom 20px
         display flex
         min-width 1300px
         li
@@ -702,9 +704,10 @@ export default {
               max-width 210px
               vertical-align top
     .order3
+      padding 0 20px 20px
       .top
-        margin-top 30px
-        margin-bottom 30px
+        margin-top 20px
+        margin-bottom 20px
         display flex
         min-width 1300px
         li
