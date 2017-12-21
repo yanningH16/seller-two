@@ -66,7 +66,7 @@
             <span>{{ item.taskTypeDesc }}</span>
           </li>
           <li style="width:20%">
-            <span class="gray">提交时间: </span>
+            <span class="gray">上线时间: </span>
             <span>{{ item.throwTime }}</span>
           </li>
         </ul>

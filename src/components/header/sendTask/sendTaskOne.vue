@@ -158,7 +158,7 @@ export default {
       height 30px
       line-height 30px
     .next
-      margin-top 280px
+      margin-top 100px
       margin-bottom 20px
       text-align center
 </style>

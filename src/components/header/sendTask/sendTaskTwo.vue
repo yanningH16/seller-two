@@ -237,7 +237,7 @@
       <h2 v-if="!isReturnBack">第三步: 选择任务类型与单数</h2>
       <div v-if="!isReturnBack" class="step step3">
         <span>任务开展时间&nbsp;:&nbsp;</span>
-        <el-date-picker v-model="taskStarTime" @change="setTaskStarTime" type="date" placeholder="选择日期" format="yyyy/MM/dd">
+        <el-date-picker v-model="taskStarTime" @change="setTaskStarTime" type="date" placeholder="选择日期" format="yyyy/MM/dd HH:mm:ss">
         </el-date-picker>
         <table class="dateTable">
           <tr>
@@ -829,7 +829,7 @@ export default {
         } else {
           this.sendObj.defaultFavorNum = 0
         }
-        this.sendObj.throwTime = this.sendDateList[0].time
+        this.sendObj.throwTime = this.taskStarTime.toLocaleString()
 
         this.sendObj.sellerTaskId = this.creatShopInfo.sellerTaskId
         console.log(this.sendObj)
@@ -1100,7 +1100,7 @@ export default {
     margin-bottom 20px
     min-width 900px
     .next
-      margin-top 200px
+      margin-top 100px
       margin-bottom 20px
       text-align center
     .choosed
