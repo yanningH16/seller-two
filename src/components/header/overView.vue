@@ -11,14 +11,14 @@
         <li>
           <img src="../../assets/image/benjin.png" alt="">
           <div>
-            <h3>本金</h3>
+            <h3>账户余额</h3>
             <h2 style="color:#179FFF;">{{ moneyObj.availableCapitalAmount }}</h2>
           </div>
         </li>
         <li>
           <img src="../../assets/image/yongjin.png" alt="">
           <div>
-            <h3>冻结押金(元)</h3>
+            <h3>冻结金额(元)</h3>
             <h2 style="color:#FF2933;">{{ moneyObj.frozenCapitalAmount }}</h2>
           </div>
         </li>
@@ -32,7 +32,7 @@
       </ul>
       <ul class="rightCtrl">
         <li>
-          <button class="btn disabled" @click="$router.push({name: 'coinPay'})">充值本金</button>
+          <button class="btn disabled" @click="$router.push({name: 'coinPay'})">余额充值</button>
         </li>
         <li>
           <button class="btn" @click="toPushTask">发布垫付任务</button>

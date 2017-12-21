@@ -34,7 +34,7 @@
       </transition>
       <div :class="{ 'slideDown': pull, 'slideUp':!pull }">
         <p class="balance">账户余额:
-          <span>{{ userMoney.totalCapitalAmount }}</span>
+          <span>{{ userMoney.availableCapitalAmount }}</span>
         </p>
         <router-link :to="{name:'coinPay'}">
           <p class="pay">立即充值</p>
