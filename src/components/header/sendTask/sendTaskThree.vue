@@ -68,12 +68,12 @@
       <div class="check">
         <el-checkbox v-model="way1">使用账户余额支付</el-checkbox>
         <span class="gray">(可用余额
-          <b class="red">{{ moneyObj.availableCapitalAmount }}</b>元)</span>
+          <b class="red">{{ userMoney.availableCapitalAmount }}</b>元)</span>
       </div>
       <div class="check">
         <el-checkbox v-model="way2">使用联盟佣金支付</el-checkbox>
         <span class="gray">(可用余额
-          <b class="red">{{ moneyObj.availableCommissionAmount }}</b>元)</span>
+          <b class="red">{{ userMoney.availableCommissionAmount }}</b>元)</span>
       </div>
       <div class="warn">
         <span v-if="noMoney">余额不足,请
@@ -98,14 +98,29 @@ export default {
       active: 2,
       way1: true,
       way2: true,
-      noMoney: false,
       // 增值服务信息
-      infoObj: {},
-      // 账户余额
-      moneyObj: {}
+      infoObj: {}
     }
   },
   computed: {
+    // 判断支付方式及余额判断
+    noMoney () {
+      let allMoney = this.userMoney.availableCapitalAmount + this.userMoney.availableCommissionAmount - 0
+      console.log(this.userMoney, allMoney, this.infoObj.totalPrice - 0)
+      if (allMoney < this.infoObj.totalPrice - 0) {
+        this.way1 = false
+        this.way2 = false
+        return true
+      } else if (this.userMoney.availableCommissionAmount > this.infoObj.totalPrice) {
+        this.way1 = false
+        this.way2 = true
+        return false
+      } else if (this.userMoney.availableCommissionAmount < this.infoObj.totalPrice && allMoney >= this.infoObj.totalPrice) {
+        this.way1 = true
+        this.way2 = true
+        return false
+      }
+    },
     benjin: function () {
       let total = 0
       total = (this.infoObj.productUnitPrice) * (this.infoObj.numPerOrder) * (this.infoObj.totalNum) + (parseInt(this.infoObj.isPostFree) === 0 ? '10.00' : '0') * (this.infoObj.totalNum)
@@ -122,7 +137,8 @@ export default {
       return total
     },
     ...mapGetters([
-      'userInfo'
+      'userInfo',
+      'userMoney'
     ])
   },
   methods: {
@@ -133,7 +149,7 @@ export default {
       this.$router.push({ name: 'coinPay' })
     },
     doNext () {
-      let sendMoney = ((this.moneyObj.availableCommissionAmount - 0) > (this.infoObj.totalPrice - 0) ? this.infoObj.totalPrice : this.moneyObj.availableCommissionAmount)
+      let sendMoney = ((this.userMoney.availableCommissionAmount - 0) > (this.infoObj.totalPrice - 0) ? this.infoObj.totalPrice : this.userMoney.availableCommissionAmount)
       this.$ajax.post('/api/seller/task/payTask', {
         sellerTaskId: this.$route.query.sellerTaskId,
         totalPayAmount: this.infoObj.totalPrice,
@@ -169,46 +185,10 @@ export default {
         console.log(err)
         this.$message.error('服务器错误！')
       })
-    },
-    // 获取卖家用户资金
-    getAccountMoney () {
-      this.$ajax.post('/api/userFund/getSellerUserFund', {
-        sellerUserAccountId: this.userInfo.sellerUserId
-      }).then((data) => {
-        console.log(data)
-        if (data.data.code === '200') {
-          this.moneyObj = data.data.data
-        } else {
-          this.$message({
-            message: data.data.message,
-            type: 'warning'
-          })
-        }
-      }).catch((err) => {
-        console.log(err)
-        this.$message.error('服务器错误！')
-      })
-    },
-    // 判断支付方式及余额判断
-    payWay () {
-      let allMoney = this.moneyObj.availableCapitalAmount + this.moneyObj.availableCommissionAmount
-      if (allMoney < this.infoObj.totalPrice) {
-        this.noMoney = true
-        this.way1 = false
-        this.way2 = false
-      } else if (this.moneyObj.availableCommissionAmount > this.infoObj.totalPrice) {
-        this.way1 = false
-        this.way2 = true
-      } else if (this.moneyObj.availableCommissionAmount < this.infoObj.totalPrice && allMoney >= this.infoObj.totalPrice) {
-        this.way1 = true
-        this.way2 = true
-      }
     }
   },
   mounted () {
     this.getInfo()
-    this.getAccountMoney()
-    this.payWay()
   }
 }
 </script>
