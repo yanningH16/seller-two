@@ -65,8 +65,8 @@
                   <p>任务类型:
                     <span>{{ item.favorTaskType==0?'默认好评' : item.favorTaskType==1?'文字好评':item.favorTaskType==2?'图文好评' : '其他'}}</span>
                   </p>
-                  <p>提交时间:
-                    <span>{{ item.submitTime }}</span>
+                  <p>上线时间:
+                    <span>{{ item.submitTime.split(' ')[0] }}</span>
                   </p>
                 </div>
                 <!-- 里面内容部分 -->
