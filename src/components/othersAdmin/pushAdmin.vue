@@ -4,8 +4,8 @@
       <em class="gray">账号信息</em>
     </div>
     <div class="content">
-      <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="邀请员工账号" name="first">
+      <el-tabs v-model="activeName" @tab-click="handleClick" type="border-card">
+        <el-tab-pane label="邀请员工账号" name="one">
           <div class="accountTab">
             <el-table :data="tableDataSell" style="width: 100%" v-if="tableDataSell.length!==0">
               <el-table-column prop="name" align="center" label="姓名">
@@ -24,10 +24,10 @@
               <el-table-column prop="time" align="center" label="注册时间">
               </el-table-column>
             </el-table>
-            <noCont v-if="tableDataSell.length===0"></noCont>
+            <noCont v-if="this.tableDataSell.length===0"></noCont>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="邀请买手账号" name="second">
+        <el-tab-pane label="邀请买手账号" name="two">
           <div class="accountTab">
             <el-table :data="tableDataBuy" style="width: 100%" v-if="tableDataBuy.length!==0">
               <el-table-column prop="name" align="center" label="姓名">
@@ -46,10 +46,10 @@
               <el-table-column prop="time" align="center" label="注册时间">
               </el-table-column>
             </el-table>
-            <noCont v-if="tableDataBuy.length===0"></noCont>
+            <noCont v-if="this.tableDataBuy.length===0"></noCont>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="管理员账号" name="third">
+        <el-tab-pane label="管理员账号" name="three">
           <div class="accountTab">
             <el-table :data="tableDataAdmin" style="width: 100%" v-if="tableDataAdmin.length!==0">
               <el-table-column prop="name" align="center" label="姓名">
@@ -89,11 +89,11 @@ export default {
       'userInfo'
     ]),
     showPager: function () {
-      if (this.activeName === 'first' && this.tableDataSell.length !== 0) {
+      if (this.activeName === 'one' && this.tableDataSell.length !== 0) {
         return true
-      } else if (this.activeName === 'second' && this.tableDataBuy.length !== 0) {
+      } else if (this.activeName === 'two' && this.tableDataBuy.length !== 0) {
         return true
-      } else if (this.activeName === 'second' && this.tableDataAdmin.length !== 0) {
+      } else if (this.activeName === 'three' && this.tableDataAdmin.length !== 0) {
         return true
       } else {
         return false
@@ -102,7 +102,7 @@ export default {
   },
   data () {
     return {
-      activeName: 'first',
+      activeName: 'one',
       currentPage: 1,
       totalCount: 0,
       pageSize: 5,
@@ -116,7 +116,13 @@ export default {
   },
   methods: {
     handleClick (tab, event) {
-      console.log(tab, event)
+      if (this.activeName === 'one') {
+        this.sercherOne(1, this.pageSize)
+      } else if (this.activeName === 'two') {
+        this.sercherTwo(1, this.pageSize)
+      } else if (this.activeName === 'three') {
+        this.sercherThree(1, this.pageSize)
+      }
     },
     handleSizeChange (val) {
       this.pageSize = val
@@ -151,9 +157,9 @@ export default {
           for (let word of res.data.employees) {
             let goods = {
               name: word.userName,
-              number: word.buyerUserAccountid,
+              number: word.buyerUserAccountId,
               deduct: word.pay,
-              numberType: word.buyerType,
+              numberType: word.buyerType === '1' ? '员工' : '--',
               admin: word.sellerManagerId,
               JDStatus: word.buyerType === '1' ? '正常' : '冻结',
               time: word.gmtCreate
@@ -182,14 +188,14 @@ export default {
         this.totalCount = res.data.totalCount
         if (res.code === '200') {
           let arr = []
-          for (let word of res.data.employees) {
+          for (let word of res.data.buyers) {
             let goods = {
               name: word.userName,
-              number: word.buyerUserAccountid,
+              number: word.buyerUserAccountId,
               deduct: word.pay,
-              numberType: word.buyerType,
+              numberType: word.buyerType === '0' ? '买手' : '--',
               admin: word.sellerManagerId,
-              JDStatus: word.buyerType === '1' ? '正常' : '冻结',
+              JDStatus: word.buyerStatus === '1' ? '正常' : '冻结',
               time: word.gmtCreate
             }
             arr.push(goods)
@@ -216,17 +222,17 @@ export default {
         this.totalCount = res.data.totalCount
         if (res.code === '200') {
           let arr = []
-          for (let word of res.data.employees) {
+          for (let word of res.data.managers) {
             let goods = {
-              name: word.userName,
+              name: word.userName || '--',
               number: word.telephone,
               deduct: word.pay,
-              numberType: word.buyerType,
-              JDStatus: word.buyerType === '1' ? '正常' : '冻结'
+              numberType: word.buyerType === '1' ? '员工' : '员工',
+              JDStatus: word.status === '1' ? '正常' : '冻结'
             }
             arr.push(goods)
           }
-          this.tableDataBuy = arr
+          this.tableDataAdmin = arr
         } else {
           this.$message({
             message: res.message,
@@ -255,7 +261,7 @@ export default {
   .content
     background #fff
     margin-top 24px
-    padding 0 20px 20px
+    // padding 0 20px 20px
     .pager
       float right
 </style>

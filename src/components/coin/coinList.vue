@@ -44,7 +44,7 @@
     </div>
     <!-- 点击编辑出现的框 -->
     <div class="bank">
-      <el-dialog title="编辑银行卡" :visible.sync="dialogFormVisible" :modal-append-to-body='false' width="40%">
+      <el-dialog title="查看银行卡" :visible.sync="dialogFormVisible" :modal-append-to-body='false' width="40%">
         <el-form>
           <el-form-item label="银行">
             <el-input v-model="this.bankInfo.bankName" disabled></el-input>
@@ -58,7 +58,7 @@
         </el-form>
         <el-checkbox v-model="checked" style="margin-left:40px">设为默认银行卡</el-checkbox>
         <div slot="footer" class="dialog-footer">
-          <el-button type="danger" @click="change">确认修改</el-button>
+          <el-button type="danger" @click="change">确认</el-button>
           <el-button @click="bankDele()">删除银行卡</el-button>
         </div>
       </el-dialog>

@@ -15,3 +15,9 @@ export const clearUserInfo = function ({ commit }, query) {
 export const setErrorTimeList = function ({ commit }, query) {
   commit(types.ERROR_TIME_LIST, query)
 }
+export const setTaskCount = function ({ commit }, query) {
+  commit(types.SET_TASK_COUNT, query)
+}
+export const setTaskCountBuy = function ({ commit }, query) {
+  commit(types.SET_TASK_COUNT_BUY, query)
+}
