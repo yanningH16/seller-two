@@ -58,9 +58,7 @@
                   </p>
                   <p>京东订单编号:
                     <span>{{ item.realOrderId }}</span>
-                  </p>
-                  <p>
-                    <span class="blue" @click="$router.push({name: 'taskDetail',query:{sellerTaskId: item.sellerTaskId}})">[查看任务详情]</span>
+                    <strong class="blue" @click="$router.push({name: 'taskDetail',query:{sellerTaskId: item.sellerTaskId}})">[查看任务详情]</strong>
                   </p>
                   <p>任务类型:
                     <span>{{ item.favorTaskType==0?'默认好评' : item.favorTaskType==1?'文字好评':item.favorTaskType==2?'图文好评' : '其他'}}</span>
@@ -169,9 +167,7 @@
                   </p>
                   <p>京东订单编号:
                     <span>{{ item.realOrderId }}</span>
-                  </p>
-                  <p>
-                    <span class="blue" @click="$router.push({name: 'taskDetail',query:{sellerTaskId: item.sellerTaskId}})">[查看任务详情]</span>
+                    <strong class="blue" @click="$router.push({name: 'taskDetail',query:{sellerTaskId: item.sellerTaskId}})">[查看任务详情]</strong>
                   </p>
                   <p>任务类型:
                     <span>{{ item.favorTaskType == 0 ? '默认好评' : item.favorTaskType == 1 ? '五星文字好评' : item.favorTaskType == 2 ? '图文好评' : '其他' }}</span>
@@ -273,9 +269,7 @@
                   </p>
                   <p>任务编号:
                     <span>{{ item.buyerTaskId }}</span>
-                  </p>
-                  <p>
-                    <span class="blue" @click="$router.push({name: 'taskDetail',query:{sellerTaskId: item.sellerTaskId}})">[查看任务详情]</span>
+                    <strong class="blue" @click="$router.push({name: 'taskDetail',query:{sellerTaskId: item.sellerTaskId}})">[查看任务详情]</strong>
                   </p>
                   <p>任务类型:
                     <span>{{ item.favorTaskType == 0 ? '默认好评' : item.favorTaskType == 1 ? '五星文字好评' : item.favorTaskType == 2 ? '图文好评' : '其他' }}</span>
@@ -573,7 +567,7 @@ export default {
     width 60px
     height 22px
     line-height 22px
-  .link
+  .blue
     color #179FFF
     cursor pointer
   .shop
@@ -598,7 +592,6 @@ export default {
         margin-top 20px
         margin-bottom 20px
         display flex
-        min-width 1300px
         li
           margin-right 20px
       .content
@@ -611,7 +604,6 @@ export default {
           font-size 12px
           padding 10px 0
           background rgba(198, 223, 243, 0.3)
-          min-width 1000px
           p span
             color #444444
         .text
@@ -619,7 +611,6 @@ export default {
           justify-content space-between
           overflow hidden
           color #444444
-          min-width 1000px
           padding-bottom 20px
           li
             margin-top 41px
@@ -662,7 +653,6 @@ export default {
         margin-top 20px
         margin-bottom 20px
         display flex
-        min-width 1300px
         li
           margin-right 20px
       .content
@@ -675,7 +665,6 @@ export default {
           font-size 12px
           padding 10px 0
           background rgba(198, 223, 243, 0.3)
-          min-width 1000px
           p span
             color #444444
         .text
@@ -683,7 +672,6 @@ export default {
           justify-content space-between
           overflow hidden
           color #444444
-          min-width 1000px
           li
             margin-top 41px
             margin-left 22px
@@ -722,7 +710,6 @@ export default {
         margin-top 20px
         margin-bottom 20px
         display flex
-        min-width 1300px
         li
           margin-right 20px
       .content
@@ -735,7 +722,6 @@ export default {
           font-size 12px
           padding 10px 0
           background rgba(198, 223, 243, 0.3)
-          min-width 1000px
           p span
             color #444444
         .text
@@ -743,7 +729,6 @@ export default {
           justify-content space-between
           overflow hidden
           color #444444
-          min-width 1200px
           li
             margin-top 41px
             margin-left 22px
