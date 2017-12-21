@@ -51,8 +51,30 @@ export default {
     return {
       pull: false,
       isActive: 0,
-      first: 0
+      favorWaitPassCount: 0,
+      notPassTaskCount: 0,
+      orderWaitPassCount: 0
     }
+  },
+  created () {
+    this.$ajax.post('/api/order/search/sellerStatistics', {
+      sellerUserId: this.userInfo.sellerUserId
+    }).then((data) => {
+      console.log(data)
+      let res = data.data
+      if (res.code === '200') {
+        this.notPassTaskCount = res.data.notPassTaskCount
+        this.orderWaitPassCount = res.data.orderWaitPassCount
+        this.favorWaitPassCount = res.data.favorWaitPassCount
+      } else {
+        this.$message({
+          message: res.message,
+          type: 'warning'
+        })
+      }
+    }).catch(() => {
+      this.$message.error('网络错误，刷新下试试')
+    })
   },
   computed: {
     menus: {
@@ -69,7 +91,8 @@ export default {
               },
               {
                 text: '任务管理',
-                link: 'task'
+                link: 'task',
+                bradge: this.notPassTaskCount
               }
             ]
           },
@@ -80,12 +103,13 @@ export default {
             lines: [
               {
                 text: '审核订单',
-                link: 'auditOrder'
+                link: 'auditOrder',
+                bradge: this.orderWaitPassCount
               },
               {
                 text: '审核评价',
                 link: 'appraiseOrder',
-                bradge: this.taskCountBuy
+                bradge: this.favorWaitPassCount
               }
             ]
           },
@@ -139,9 +163,7 @@ export default {
     },
     ...mapGetters([
       'userInfo',
-      'userMoney',
-      'taskCount',
-      'taskCountBuy'
+      'userMoney'
     ])
   },
   methods: {

@@ -189,6 +189,6 @@ export default {
         margin-right 20px
     .btn
       position absolute
-      bottom 38px
+      bottom 110px
       left 50%
 </style>
