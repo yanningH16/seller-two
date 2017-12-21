@@ -237,7 +237,7 @@
       <h2 v-if="!isReturnBack">第三步: 选择任务类型与单数</h2>
       <div v-if="!isReturnBack" class="step step3">
         <span>任务开展时间&nbsp;:&nbsp;</span>
-        <el-date-picker v-model="taskStarTime" @change="setTaskStarTime" type="date" placeholder="选择日期" format="yyyy/MM/dd HH:mm:ss">
+        <el-date-picker v-model="taskStarTime" @change="setTaskStarTime" type="date" placeholder="选择日期" format="yyyy/MM/dd">
         </el-date-picker>
         <table class="dateTable">
           <tr>
