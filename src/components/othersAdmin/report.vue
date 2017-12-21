@@ -25,7 +25,7 @@
           <i v-else class="el-icon-plus avatar-uploader-icon" style="line-height:122px;font-size:30px"></i>
         </el-upload>
       </li>
-      <li style="margin-top:130px">
+      <li style="margin-top:30px">
         <button class="btn" @click="sureReport">确认举报</button>
       </li>
     </ul>

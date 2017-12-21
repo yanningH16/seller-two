@@ -1,7 +1,7 @@
 <template>
   <div class="wrap pushAdmin">
     <div class="shop">
-      <em class="gray">账号信息</em>
+      <em class="gray">推广赚钱</em>
     </div>
     <div class="content">
       <el-tabs v-model="activeName" @tab-click="handleClick" type="border-card">

@@ -3,7 +3,7 @@
     <div class="shop">
       <em class="gray">其他管理</em>>店铺管理</div>
     <div class="content">
-      <el-tabs v-model="activeName">
+      <el-tabs v-model="activeName"  type="border-card">
         <el-tab-pane label="用户管理" name="first">
           <table class="border" v-for="(item,index) in shopList" :key="index">
             <div class="icon">
@@ -172,7 +172,7 @@ export default {
   .content
     background #fff
     margin-top 24px
-    padding 0 20px 336px
+    padding 0 0 336px
     position relative
     .border
       border 1px solid rgba(204, 204, 204, 1)
