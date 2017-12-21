@@ -17,7 +17,7 @@
 
 <script type="text/ecmascript-6">
 import NavMenu from '../../base/navMenu/navMenu'
-// import { mapMutations} from 'vuex'
+import { mapMutations, mapGetters } from 'vuex'
 export default {
   name: 'admin',
   components: {
@@ -28,10 +28,38 @@ export default {
 
     }
   },
+  computed: {
+    ...mapGetters([
+      'userInfo',
+      'userMoney'
+    ])
+  },
+  created () {
+    this.$ajax.post('/api/order/search/sellerStatistics', {
+      sellerUserId: this.userInfo.sellerUserId
+    }).then((data) => {
+      console.log(data)
+      let res = data.data
+      if (res.code === '200') {
+        this.setTaskCountBuy(res.data.favorWaitPassCount)
+      } else {
+        this.$message({
+          message: res.message,
+          type: 'warning'
+        })
+      }
+    }).catch(() => {
+      this.$message.error('网络错误，刷新下试试')
+    })
+  },
   methods: {
     toReport () {
       this.$router.push({ name: 'report' })
-    }
+    },
+    ...mapMutations({
+      setTaskCount: 'SET_TASK_COUNT',
+      setTaskCountBuy: 'SET_TASK_COUNT_BUY'
+    })
   }
 }
 </script>

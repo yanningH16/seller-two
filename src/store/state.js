@@ -3,6 +3,8 @@ const state = {
   userInfo: loadUserInfo(),
   userToken: loadUserToken(),
   userMoney: loadUserMoney(),
+  taskCountBuy: '',
+  taskCount: '',
   // userAccountId: null,
   errorTimeList: []
 }

@@ -18,6 +18,12 @@ const mutations = {
   },
   [types.ERROR_TIME_LIST] (state, arr) {
     state.errorTimeList = arr
+  },
+  [types.SET_TASK_COUNT] (state, query) {
+    state.taskCount = query
+  },
+  [types.SET_TASK_COUNT_BUY] (state, query) {
+    state.taskCountBuy = query
   }
 }
 export default mutations

@@ -559,7 +559,7 @@ export default {
 <style lang="stylus" rel="stylesheet/stylus" scoped>
 .wrap
   padding 0 20px 0 20px
-  min-width 1200px
+  min-width 1180px
   .icon
     display inline-block
     width 16px
@@ -588,7 +588,7 @@ export default {
   .personBank
     background #fff
     margin-top 24px
-    // padding 0 20px 20px
+    padding-bottom 20px
     font-size 14px
     color rgba(155, 155, 155, 1)
     overflow hidden
@@ -620,6 +620,7 @@ export default {
           overflow hidden
           color #444444
           min-width 1000px
+          padding-bottom 20px
           li
             margin-top 41px
             margin-left 22px
@@ -699,7 +700,7 @@ export default {
               margin-right 16px
               margin-top 21px
           .right
-            margin-right 82px
+            margin-right 30px
             margin-top 10px
           .midd
             margin-top 30px
@@ -742,7 +743,7 @@ export default {
           justify-content space-between
           overflow hidden
           color #444444
-          min-width 1000px
+          min-width 1200px
           li
             margin-top 41px
             margin-left 22px

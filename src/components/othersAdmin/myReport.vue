@@ -28,6 +28,8 @@
             <span v-if="scope.row.status==0" class="tipWait tipSmall">待审核</span>
           </template>
         </el-table-column>
+        <el-table-column prop="beizhuInfo" align="center" label="备注">
+        </el-table-column>
         <el-table-column prop="statusDetail" align="center" label="处理结果" width="150">
           <!-- <template slot-scope="scope">
             <el-tooltip popper-class="tooltipItem" effect="dark" :content="scope.row.result" placement="top">
@@ -83,7 +85,8 @@ export default {
           chuaqinInfo: word.chuaqinInfo || '暂无数据',
           reason: word.reason || '暂无数据',
           status: word.status || '暂无数据',
-          statusDetail: word.statusDetail || '暂无数据'
+          statusDetail: word.statusDetail || '暂无数据',
+          beizhuInfo: word.comment
         }
         arr.push(goods)
       }
