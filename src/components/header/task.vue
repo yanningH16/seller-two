@@ -100,6 +100,7 @@
               <span v-if="item.taskStatus==6" class="tipError">未通过</span>
               <span v-if="item.taskStatus==7" class="tipError">已撤销</span>
               <span v-if="item.taskStatus==8" class="tipDoing">进行中</span>
+              <span v-if="item.taskStatus==9" class="tipDoing">已终止</span>
               <span v-if="item.taskStatus==20" class="tipSuccess">已完成</span>
               <span v-if="item.taskStatus==21" class="tipSuccess">已结束</span>
             </div>
