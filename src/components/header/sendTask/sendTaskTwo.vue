@@ -40,7 +40,7 @@
           <el-input placeholder="请输入内容" v-model="sendObj.productName" style="width:600px;">
             <span slot="suffix" style="line-height:40px;">{{ sendObj.productName.length }}/20</span>
           </el-input>
-          <p>请输入试用商品简称，不要和淘宝商品名相同，防止试客直接搜索名称购买</p>
+          <p>请输入试用商品简称，不要和京东商品名相同，防止试客直接搜索名称购买</p>
         </div>
         <div class="input">
           <span class="must">商品链接：</span>
@@ -229,7 +229,7 @@
         <div class="addKeyword">
           <el-button type="text" @click="addKeyArr">
             <i class="el-icon-circle-plus"></i>
-            可多添加{{ 5-keywordList.length }}个淘宝搜索关键词方案
+            可多添加{{ 5-keywordList.length }}个京东搜索关键词方案
           </el-button>
           <span class="gray">(最多可添加5组关键词方案)</span>
         </div>
