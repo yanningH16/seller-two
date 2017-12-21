@@ -829,7 +829,7 @@ export default {
         } else {
           this.sendObj.defaultFavorNum = 0
         }
-        this.sendObj.throwTime = this.taskStarTime.toLocaleString()
+        this.sendObj.throwTime = this.sendDateList[0].time
 
         this.sendObj.sellerTaskId = this.creatShopInfo.sellerTaskId
         console.log(this.sendObj)

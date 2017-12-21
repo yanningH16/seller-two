@@ -67,7 +67,7 @@
           </li>
           <li style="width:20%">
             <span class="gray">上线时间: </span>
-            <span>{{ item.throwTime }}</span>
+            <span>{{ item.throwTime.split(' ')[0] }}</span>
           </li>
         </ul>
         <ul class="cont">
