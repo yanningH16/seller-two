@@ -29,6 +29,7 @@ export function uploadFile (res, file) {
   let client = new baidubce.sdk.BosClient(config)
   return new Promise((resolve, reject) => {
     client.putObjectFromBlob('scalp', name, file).then((response) => {
+      console.log(response)
       var url = client.generatePresignedUrl('scalp', name)
       var urlForm = url.split('?')[0]
       resolve(urlForm)

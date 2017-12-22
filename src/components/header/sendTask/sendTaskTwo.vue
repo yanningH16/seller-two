@@ -707,10 +707,12 @@ export default {
     },
     uploadImg (img) {
       uploadPromise.then((res) => {
+        console.log(res)
         if (res.statusText === 'OK') {
           uploadFile(res.data, img.file).then((res) => {
             this.sendObj.productPicUrl = res
-          }).catch(() => {
+          }).catch((err) => {
+            console.log(err)
             this.$message.error('网络错误，请刷新试试')
           })
         }
