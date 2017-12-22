@@ -229,7 +229,7 @@ export default {
         sellerBankCardId: this.item.value,
         chargeAmount: this.input4 + '.' + this.pointNum
       }).then((data) => {
-        console.log(data)
+        // console.log(data)
         let res = data.data
         if (res.code === '200') {
           let goods = {
@@ -306,7 +306,6 @@ export default {
       this.$ajax.post('/api/sellerAccout/getSellerBankCardList', {
         sellerUserId: this.userInfo.sellerUserId
       }).then((data) => {
-        // console.log(data)
         let res = data.data
         if (res.code === '200') {
           let arr = []

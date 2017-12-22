@@ -60,7 +60,7 @@ export default {
     this.$ajax.post('/api/order/search/sellerStatistics', {
       sellerUserId: this.userInfo.sellerUserId
     }).then((data) => {
-      console.log(data)
+      // console.log(data)
       let res = data.data
       if (res.code === '200') {
         this.notPassTaskCount = res.data.notPassTaskCount
