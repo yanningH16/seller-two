@@ -33,8 +33,9 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
-        target: 'http://182.61.29.51:8089', // 测试环境
+        // target: 'http://182.61.29.51:8089', // 测试环境
         // target: 'http://182.61.24.42:8089', // 生产环境
+        target: 'http://106.14.212.154:8089',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
