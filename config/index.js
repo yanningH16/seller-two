@@ -27,7 +27,7 @@ module.exports = {
   dev: {
     env: require('./dev.env'),
     port: process.env.PORT || 8013,
-    host: 'localhost',
+    // host: 'localhost',
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
@@ -35,6 +35,7 @@ module.exports = {
       '/api': {
         target: 'http://182.61.29.51:8089', // 测试环境
         // target: 'http://182.61.24.42:8089', // 生产环境
+        target: 'http://106.14.212.154:8099', // 
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
