@@ -24,7 +24,7 @@
         <span style="font-size:12px">为快速到账,请按此金额付款,包括小数点后两位</span>
       </div>
       <div class="number">
-        <button class="buttn buttn_small" @click="getChargeInfo">生产充值单</button>
+        <button class="buttn buttn_small" @click="getChargeInfo">生成充值单</button>
       </div>
     </div>
     <div class="contentDelit">
@@ -118,7 +118,7 @@
           <span class="blue copy" :data-clipboard-text='lookData.sellerBankCardNo' @click="doCopy">复制</span>
         </li>
         <li>
-          充值账户详情&nbsp;&nbsp;
+          所属银行&nbsp;&nbsp;
           <span>{{lookData.sellerBankCardName}}</span>
         </li>
         <li class="lines"></li>
@@ -286,7 +286,11 @@ export default {
             type: 'success'
           })
           this.dialogVisible = false
-          this.getTask(1, this.pageSize)
+          if (this.$route.query.toPay) {
+            window.history.go(-1)
+          } else {
+            this.getTask(1, this.pageSize)
+          }
         } else {
           this.$message({
             message: data.data.message,

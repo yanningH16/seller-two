@@ -15,10 +15,10 @@
           <span>店铺名称&nbsp;&nbsp;</span>
           <el-input v-model="input1" placeholder="请输入内容" style="width:384px"></el-input>
         </li>
-        <li class="wangwang">
+        <!-- <li class="wangwang">
           <span>店铺旺旺ID&nbsp;&nbsp;</span>
           <el-input v-model="input2" placeholder="请输入内容" style="width:384px"></el-input>
-        </li>
+        </li> -->
         <li class="type">
           <span>商品所属分类&nbsp;&nbsp;</span>
           <el-select v-model="value" placeholder="请选择" @change="valueChange">
@@ -224,7 +224,7 @@ export default {
     },
     // 当点击确认绑定的时候做的请求
     addSure () {
-      if (this.input === '' || this.input1 === '' || this.input2 === '' || this.value === '' || this.addArr.length === 0 || this.input4 === '' || this.input5 === '' || this.input6 === '') {
+      if (this.input === '' || this.input1 === '' || this.value === '' || this.addArr.length === 0 || this.input4 === '' || this.input5 === '' || this.input6 === '') {
         this.$message({
           message: '请正确填写所有内容,不能留空哦...',
           type: 'warning'
@@ -272,7 +272,11 @@ export default {
             type: 'success'
           })
           // this.refresh()
-          this.$router.push({ name: 'shopAdminList' })
+          if (this.$route.query.toBindShop) {
+            window.history.go(-1)
+          } else {
+            this.$router.push({ name: 'shopAdminList' })
+          }
         } else {
           this.$message({
             message: data.data.message,

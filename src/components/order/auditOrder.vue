@@ -636,6 +636,7 @@ export default {
 .auditOrder
   padding 0 20px 20px
   font-size 14px
+  min-width 1180px
   .red
     color #FC1733
   .gray

@@ -3,7 +3,7 @@
     <div class="shop">
       <em class="gray">其他管理</em>>店铺管理</div>
     <div class="content">
-      <el-tabs v-model="activeName"  type="border-card">
+      <el-tabs v-model="activeName" type="border-card">
         <el-tab-pane label="用户管理" name="first">
           <table class="border" v-for="(item,index) in shopList" :key="index">
             <div class="icon">
@@ -79,6 +79,7 @@ export default {
             // this.refresh()
             this.shoplist()
           } else {
+            this.shoplist()
             this.$message({
               message: data.data.message,
               type: 'warning'
@@ -124,17 +125,20 @@ export default {
         let res = data.data
         if (res.code === '200') {
           let arr = []
-          for (let word of res.data) {
-            let goods = {
-              shopName: word.shopName,
-              shopHomePageUrl: word.shopHomePageUrl,
-              contactQQ: word.contactQQ,
-              contactName: word.contactName,
-              contactTelephone: word.contactTelephone,
-              status: word.status === '1' ? '已审核' : '未审核',
-              shopId: word.shopId
+          // 用来判断是否存在res.data
+          if (res.data) {
+            for (let word of res.data) {
+              let goods = {
+                shopName: word.shopName,
+                shopHomePageUrl: word.shopHomePageUrl,
+                contactQQ: word.contactQQ,
+                contactName: word.contactName,
+                contactTelephone: word.contactTelephone,
+                status: word.status === '1' ? '已审核' : '未审核',
+                shopId: word.shopId
+              }
+              arr.push(goods)
             }
-            arr.push(goods)
           }
           this.shopList = arr
         } else {
@@ -145,7 +149,7 @@ export default {
         }
       }).catch((err) => {
         console.log(err)
-        // this.$message.error('未知错误！')
+        this.$message.error(err)
       })
     },
     change (index) {
