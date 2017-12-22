@@ -271,7 +271,9 @@ export default {
     overflow hidden
     ul
       margin-top 40px
+      display -webkit-box
       display flex
+      width 100%
       border-bottom 1px solid #e5e5e5
       padding-bottom 24px
       li
