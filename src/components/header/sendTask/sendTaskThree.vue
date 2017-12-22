@@ -146,7 +146,7 @@ export default {
       this.$router.push({ name: 'sendTaskTwo', query: { sellerTaskId: (this.$route.query.rbSellerTaskId || this.$route.query.sellerTaskId), syb: 1 } })
     },
     toAddMoney () {
-      this.$router.push({ name: 'coinPay' })
+      this.$router.push({ name: 'coinPay', query: { toPay: 1 } })
     },
     doNext () {
       let sendMoney = ((this.userMoney.availableCommissionAmount - 0) > (this.infoObj.totalPrice - 0) ? this.infoObj.totalPrice : this.userMoney.availableCommissionAmount)
