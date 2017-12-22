@@ -174,7 +174,7 @@ export default {
               message: '您还未绑定店铺,请先绑定店铺',
               type: 'warning'
             })
-            this.$router.push({ name: 'shopAdminList' })
+            this.$router.push({ name: 'shopAdminList', query: { toBindShop: 1 } })
           }
         } else {
           this.$message({
