@@ -106,7 +106,7 @@ export default {
     // 判断支付方式及余额判断
     noMoney () {
       let allMoney = this.userMoney.availableCapitalAmount + this.userMoney.availableCommissionAmount - 0
-      console.log(this.userMoney, allMoney, this.infoObj.totalPrice - 0)
+      // console.log(this.userMoney, allMoney, this.infoObj.totalPrice - 0)
       if (allMoney < this.infoObj.totalPrice - 0) {
         this.way1 = false
         this.way2 = false
@@ -172,7 +172,7 @@ export default {
       this.$ajax.post('/api/seller/task/getTaskCost', {
         sellerTaskId: this.$route.query.sellerTaskId
       }).then((data) => {
-        console.log(data)
+        // console.log(data)
         if (data.data.code === '200') {
           this.infoObj = data.data.data
         } else {

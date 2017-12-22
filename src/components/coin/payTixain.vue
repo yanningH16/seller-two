@@ -43,7 +43,7 @@ export default {
         endTime: this.value3 ? this.value3[1] : '',
         fundsFlowType: this.value
       }).then((data) => {
-        console.log(data)
+        // console.log(data)
         let res = data.data
         this.totalCount = res.data.totalCount
         if (res.code === '200') {

@@ -508,7 +508,7 @@ export default {
   },
   methods: {
     aaa () {
-      console.log(this.sendObj)
+      // console.log(this.sendObj)
     },
     // 根据价格获取评价的价格
     getPrice () {
@@ -516,7 +516,7 @@ export default {
         this.$ajax.post('/api/seller/task/getFavorByPrice', {
           price: this.sendObj.productOrderPrice * this.sendObj.numPerOrder
         }).then((data) => {
-          console.log(data)
+          // console.log(data)
           if (data.data.code === '200') {
             this.priceObj = data.data.data
           }
@@ -730,7 +730,7 @@ export default {
           reject(new Error('上传头像图片大小不能超过 1MB!'))
         } else {
           getImgSize(file).then((img) => {
-            console.log(file)
+            // console.log(file)
             if (img.width > 600 || img.height > 600) {
               this.$message.error('展示主图最大为600*600!')
               reject(new Error('展示主图最大为600*600!'))
@@ -832,11 +832,11 @@ export default {
         this.sendObj.throwTime = this.sendDateList[0].time
 
         this.sendObj.sellerTaskId = this.creatShopInfo.sellerTaskId
-        console.log(this.sendObj)
+        // console.log(this.sendObj)
         sessionStorage.setItem('taskTwo_sendObj', JSON.stringify(this.sendObj))
 
         this.$ajax.post('/api/seller/task/addTaskInfo', this.sendObj).then((data) => {
-          console.log(data)
+          // console.log(data)
           if (data.data.code === '200') {
             this.$router.push({ name: 'sendTaskThree', query: { sellerTaskId: data.data.data.sellerTaskId } })
           } else {
@@ -980,7 +980,7 @@ export default {
           this.classValue.classOne = rbObj.productClassFirstDesc
           this.classValue.classTwo = rbObj.productClassSecondDesc
           this.classValue.classThree = rbObj.productClassThirdDesc
-          console.log(this.sendObj)
+          // console.log(this.sendObj)
         } else {
           this.$message({
             type: 'warning',
@@ -1010,7 +1010,7 @@ export default {
         productClassSecondDesc: this.sendObj.productClassSecondDesc || this.returnBackObj.productClassSecondDesc,
         productClassThirdDesc: this.sendObj.productClassThirdDesc || this.returnBackObj.productClassThirdDesc
       }).then((data) => {
-        console.log(data)
+        // console.log(data)
         if (data.data.code === '200') {
           this.$message({
             type: 'success',

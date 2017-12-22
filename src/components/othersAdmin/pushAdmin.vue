@@ -149,7 +149,6 @@ export default {
         pageSize: pageSize,
         sellerUserId: this.userInfo.sellerUserId
       }).then((data) => {
-        console.log(data)
         let res = data.data
         this.totalCount = res.data.totalCount
         if (res.code === '200') {
@@ -183,7 +182,6 @@ export default {
         pageSize: pageSize,
         sellerUserId: this.userInfo.sellerUserId
       }).then((data) => {
-        console.log(data)
         let res = data.data
         this.totalCount = res.data.totalCount
         if (res.code === '200') {
@@ -217,7 +215,6 @@ export default {
         pageSize: pageSize,
         sellerUserId: this.userInfo.sellerUserId
       }).then((data) => {
-        console.log(data)
         let res = data.data
         this.totalCount = res.data.totalCount
         if (res.code === '200') {

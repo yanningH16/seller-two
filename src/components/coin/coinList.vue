@@ -125,7 +125,7 @@ export default {
       this.$ajax.post('/api/config/bankCard/getBankInfoList', {
         sellerUserId: this.userInfo.sellerUserId
       }).then((data) => {
-        console.log(data)
+        // console.log(data)
         let res = data.data
         if (res.code === '200') {
           let arr = []
@@ -157,7 +157,7 @@ export default {
         bankCardNo: this.Card,
         isDefault: this.checked === true ? '1' : '0'
       }).then((data) => {
-        console.log(data)
+        // console.log(data)
         let res = data.data
         if (res.code === '200') {
           this.$message({
@@ -182,7 +182,7 @@ export default {
       this.$ajax.post('/api/sellerAccout/getSellerBankCardList', {
         sellerUserId: this.userInfo.sellerUserId
       }).then((data) => {
-        console.log(data)
+        // console.log(data)
         let res = data.data
         if (res.code === '200') {
           let arr = []
@@ -221,7 +221,7 @@ export default {
       this.$ajax.post('/api/sellerAccout/getBankCardInfo', {
         sellerBankCardId: BankCrarId
       }).then((data) => {
-        console.log(data)
+        // console.log(data)
         let res = data.data
         if (res.code === '200') {
           let obj = {
@@ -278,7 +278,7 @@ export default {
         sellerUserId: this.userInfo.sellerUserId,
         bankNameId: '1'
       }).then((data) => {
-        console.log(data)
+        // console.log(data)
         let res = data.data
         if (res.code === '200') {
           this.$message({

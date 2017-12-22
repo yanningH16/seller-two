@@ -264,7 +264,6 @@ export default {
         shopType: 0,
         productClassDetail: this.className
       }).then((data) => {
-        console.log(data)
         let res = data.data
         if (res.code === '200') {
           this.$message({
@@ -311,7 +310,6 @@ export default {
     shopFirst () {
       this.$ajax.post('/api/config/productClass/getJDFirstClass', {
       }).then((data) => {
-        // console.log(data)
         let res = data.data
         if (res.code === '200') {
           let arr = []
@@ -349,7 +347,6 @@ export default {
       this.itemZone = null
     },
     zoneChange () {
-      console.log(this.itemZone)
       this.zoneCode = this.itemZone.code
       this.itemZone = this.itemZone.name
     },
@@ -363,7 +360,6 @@ export default {
     Provinces () {
       this.$ajax.post('/api/config/location/getProvinceList', {
       }).then((data) => {
-        // console.log(data)
         let res = data.data
         if (res.code === '200') {
           let arr = []
@@ -392,7 +388,6 @@ export default {
       this.$ajax.post('/api/config/location/getCityListByProvinceCode', {
         provinceCode: this.itemCode.code
       }).then((data) => {
-        // console.log(data)
         let res = data.data
         if (res.code === '200') {
           let arr = []
@@ -422,7 +417,6 @@ export default {
       this.$ajax.post('/api/config/location/getAreaListByCityCode', {
         cityCode: this.itemCity.code
       }).then((data) => {
-        console.log(data)
         let res = data.data
         if (res.code === '200') {
           let arr = []

@@ -179,7 +179,7 @@ export default {
       this.$ajax.post('/api/seller/shop/getShopInfoByShopId', {
         sellerShopId: this.$route.query.sellerShopId
       }).then((data) => {
-        console.log(data)
+        // console.log(data)
         let res = data.data
         if (res.code === '200') {
           let obj = {
@@ -213,7 +213,7 @@ export default {
       this.$ajax.post('/api/seller/shop/getPostLocationListByShopId', {
         sellerShopId: this.$route.query.sellerShopId
       }).then((data) => {
-        console.log(data)
+        // console.log(data)
         let res = data.data
         if (res.code === '200') {
           let arr = []
@@ -317,7 +317,7 @@ export default {
         concatTelephone: this.input5,
         concatQQnum: this.input6
       }).then((data) => {
-        console.log(data)
+        // console.log(data)
         let res = data.data
         if (res.code === '200') {
           this.$message({

@@ -85,7 +85,7 @@ export default {
         taskType: this.taskType,
         sellerUserId: this.userInfo.sellerUserId
       }).then((data) => {
-        console.log(data)
+        // console.log(data)
         if (data.data.code === '200') {
           this.$router.push({ name: 'sendTaskTwo', query: { sellerTaskId: data.data.data.sellerTaskId } })
         } else {
@@ -105,7 +105,7 @@ export default {
         sellerUserId: this.userInfo.sellerUserId,
         shopType: 3
       }).then((data) => {
-        console.log(data)
+        // console.log(data)
         this.shopListArr = data.data.data
       }).catch((err) => {
         console.log(err)

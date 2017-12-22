@@ -166,7 +166,7 @@ export default {
       }).then((data) => {
         let res = data.data
         if (res.code === '200') {
-          console.log(data)
+          // console.log(data)
           if (res.data) {
             this.$router.push({ name: 'sendTaskOne' })
           } else {

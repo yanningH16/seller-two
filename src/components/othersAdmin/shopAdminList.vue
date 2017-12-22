@@ -60,7 +60,7 @@ export default {
   methods: {
     // 删除店铺的操作
     open2 (index) {
-      console.log(this.shopList[index])
+      // console.log(this.shopList[index])
       this.$confirm('此操作将永久删除该店铺, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -69,7 +69,6 @@ export default {
         this.$ajax.post('/api/seller/shop/deleteShop', {
           sellerShopId: this.shopList[index].shopId
         }).then((data) => {
-          console.log(data)
           let res = data.data
           if (res.code === '200') {
             this.$message({
@@ -121,7 +120,6 @@ export default {
         sellerUserId: this.userInfo.sellerUserId,
         shopType: 0
       }).then((data) => {
-        console.log(data)
         let res = data.data
         if (res.code === '200') {
           let arr = []

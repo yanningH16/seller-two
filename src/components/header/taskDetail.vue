@@ -455,7 +455,7 @@ export default {
         sellerTaskId: this.$route.query.sellerTaskId
       }).then((data) => {
         if (data.data.code === '200') {
-          console.log(data)
+          // console.log(data)
           this.totalPriceObj = data.data.data
         } else {
           this.$message({

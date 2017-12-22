@@ -278,7 +278,7 @@ export default {
         sellerBankCardUserName: this.sellerBankCardUserName,
         platformBankCardUserName: this.platformCardUserName
       }).then((data) => {
-        console.log(data)
+        // console.log(data)
         let res = data.data
         if (res.code === '200') {
           this.$message({
@@ -306,7 +306,7 @@ export default {
       this.$ajax.post('/api/sellerAccout/getSellerBankCardList', {
         sellerUserId: this.userInfo.sellerUserId
       }).then((data) => {
-        console.log(data)
+        // console.log(data)
         let res = data.data
         if (res.code === '200') {
           let arr = []
@@ -352,12 +352,12 @@ export default {
     },
     // 点点击查看充值单触发的信息
     handleClick (index, data) {
-      console.log(index, data)
+      // console.log(index, data)
       this.toview = true
       this.$ajax.post('/api/sellerorder/getChargeApplyByApplyId', {
         chargeApplyId: this.tableData[index].chargeApplyId
       }).then((data) => {
-        console.log(data)
+        // console.log(data)
         let res = data.data
         if (res.code === '200') {
           let goods = {
