@@ -189,15 +189,16 @@ export default {
     },
     // 当点击保存的时候进行收货地的保存
     save () {
+      // else if (!(/^1[34578]\d{9}$/.test(this.phone))) {
+      //   this.$message({
+      //     message: '手机号错误,请重新填写',
+      //     type: 'warning'
+      //   })
+      //   return false
+      // }
       if (this.itemCode === '' || this.itemCity === '' || this.itemZone === '' || this.jieName === '' || this.phone === '') {
         this.$message({
           message: '请正确填写信息',
-          type: 'warning'
-        })
-        return false
-      } else if (!(/^1[34578]\d{9}$/.test(this.phone))) {
-        this.$message({
-          message: '手机号错误,请重新填写',
           type: 'warning'
         })
         return false
