@@ -40,7 +40,7 @@
           <el-input placeholder="请输入内容" v-model="sendObj.productName" style="width:600px;">
             <span slot="suffix" style="line-height:40px;">{{ sendObj.productName.length }}/20</span>
           </el-input>
-          <p>请输入试用商品简称，不要和京东商品名相同，防止试客直接搜索名称购买</p>
+          <p>请输入试用商品简称，不要和京东商品名相同，防止买手直接搜索名称购买</p>
         </div>
         <div class="input">
           <span class="must">商品链接：</span>
@@ -163,7 +163,7 @@
         <transition-group name="fade">
           <ul class="keywordList" v-for="(item, index) in keywordList" :key="index">
             <li>
-              <span class="must">关键词来源{{ index+1 }}：让试客在
+              <span class="must">关键词来源{{ index+1 }}：让买手在
                 <b class="red">京东APP</b>搜索关键字&nbsp;&nbsp;</span>
               <el-input style="width:340px;" v-model="item.keyword" placeholder="请输入搜索关键字"></el-input>
               <span v-if="index!==0" class="el-icon-delete deleBtn" @click="deleKeyArr(index)"></span>
