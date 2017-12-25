@@ -156,10 +156,10 @@ export default {
           for (let word of res.data.employees) {
             let goods = {
               name: word.userName,
-              number: word.buyerUserAccountId,
+              number: word.telephone,
               deduct: word.pay,
               numberType: word.buyerType === '1' ? '员工' : '--',
-              admin: word.sellerManagerId,
+              admin: word.sellerManagerId === '1' ? '--' : '--',
               JDStatus: word.buyerType === '1' ? '正常' : '冻结',
               time: word.gmtCreate
             }
@@ -189,10 +189,10 @@ export default {
           for (let word of res.data.buyers) {
             let goods = {
               name: word.userName,
-              number: word.buyerUserAccountId,
+              number: word.telephone,
               deduct: word.pay,
               numberType: word.buyerType === '0' ? '买手' : '--',
-              admin: word.sellerManagerId,
+              admin: word.sellerManagerId === '1' ? '--' : '--',
               JDStatus: word.buyerStatus === '1' ? '正常' : '冻结',
               time: word.gmtCreate
             }
