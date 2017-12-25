@@ -39,7 +39,7 @@ const header = [{
   name: 'overView',
   meta: { title: '首页-总览' }
 }, {
-  path: 'header/overView/sendTaskOne',
+  path: 'header/sendTaskOne',
   component: SendTaskOne,
   name: 'sendTaskOne',
   meta: { title: '首页-总览-发布垫付任务' }

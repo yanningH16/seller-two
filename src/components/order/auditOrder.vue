@@ -606,6 +606,14 @@ export default {
       }).then((data) => {
         if (data.data.code === '200') {
           this.shopList = data.data.data
+          if (this.$route.query.shopName) {
+            for (let i of this.shopList) {
+              if (i.shopName === this.$route.query.shopName) {
+                this.shopName = i.shopId
+                this.getTask()
+              }
+            }
+          }
         } else {
           this.$message({
             type: 'warning',

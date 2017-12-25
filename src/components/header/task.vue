@@ -109,7 +109,7 @@
             <div class="buttons">
               <button v-if="item.taskStatus==6" class="btn btn-small" @click="$router.push({name: 'sendTaskTwo',query: {rbSellerTaskId: item.sellerTaskId}})">修改</button>
               <button v-if="item.taskStatus==3" class="btn btn-small" @click="toPay(item.sellerTaskId)">去支付</button>
-              <button v-if="item.taskStatus!=7 || item.taskStatus!=20 || item.taskStatus!=21" class="btn btn-small" @click="cancel(item.sellerTaskId)">撤销</button>
+              <button v-if="item.taskStatus!=7 && item.taskStatus!=20 && item.taskStatus!=21" class="btn btn-small" @click="cancel(item.sellerTaskId)">撤销</button>
             </div>
           </li>
         </ul>

@@ -90,6 +90,10 @@ export default {
                 link: 'overView'
               },
               {
+                text: '发布垫付任务',
+                link: 'sendTaskOne'
+              },
+              {
                 text: '任务管理',
                 link: 'task',
                 bradge: this.notPassTaskCount

@@ -111,10 +111,38 @@ export default {
         console.log(err)
         this.$message.error('服务器错误！')
       })
+    },
+    toPushTask () {
+      this.$ajax.post('/api/seller/shop/getShopListBySellerUserId', {
+        sellerUserId: this.userInfo.sellerUserId,
+        shopType: 3
+      }).then((data) => {
+        let res = data.data
+        if (res.code === '200') {
+          // console.log(data)
+          if (res.data) {
+            this.$router.push({ name: 'sendTaskOne' })
+          } else {
+            this.$message({
+              message: '您还未绑定店铺,请先绑定店铺',
+              type: 'warning'
+            })
+            this.$router.push({ name: 'shopAdmin', query: { toBindShop: 1 } })
+          }
+        } else {
+          this.$message({
+            message: res.message,
+            type: 'warning'
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
     }
   },
   mounted () {
     this.getShopList()
+    this.toPushTask()
   }
 }
 </script>

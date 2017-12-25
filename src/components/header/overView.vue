@@ -46,7 +46,7 @@
             <h2>待确认垫付订单</h2>
             <div class="toCheck">
               <noCont class="smallNoCont" v-if="toCheckOrderArr.length===0"></noCont>
-              <div class="item" v-for="(item,index) in toCheckOrderArr" :key="index" @click="toCheck">
+              <div class="item" v-for="(item,index) in toCheckOrderArr" :key="index" @click="toCheck(item.shopName)">
                 <i :class="{'jdIcon': item.shopType==0, 'taobaoIcon': item.shopType==1, 'tianmaoIcon': item.shopType==2}"></i>
                 <strong>{{ item.shopName }}</strong>
                 <span>(
@@ -188,8 +188,8 @@ export default {
       })
     },
     // 去审核待确认订单
-    toCheck () {
-      this.$router.push({ name: 'auditOrder' })
+    toCheck (shopName) {
+      this.$router.push({ name: 'auditOrder', query: { shopName: shopName } })
     },
     toFavor () {
       this.$router.push({ name: 'appraiseOrder' })
