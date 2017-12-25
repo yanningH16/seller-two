@@ -280,4 +280,5 @@ export default {
         margin-right 20px
     .pager
       float right
+      padding-bottom 20px
 </style>
