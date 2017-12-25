@@ -36,8 +36,10 @@
           </td>
           <td>
             <div>
-              <p>商品: {{ infoObj.productUnitPrice }}元*{{ infoObj.numPerOrder }}件 / 单*{{ infoObj.totalNum }}单</p>
-              <p>运费备用金: {{ infoObj.isPostFree == 0 ? '10.00' : '0' }}元 / 单*{{ infoObj.totalNum }}单</p>
+              <p>商品: {{ infoObj.productUnitPrice }}元*{{ infoObj.numPerOrder }}件 / 单*
+                <span class="red">{{ infoObj.totalNum }}</span>单</p>
+              <p>运费备用金: {{ infoObj.isPostFree == 0 ? '10.00' : '0' }}元 / 单*
+                <span class="red">{{ infoObj.totalNum }}</span>单</p>
             </div>
           </td>
           <td>
@@ -53,10 +55,14 @@
           </td>
           <td>
             <div>
-              <p>图文好评: {{ infoObj.graphicFavorPrice }}元 / 单*{{ infoObj.graphicFavorNum }}单</p>
-              <p>纯文字好评: {{ infoObj.wordFavorPrice }}元 / 单*{{ infoObj.wordFavorNum }}单</p>
-              <p>默认五星好评: {{ infoObj.defaultFavorPrice }}元 / 单*{{ infoObj.defaultFavorNum }}单</p>
-              <p>plus会员: {{ infoObj.plusPrice }}元 / 单*{{ infoObj.plusNum }}单</p>
+              <p>图文好评: {{ infoObj.graphicFavorPrice }}元 / 单*
+                <span class="red">{{ infoObj.graphicFavorNum }}</span>单</p>
+              <p>纯文字好评: {{ infoObj.wordFavorPrice }}元 / 单*
+                <span class="red">{{ infoObj.wordFavorNum }}</span>单</p>
+              <p>默认五星好评: {{ infoObj.defaultFavorPrice }}元 / 单*
+                <span class="red">{{ infoObj.defaultFavorNum }}</span>单</p>
+              <p>plus会员: {{ infoObj.plusPrice }}元 / 单*
+                <span class="red">{{ infoObj.plusNum }}</span>单</p>
             </div>
           </td>
           <td>
@@ -230,12 +236,14 @@ export default {
     border-radius 4px
   .warning
     height 36px
-    background rgba(255, 171, 177, 0.4)
+    background rgba(255, 171, 177, 0.2)
     color #FF3341
     font-size 12px
     line-height 36px
     padding-left 20px
     padding-right 20px
+    span
+      font-weight bold
   .step
     padding 24px 140px 16px
     background #ffffff

@@ -158,12 +158,14 @@ export default {
     border-radius 4px
   .warning
     height 36px
-    background rgba(255, 171, 177, 0.4)
+    background rgba(255, 171, 177, 0.2)
     color #FF3341
     font-size 12px
     line-height 36px
     padding-left 20px
     padding-right 20px
+    span
+      font-weight bold
   .step
     padding 24px 140px 16px
     background #ffffff
