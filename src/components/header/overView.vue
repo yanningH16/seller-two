@@ -12,21 +12,21 @@
           <img src="../../assets/image/benjin.png" alt="">
           <div>
             <h3>账户余额</h3>
-            <h2 style="color:#179FFF;">{{ moneyObj.availableCapitalAmount }}</h2>
+            <h2 style="color:#179FFF;">{{ userMoney.availableCapitalAmount }}</h2>
           </div>
         </li>
         <li>
           <img src="../../assets/image/yongjin.png" alt="">
           <div>
             <h3>冻结金额(元)</h3>
-            <h2 style="color:#FF2933;">{{ moneyObj.frozenCapitalAmount }}</h2>
+            <h2 style="color:#FF2933;">{{ userMoney.frozenCapitalAmount }}</h2>
           </div>
         </li>
         <li>
           <img src="../../assets/image/lianmeng.png" alt="">
           <div>
             <h3>联盟佣金(元)</h3>
-            <h2 style="color:#FF8A22;">{{ moneyObj.availableCommissionAmount }}</h2>
+            <h2 style="color:#FF8A22;">{{ userMoney.availableCommissionAmount }}</h2>
           </div>
         </li>
       </ul>
@@ -150,7 +150,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'userInfo'
+      'userInfo',
+      'userMoney'
     ])
   },
   methods: {
