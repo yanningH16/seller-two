@@ -24,7 +24,7 @@
         <span style="font-size:12px">为快速到账,请按此金额付款,包括小数点后两位</span>
       </div>
       <div class="number">
-        <button class="buttn buttn_small" @click="getChargeInfo">生成充值单</button>
+        <button class="buttn buttn_small" style="margin-left:180px" @click="getChargeInfo">生成充值单</button>
       </div>
     </div>
     <div class="contentDelit">
@@ -47,7 +47,7 @@
           </el-table-column>
           <el-table-column prop="remark" align="center" label="备注">
           </el-table-column>
-          <el-table-column align="center" label="提现状态">
+          <el-table-column align="center" label="充值状态">
             <template slot-scope="scope">
               <span class="tipSmall" :class="scope.row.JDStatus==='成功' ? 'tipSuccess' : scope.row.JDStatus==='失败' ? 'tipError' : scope.row.JDStatus==='进行中'?'tipDoing':'--'">{{scope.row.JDStatus}}</span>
             </template>
