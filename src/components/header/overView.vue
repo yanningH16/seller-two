@@ -19,7 +19,7 @@
           <img src="../../assets/image/yongjin.png" alt="">
           <div>
             <h3>冻结金额(元)</h3>
-            <h2 style="color:#FF2933;">{{ userMoney.frozenCapitalAmount }}</h2>
+            <h2 style="color:#FF2933;">{{ userMoney.frozenCommissionAmount }}</h2>
           </div>
         </li>
         <li>
