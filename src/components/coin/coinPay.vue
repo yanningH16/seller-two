@@ -30,7 +30,7 @@
     <div class="contentDelit">
       <h3>待处理充值
         <span class="balance">您的押金账户余额:
-          <em style="color:rgba(255,51,65,1)">{{this.userMoney.availableCapitalAmount}}</em>元</span>
+          <em style="color:rgba(255,51,65,1)">{{ userMoney.availableCapitalAmount }}</em>元</span>
       </h3>
       <div class="line"></div>
       <div class="actTab">
@@ -152,7 +152,7 @@
 </template>
 <script type="text/ecmascript-6">
 import Clipboard from 'clipboard'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { pageCommon } from '../../assets/js/mixin'
 import NoCont from '../../base/noCont/noCont'
 export default {
@@ -191,6 +191,9 @@ export default {
     this.addBank()
     this.pointNum = Math.round(Math.random() * 99)
   },
+  mounted () {
+    this.getMoney()
+  },
   computed: {
     params () {
       return {
@@ -205,6 +208,24 @@ export default {
     ])
   },
   methods: {
+    // 获取资金
+    getMoney () {
+      this.$ajax.post('/api/userFund/getSellerUserFund', {
+        sellerUserAccountId: this.userInfo.sellerUserId
+      }).then((data) => {
+        if (data.data.code === '200') {
+          let res = data.data.data
+          this.setUserMoney(res)
+        } else {
+          this.$message({
+            type: 'warning',
+            message: data.data.message
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
     doCopy () {
       var clipboard = new Clipboard('.copy')
       clipboard.on('success', (e) => {
@@ -383,7 +404,10 @@ export default {
         console.log(err)
         this.$message.error('未知错误！')
       })
-    }
+    },
+    ...mapActions([
+      'setUserMoney'
+    ])
   }
 }
 </script>

@@ -89,7 +89,7 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'sendTaskThree',
   data () {
@@ -156,11 +156,30 @@ export default {
         totalCommissionPayAmount: sendMoney
       }).then((data) => {
         if (data.data.code === '200') {
+          this.getMoney()
           this.$router.push({ name: 'sendTaskFour', query: { sellerTaskId: data.data.data.sellerTaskId } })
         } else {
           this.$message({
             message: data.data.message,
             type: 'warning'
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    // 获取资金
+    getMoney () {
+      this.$ajax.post('/api/userFund/getSellerUserFund', {
+        sellerUserAccountId: this.userInfo.sellerUserId
+      }).then((data) => {
+        if (data.data.code === '200') {
+          let res = data.data.data
+          this.setUserMoney(res)
+        } else {
+          this.$message({
+            type: 'warning',
+            message: data.data.message
           })
         }
       }).catch((err) => {
@@ -185,7 +204,10 @@ export default {
         console.log(err)
         this.$message.error('服务器错误！')
       })
-    }
+    },
+    ...mapActions([
+      'setUserMoney'
+    ])
   },
   mounted () {
     this.getInfo()
