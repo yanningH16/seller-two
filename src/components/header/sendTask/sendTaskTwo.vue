@@ -169,7 +169,7 @@
               <span v-if="index!==0" class="el-icon-delete deleBtn" @click="deleKeyArr(index)"></span>
             </li>
             <li style="margin-top:24px;margin-bottom:14px;">
-              <el-button type="text" @click="item.showSearch = !item.showSearch">搜索范围&nbsp;&nbsp;</el-button>
+              <el-button type="text" @click="item.showSearch = !item.showSearch">{{ item.showSearch ? '搜索范围' : '查看搜索范围' }}&nbsp;&nbsp;</el-button>
               <b class="gray">&nbsp;&nbsp;若关键词排名较低，请务必设置此项，以便设置能找到商品</b>
             </li>
             <transition-group name="fade">
@@ -411,7 +411,7 @@ export default {
         productShowPrice: '', // 商品展示价格
         productOrderPrice: '', // 商品下单价格
         numPerOrder: '', // 买家每单拍几件
-        productFormat: '任意规格', // 商品规格
+        productFormat: '', // 商品规格
         isPostageFree: 1, // 是否包邮 0 - 否，1-是
         isSupportBaiTiao: 0, // 是否支持白条/花呗
         isSupportCredit: 0, // 是否支持信用卡

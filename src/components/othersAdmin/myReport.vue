@@ -21,6 +21,13 @@
             </el-tooltip>
           </template>
         </el-table-column>
+        <el-table-column prop="beizhuInfo" align="center" label="备注">
+          <template slot-scope="scope">
+            <el-tooltip popper-class="tooltipItem" effect="dark" :content="scope.row.beizhuInfo" placement="top">
+              <span class="overflow">{{ scope.row.beizhuInfo }}</span>
+            </el-tooltip>
+          </template>
+        </el-table-column>
         <el-table-column prop="status" align="center" label="状态">
           <template slot-scope="scope">
             <span v-if="scope.row.status==1" class="tipDoing tipSmall">处理中</span>
@@ -28,14 +35,12 @@
             <span v-if="scope.row.status==0" class="tipWait tipSmall">待审核</span>
           </template>
         </el-table-column>
-        <el-table-column prop="beizhuInfo" align="center" label="备注">
-        </el-table-column>
         <el-table-column prop="statusDetail" align="center" label="处理结果" width="150">
-          <!-- <template slot-scope="scope">
-            <el-tooltip popper-class="tooltipItem" effect="dark" :content="scope.row.result" placement="top">
-              <span class="overflow">{{ scope.row.result }}</span>
+          <template slot-scope="scope">
+            <el-tooltip popper-class="tooltipItem" effect="dark" :content="scope.row.statusDetail" placement="top">
+              <span class="overflow">{{ scope.row.statusDetail }}</span>
             </el-tooltip>
-          </template> -->
+          </template>
         </el-table-column>
       </el-table>
       <noCont v-if="tableData.length===0"></noCont>
@@ -85,7 +90,7 @@ export default {
           chuaqinInfo: word.chuaqinInfo || '暂无数据',
           reason: word.reason || '暂无数据',
           status: word.status || '暂无数据',
-          statusDetail: word.statusDetail || '暂无数据',
+          statusDetail: word.dealResult || '暂无数据',
           beizhuInfo: word.comment
         }
         arr.push(goods)
