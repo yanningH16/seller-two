@@ -102,7 +102,7 @@
                 <input type="number" v-model="sendObj.numPerOrder" :disabled="isReturnBack" @blur="getPrice" placeholder="请填写">
               </td>
               <td>
-                <input type="text" v-model="sendObj.productFormat" :disabled="isReturnBack" placeholder="任意规格(按照试用价格下单)">
+                <input type="text" v-model="sendObj.productFormat" @focus="sendObj.productFormat=''" :disabled="isReturnBack" placeholder="任意规格(按照试用价格下单)">
               </td>
             </tr>
           </table>
@@ -411,7 +411,7 @@ export default {
         productShowPrice: '', // 商品展示价格
         productOrderPrice: '', // 商品下单价格
         numPerOrder: '', // 买家每单拍几件
-        productFormat: '', // 商品规格
+        productFormat: '任意规格', // 商品规格
         isPostageFree: 1, // 是否包邮 0 - 否，1-是
         isSupportBaiTiao: 0, // 是否支持白条/花呗
         isSupportCredit: 0, // 是否支持信用卡
@@ -1045,7 +1045,24 @@ export default {
       this.getReturnBackInfo()
     }
     if (this.$route.query.syb && sessionStorage.getItem('taskTwo_sendObj')) {
-      this.sendObj = JSON.parse(sessionStorage.getItem('taskTwo_sendObj'))
+      let old = JSON.parse(sessionStorage.getItem('taskTwo_sendObj'))
+      this.sendObj = old
+      this.classValue = {
+        classOne: {
+          className: old.productClassFirstDesc,
+          id: old.productClassFirstId
+        },
+        classTwo: {
+          className: old.productClassSecondDesc,
+          id: old.productClassSecondId
+        },
+        classThree: {
+          className: old.productClassThirdDesc,
+          id: old.productClassThirdId
+        }
+      }
+      this.keywordList = old.searchKeywordList
+      // this.timeArr = old.taskNumList
     }
   }
 }
