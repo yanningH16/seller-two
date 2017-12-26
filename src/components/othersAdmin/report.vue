@@ -44,15 +44,13 @@ export default {
       input: '',
       imageUrl: '',
       options: [{
-        label: '举报原因1'
+        label: '买手恶意退款'
       }, {
-        label: '举报原因2'
+        label: '买手在聊天中提及刷单等敏感字眼'
       }, {
-        label: '举报原因3'
+        label: '买手没有通过搜索关键字进入链接'
       }, {
-        label: '举报原因4'
-      }, {
-        label: '举报原因5'
+        label: '其他'
       }],
       value: ''
     }

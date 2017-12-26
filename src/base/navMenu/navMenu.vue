@@ -1,5 +1,5 @@
 <template>
-  <div class="menu">
+  <div class="menu" @dblclick="copyText">
     <div class="logo">
       <img src="../../assets/image/logo.png" alt="Logo" class="img">
       <!-- <span style="color:#FF2933;line-height:80px;font-size:18px;">红商会</span> -->
@@ -57,24 +57,7 @@ export default {
     }
   },
   created () {
-    this.$ajax.post('/api/order/search/sellerStatistics', {
-      sellerUserId: this.userInfo.sellerUserId
-    }).then((data) => {
-      // console.log(data)
-      let res = data.data
-      if (res.code === '200') {
-        this.notPassTaskCount = res.data.notPassTaskCount
-        this.orderWaitPassCount = res.data.orderWaitPassCount
-        this.favorWaitPassCount = res.data.favorWaitPassCount
-      } else {
-        this.$message({
-          message: res.message,
-          type: 'warning'
-        })
-      }
-    }).catch(() => {
-      this.$message.error('网络错误，刷新下试试')
-    })
+    this.pointNum()
   },
   computed: {
     menus: {
@@ -171,6 +154,26 @@ export default {
     ])
   },
   methods: {
+    pointNum () {
+      this.$ajax.post('/api/order/search/sellerStatistics', {
+        sellerUserId: this.userInfo.sellerUserId
+      }).then((data) => {
+        // console.log(data)
+        let res = data.data
+        if (res.code === '200') {
+          this.notPassTaskCount = res.data.notPassTaskCount
+          this.orderWaitPassCount = res.data.orderWaitPassCount
+          this.favorWaitPassCount = res.data.favorWaitPassCount
+        } else {
+          this.$message({
+            message: res.message,
+            type: 'warning'
+          })
+        }
+      }).catch(() => {
+        this.$message.error('网络错误，刷新下试试')
+      })
+    },
     setRouterActive () {
       this.$nextTick(() => {
         let activeRouter = this.$route.path
@@ -187,6 +190,9 @@ export default {
     },
     personInfo () {
       this.pull = !this.pull
+    },
+    copyText () {
+      this.pointNum()
     }
   }
 }

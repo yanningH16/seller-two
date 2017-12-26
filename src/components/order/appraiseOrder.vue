@@ -93,16 +93,16 @@
                       <em>{{ item.sellerFavor }}</em>
                     </p>
                     <div class="midd_img" v-if="item.favorTaskType==2">
-                      <img @click="lookImg(m)" v-for="(m, i) in (JSON.parse(item.sellerFavorPic) || [])" :key="i" :src="m" alt="pic">
+                      <img @click="lookImg(m)" v-for="(m, i) in (item.sellerFavorPic?JSON.parse(item.sellerFavorPic):[])" :key="i" :src="m" alt="pic">
                     </div>
                   </li>
                   <!-- 右边部分 -->
                   <li class="right">
                     <p style="float:left">
-                      <em>评价截图:</em><br><img @click="lookImg(JSON.parse(item.buyerFavorPic) || '')" :src="JSON.parse(item.buyerFavorPic) || ''" alt="pic" width="60px" height="100px">
+                      <em>评价截图:</em><br><img @click="lookImg(item.buyerFavorPic?JSON.parse(item.buyerFavorPic) : '')" :src="item.buyerFavorPic?JSON.parse(item.buyerFavorPic) : ''" alt="pic" width="60px" height="100px">
                     </p>
                     <p style="float:left;margin-left:46px">
-                      <em>物流截图:</em><br><img @click="lookImg(JSON.parse(item.logisticsPicId) || '')" :src="JSON.parse(item.logisticsPicId) || ''" alt="pic" width="60px" height="100px">
+                      <em>物流截图:</em><br><img @click="lookImg(item.logisticsPicId?JSON.parse(item.logisticsPicId):'')" :src="item.logisticsPicId?JSON.parse(item.logisticsPicId) :''" alt="pic" width="60px" height="100px">
                     </p>
                   </li>
                 </ul>
@@ -208,10 +208,10 @@
                   <!-- 右边部分 -->
                   <li class="right">
                     <p style="float:left">
-                      <em>评价截图:</em><br><img @click="lookImg(JSON.parse(item.buyerFavorPic) || '')" :src="JSON.parse(item.buyerFavorPic) || ''" alt="pic" width="60px" height="100px">
+                      <em>评价截图:</em><br><img @click="lookImg(item.buyerFavorPic?JSON.parse(item.buyerFavorPic) :'')" :src="item.buyerFavorPic?JSON.parse(item.buyerFavorPic) : ''" alt="pic" width="60px" height="100px">
                     </p>
                     <p style="float:left;margin-left:46px">
-                      <em>物流截图:</em><br><img @click="lookImg(JSON.parse(item.logisticsPicId) || '')" :src="JSON.parse(item.logisticsPicId) || ''" alt="pic" width="60px" height="100px">
+                      <em>物流截图:</em><br><img @click="lookImg(item.logisticsPicId?JSON.parse(item.logisticsPicId) : '')" :src="item.logisticsPicId?JSON.parse(item.logisticsPicId) : ''" alt="pic" width="60px" height="100px">
                     </p>
                   </li>
                 </ul>
@@ -281,7 +281,7 @@
                 <!-- 左边内容部分 -->
                 <ul class="text">
                   <li>
-                    <img class="float_img" :src="item.productPicUrl" alt="pic" width="60px" height="60px">
+                    <img class="float_img" :src="item.productPicUrl||''" alt="pic" width="60px" height="60px">
                     <div class="float">
                       <p>
                         <span>{{ item.productName }}</span>

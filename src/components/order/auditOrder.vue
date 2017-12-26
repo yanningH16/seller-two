@@ -77,9 +77,9 @@
                   </div>
                 </li>
                 <li>
-                  <a @click="lookImg((JSON.parse(item.realOrderPicUrl))[0] || '')">
+                  <!-- <a @click="lookImg((JSON.parse(item.realOrderPicUrl))[0] || '')">
                     <img :src="(JSON.parse(item.realOrderPicUrl))[0] || ''" alt="pic">
-                  </a>
+                  </a> -->
                   <div>
                     <span>姓名：{{ item.buyerName }}</span>
                     <span>订单金额：{{ item.realOrderPrice }}</span>
@@ -169,9 +169,9 @@
                   </div>
                 </li>
                 <li>
-                  <a @click="lookImg((JSON.parse(item.realOrderPicUrl))[0] || '')">
+                  <!-- <a @click="lookImg((JSON.parse(item.realOrderPicUrl))[0] || '')">
                     <img :src="(JSON.parse(item.realOrderPicUrl))[0] || ''" alt="pic">
-                  </a>
+                  </a> -->
                   <div>
                     <p>京东订单编号：</p>
                     <p class="red">{{ item.realOrderId }}</p>
@@ -261,9 +261,9 @@
                   </div>
                 </li>
                 <li>
-                  <a @click="lookImg((JSON.parse(item.realOrderPicUrl))[0] || '')">
+                  <!-- <a @click="lookImg((JSON.parse(item.realOrderPicUrl))[0] || '')">
                     <img :src="(JSON.parse(item.realOrderPicUrl))[0] || ''" alt="pic">
-                  </a>
+                  </a> -->
                   <div>
                     <span>姓名：{{ item.buyerName }}</span>
                     <span>订单金额：{{ item.realOrderPrice }}</span>
@@ -459,6 +459,7 @@ export default {
       this.lookImgUrl = url
     },
     doCopy () {
+      console.log(this.orderWaitPassCount)
       var clipboard = new Clipboard('.copy')
       clipboard.on('success', (e) => {
         this.$message({

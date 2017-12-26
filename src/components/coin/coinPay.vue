@@ -18,7 +18,7 @@
       </div>
       <div style="margin-top:20px">
         <span class="account">充值金额</span>
-        <el-input placeholder="请输入内容" v-model="input4">
+        <el-input placeholder="请输入金额" v-model="input4">
           <template slot="append">.{{pointNum}}</template>
         </el-input>
         <span style="font-size:12px">为快速到账,请按此金额付款,包括小数点后两位</span>
