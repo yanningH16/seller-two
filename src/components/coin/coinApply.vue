@@ -112,16 +112,16 @@ export default {
       tableData: [],
       tableData_1: [],
       options: [{
-        value: '',
+        value: [],
         label: '全部'
       }, {
-        value: 'CAPITAL',
+        value: ['TYP_SELLER_CAPITAL_CHARGE', 'TYP_SELLER_CAPITAL_FREEZE', 'TYP_SELLER_CAPITAL_PAY'],
         label: '本金'
       }, {
-        value: 'COMMISSION',
+        value: ['TYP_SELLER_COMMISSION_UNFREEZE', 'TYP_SELLER_COMMISSION_CHARGE', 'TYP_SELLER_COMMISSION_FREEZE', 'TYP_SELLER_COMMISSION_PAY', 'TYP_SELLER_COMMISSION_UNFREEZE'],
         label: '佣金'
       }],
-      value: ''
+      value: []
     }
   },
   computed: {
