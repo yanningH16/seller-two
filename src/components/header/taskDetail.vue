@@ -112,7 +112,7 @@
           <div>
             <p>
               <span>商品名称：{{ goodsInfoObj.productName }}</span>
-              所在分类：{{ goodsInfoObj.productClassFirstDetail }}
+              所在分类：{{ goodsInfoObj.productClassFirstDetail + ' / ' + goodsInfoObj.productClassSecondDetail + ' / ' + goodsInfoObj.productClassThirdDetail }}
             </p>
             <p>商品链接：
               <a class="blue link" target="_blank" :href="goodsInfoObj.productUrl">{{ goodsInfoObj.productUrl }}</a>
@@ -134,7 +134,7 @@
             <h3>搜索关键词{{ index+1 }}：{{ item.keyword }}</h3>
             <p>
               <span class="gray">排序方式：</span>
-              {{ item.sortClass || '其他' }}
+              {{ item.sortClass || '无' }}
             </p>
             <p>
               <span class="gray">价格区间：</span>
