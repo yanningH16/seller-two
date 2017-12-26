@@ -601,8 +601,10 @@ export default {
         font-size 16px
         color #444444
         line-height 1
+        padding-bottom 12px
         margin-bottom 24px
         margin-top 40px
+        border-bottom 1px solid #d8d8d8
       img
         width 60px
         height 60px
