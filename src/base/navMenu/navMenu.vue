@@ -1,7 +1,7 @@
 <template>
   <div class="menu" @dblclick="copyText">
     <div class="logo">
-      <img src="../../assets/image/logo.png" alt="Logo" class="img">
+      <img src="../../assets/image/logow.png" alt="Logo" class="img">
       <!-- <span style="color:#FF2933;line-height:80px;font-size:18px;">红商会</span> -->
     </div>
     <div class="router">
@@ -210,8 +210,8 @@ export default {
     text-align center
     .img
       position relative
-      width 180px
-      top 20px
+      top 10px
+      width 150px
   .router
     .routerBox
       font-size 0
