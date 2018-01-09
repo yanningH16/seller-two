@@ -3,6 +3,34 @@
     <div class="shop">
       <em class="gray">推广赚钱</em>
     </div>
+    <div class="pushMan">
+      <div class="left">
+        <img src="../../assets/image/headImg.jpg" alt="">
+        <h5>受邀人是员工</h5>
+      </div>
+      <div class="right">
+        <p>
+          <strong style="color: #FF2933">100
+            <sup>%</sup>
+          </strong>
+          <span>
+            员工所做的浏览任务与垫付任务,所获取的佣金百分百由您获取,佣金与充值的本金等值.
+          </span>
+        </p>
+        <p>
+          <strong style="color: #EE7707">1
+            <sup>元/单</sup>
+          </strong>
+          <span>
+            员工邀请的买手每做完一单垫付任务,您的佣金账户就会增加1元钱.
+          </span>
+        </p>
+        <div class="input">
+          <input type="text" v-model="url">
+          <span class="copy" @click="doCopy" :data-clipboard-text=copyCont>复制</span>
+        </div>
+      </div>
+    </div>
     <div class="content">
       <el-tabs v-model="activeName" @tab-click="handleClick" type="border-card">
         <el-tab-pane label="邀请员工账号" name="one">
@@ -79,6 +107,7 @@
 <script type="text/ecmascript-6">
 import NoCont from '../../base/noCont/noCont'
 import { mapGetters } from 'vuex'
+import Clipboard from 'clipboard'
 export default {
   name: 'pushAdmin',
   components: {
@@ -88,6 +117,10 @@ export default {
     ...mapGetters([
       'userInfo'
     ]),
+    copyCont: function () {
+      let cont = `请大家进入如下链接进行注册：${this.url}，注意请不要将链接泄露给除本公司以外的人。`
+      return cont
+    },
     showPager: function () {
       if (this.activeName === 'one' && this.tableDataSell.length !== 0) {
         return true
@@ -106,15 +139,26 @@ export default {
       currentPage: 1,
       totalCount: 0,
       pageSize: 5,
+      url: 'http://www.baidu.com',
       tableDataSell: [],
       tableDataBuy: [],
-      tableDataAdmin: []
+      tableDataAdmin: [],
+      iniviteCode: {}
     }
   },
   created () {
     this.sercherOne(1, this.pageSize)
   },
   methods: {
+    doCopy () {
+      var clipboard = new Clipboard('.copy')
+      clipboard.on('success', (e) => {
+        this.$message({
+          message: '复制成功！',
+          type: 'success'
+        })
+      })
+    },
     handleClick (tab, event) {
       if (this.activeName === 'one') {
         this.sercherOne(1, this.pageSize)
@@ -142,6 +186,25 @@ export default {
       } else if (this.activeName === 'three') {
         this.sercherThree(val, this.pageSize)
       }
+    },
+    // 获取邀请code
+    getCodeUrl () {
+      this.$ajax.post('/api/sellerAccout/getInviteCode', {
+        sellerAccountId: this.userInfo.sellerUserId
+      }).then((data) => {
+        let res = data.data
+        if (res.code === '200') {
+          this.iniviteCode = res.data
+          this.url = res.data.inviteStaffCode
+        } else {
+          this.$message({
+            message: res.message,
+            type: 'warning'
+          })
+        }
+      }).catch(() => {
+        this.$message.error('网络错误，刷新下试试')
+      })
     },
     sercherOne (pageNo, pageSize) {
       this.$ajax.post('/api/buyerAccount/getEmployeeListBySellerUserId', {
@@ -240,12 +303,65 @@ export default {
         this.$message.error('网络错误，刷新下试试')
       })
     }
+  },
+  mounted () {
+    this.getCodeUrl()
   }
 }
 </script>
 <style lang="stylus" rel="stylesheet/stylus" scoped>
 .wrap
   padding 0 20px 0 20px
+  .pushMan
+    margin-top 20px
+    padding 20px 40px
+    border-radius 4px
+    background #ffffff
+    display flex
+    .left
+      width 120px
+      margin-right 40px
+      img
+        width 100px
+        height 100px
+      h5
+        font-size 16px
+        line-height 40px
+    .right
+      width 500px
+      p
+        display flex
+        margin 20px 0
+        strong
+          width 70px
+          margin-right 10px
+          font-size 24px
+          font-weight 1000
+          vertical-align baseline
+          sup
+            font-size 10px
+            font-weight bolder
+        span
+          flex 1
+          font-size 14px
+          line-height 20px
+      .input
+        box-sizing border-box
+        width 100%
+        border 2px solid #20A0FF
+        input
+          line-height 30px
+          padding-left 5px
+          padding-right 5px
+          width calc(100% - 60px)
+          outline none
+        span
+          float right
+          width 50px
+          line-height 30px
+          text-align center
+          color #ffffff
+          background #20A0FF
   .shop
     background #fff
     height 36px

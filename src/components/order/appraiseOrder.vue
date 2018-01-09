@@ -441,8 +441,8 @@ export default {
       this.getTask()
     },
     lookImg (url) {
-      this.showLookImg = true
       this.lookImgUrl = url
+      this.showLookImg = true
     },
     // 点击驳回按钮触发
     toReject (buyerTaskId) {
