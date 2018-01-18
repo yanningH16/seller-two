@@ -3,8 +3,64 @@
     <div class="shop">
       <em class="gray">其他管理</em>>店铺管理</div>
     <div class="content">
-      <el-tabs v-model="activeName" type="border-card">
-        <el-tab-pane label="用户管理" name="first">
+      <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
+        <el-tab-pane label="京东" name="first">
+          <table class="border" v-for="(item,index) in shopList" :key="index">
+            <div class="icon">
+            </div>
+            <tr>
+              <i style="margin-left:20px">店铺名称:
+                <em>{{item.shopName}}</em>
+                <span class="right">状态 :
+                  <em>{{item.status}}</em>
+                  <i class="el-icon-document" style="margin-right:10px;margin-left:10px;cursor:pointer" @click="change(index)"></i>
+                  <i class="el-icon-delete" style="cursor:pointer" @click="open2(index)"></i>
+                </span>
+              </i>
+            </tr>
+            <tr>
+              <i style="margin-left:20px">店铺链接:
+                <em>{{item.shopHomePageUrl}}</em>
+              </i>
+            </tr>
+            <tr>
+              <i style="margin-left:20px">联系人方式:&nbsp;&nbsp; 姓名:
+                <em>{{item.contactName}}&nbsp;&nbsp;</em> 手机:
+                <em>{{item.contactTelephone}}&nbsp;&nbsp;</em>QQ:
+                <em>{{item.contactQQ}}</em>
+              </i>
+            </tr>
+          </table>
+        </el-tab-pane>
+        <el-tab-pane label="淘宝" name="two">
+          <table class="border" v-for="(item,index) in shopList" :key="index">
+            <div class="icon">
+            </div>
+            <tr>
+              <i style="margin-left:20px">店铺名称:
+                <em>{{item.shopName}}</em>
+                <span class="right">状态 :
+                  <em>{{item.status}}</em>
+                  <i class="el-icon-document" style="margin-right:10px;margin-left:10px;cursor:pointer" @click="change(index)"></i>
+                  <i class="el-icon-delete" style="cursor:pointer" @click="open2(index)"></i>
+                </span>
+              </i>
+            </tr>
+            <tr>
+              <i style="margin-left:20px">店铺链接:
+                <em>{{item.shopHomePageUrl}}</em>
+              </i>
+            </tr>
+            <tr>
+              <i style="margin-left:20px">联系人方式:&nbsp;&nbsp; 姓名:
+                <em>{{item.contactName}}&nbsp;&nbsp;</em> 手机:
+                <em>{{item.contactTelephone}}&nbsp;&nbsp;</em>QQ:
+                <em>{{item.contactQQ}}</em>
+              </i>
+            </tr>
+          </table>
+        </el-tab-pane>
+        <el-tab-pane label='天猫' name="three">
           <table class="border" v-for="(item,index) in shopList" :key="index">
             <div class="icon">
             </div>
@@ -33,9 +89,7 @@
           </table>
         </el-tab-pane>
       </el-tabs>
-      <router-link :to="{name:'shopAdmin'}">
-        <button class="btn">+添加店铺</button>
-      </router-link>
+      <button class="btn" @click="addShop">+添加店铺</button>
     </div>
   </div>
 </template>
@@ -58,6 +112,14 @@ export default {
     this.shoplist()
   },
   methods: {
+    // 点击添加店铺进行相应的跳转
+    addShop () {
+      this.$router.push({ name: 'shopAdmin', query: { number: this.activeName === 'first' ? 0 : this.activeName === 'two' ? 1 : 2 } })
+    },
+    // 点击切换进行相应的请求
+    handleClick () {
+      this.shoplist()
+    },
     // 删除店铺的操作
     open2 (index) {
       // console.log(this.shopList[index])
@@ -118,7 +180,7 @@ export default {
     shoplist () {
       this.$ajax.post('/api/seller/shop/getShopListBySellerUserId', {
         sellerUserId: this.userInfo.sellerUserId,
-        shopType: 0
+        shopType: this.activeName === 'first' ? 0 : this.activeName === 'two' ? 1 : 2
       }).then((data) => {
         let res = data.data
         if (res.code === '200') {

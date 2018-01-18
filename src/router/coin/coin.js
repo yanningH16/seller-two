@@ -13,11 +13,22 @@ const CoinList = (resolve) => {
     resolve(module)
   })
 }
+const CoinGet = (resolve) => {
+  import('@/components/coin/coinGet').then((module) => {
+    resolve(module)
+  })
+}
 const coin = [{
   path: 'coin/coinPay',
   component: CoinPay,
   name: 'coinPay',
-  meta: { title: '资金管理-充值' }
+  meta: { title: '资金管理-买家充值' }
+},
+{
+  path: 'coin/coinGet',
+  component: CoinGet,
+  name: 'coinGet',
+  meta: { title: '资金管理-商家充值' }
 },
 {
   path: 'coin/coinApply',
