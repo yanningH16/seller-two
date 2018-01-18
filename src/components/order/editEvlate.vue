@@ -1,5 +1,5 @@
 <template>
-  <div class="auditOrder">
+  <div class="editEvlate">
     <div class="nav">
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item :to="{ name: 'auditOrder' }">订单管理</el-breadcrumb-item>
@@ -8,7 +8,7 @@
     </div>
     <div class="tab">
       <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
-        <el-tab-pane label="待确认订单" name="first">
+        <el-tab-pane label="待填写评价" name="first">
           <div class="firstTab tabCont">
             <div class="search">
               <span>平台：</span>
@@ -77,6 +77,9 @@
                   </div>
                 </li>
                 <li>
+                  <!-- <a @click="lookImg((JSON.parse(item.realOrderPicUrl))[0] || '')">
+                    <img :src="(JSON.parse(item.realOrderPicUrl))[0] || ''" alt="pic">
+                  </a> -->
                   <div>
                     <span>姓名：{{ item.buyerName }}</span>
                     <span>订单金额：{{ item.realOrderPrice }}</span>
@@ -88,23 +91,21 @@
                   </div>
                 </li>
                 <li>
-                  <p>
+                  <!-- <p>
                     <button class="btn btn-small" @click="toConfirm(item.favorTaskType,item.buyerTaskId)">确认</button>
                   </p>
                   <p>
                     <button class="btn btn-small disabled" @click="toReject(item.buyerTaskId)">驳回</button>
-                  </p>
-                </li>
-                <li>
+                  </p> -->
                   <p>
-                    <button class="btn btn-small">申述</button>
+                    <button class="btn btn-small" @click="toConfirm(item.favorTaskType,item.buyerTaskId)">填写评价</button>
                   </p>
                 </li>
               </ul>
             </div>
           </div>
         </el-tab-pane>
-        <!-- <el-tab-pane label="待买家评价" name="second">
+        <el-tab-pane label="待买家评价" name="second">
           <div class="secondTab tabCont">
             <div class="search">
               <span>平台：</span>
@@ -171,6 +172,9 @@
                   </div>
                 </li>
                 <li>
+                  <!-- <a @click="lookImg((JSON.parse(item.realOrderPicUrl))[0] || '')">
+                    <img :src="(JSON.parse(item.realOrderPicUrl))[0] || ''" alt="pic">
+                  </a> -->
                   <div>
                     <p>京东订单编号：</p>
                     <p class="red">{{ item.realOrderId }}</p>
@@ -193,8 +197,8 @@
               </ul>
             </div>
           </div>
-        </el-tab-pane> -->
-        <el-tab-pane label="已驳回" name="third">
+        </el-tab-pane>
+        <!-- <el-tab-pane label="已驳回" name="third">
           <div class="thirdTab tabCont">
             <div class="search">
               <span>平台：</span>
@@ -260,9 +264,6 @@
                   </div>
                 </li>
                 <li>
-                  <!-- <a @click="lookImg((JSON.parse(item.realOrderPicUrl))[0] || '')">
-                    <img :src="(JSON.parse(item.realOrderPicUrl))[0] || ''" alt="pic">
-                  </a> -->
                   <div>
                     <span>姓名：{{ item.buyerName }}</span>
                     <span>订单金额：{{ item.realOrderPrice }}</span>
@@ -290,7 +291,7 @@
               </ul>
             </div>
           </div>
-        </el-tab-pane>
+        </el-tab-pane> -->
       </el-tabs>
       <div class="pager" v-if="showPager">
         <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageNo" :page-sizes="pageSizeArray" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="pageTotal">
@@ -376,7 +377,7 @@ import { uploadPromise, uploadFile } from '../../assets/js/upload'
 import Clipboard from 'clipboard'
 // import Md5 from 'md5'
 export default {
-  name: 'auditOrder',
+  name: 'editEvlate',
   mixins: [pageCommon],
   components: {
     LookImg,
@@ -468,30 +469,15 @@ export default {
       })
     },
     toConfirm (type, buyerTaskId) {
-      // this.showConfirm = true
-      // sessionStorage.setItem('__buyerTaskId__', buyerTaskId)
-      // if (parseInt(type) === 0) {
-      //   this.favorType = 0
-      // } else if (parseInt(type) === 1) {
-      //   this.favorType = 1
-      // } else if (parseInt(type) === 2) {
-      //   this.favorType = 2
-      // }
-      this.$confirm('此操作确认买家订单, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '确认成功!'
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消'
-        })
-      })
+      this.showConfirm = true
+      sessionStorage.setItem('__buyerTaskId__', buyerTaskId)
+      if (parseInt(type) === 0) {
+        this.favorType = 0
+      } else if (parseInt(type) === 1) {
+        this.favorType = 1
+      } else if (parseInt(type) === 2) {
+        this.favorType = 2
+      }
     },
     uploadImg (img) {
       uploadPromise.then((res) => {
@@ -656,7 +642,7 @@ export default {
 }
 </script>
 <style lang="stylus" rel="stylesheet/stylus" scoped>
-.auditOrder
+.editEvlate
   padding 0 20px 20px
   font-size 14px
   min-width 1180px

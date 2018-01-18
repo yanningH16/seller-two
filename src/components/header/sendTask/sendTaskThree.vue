@@ -45,7 +45,10 @@
           <td>
             <span>{{ benjin }}元</span>
           </td>
-          <td rowspan="2">
+          <td v-if="$route.query.shopType==2" rowspan="3">
+            <span class="red">{{ infoObj.totalPrice }}</span>元
+          </td>
+          <td v-else rowspan="2">
             <span class="red">{{ infoObj.totalPrice }}</span>元
           </td>
         </tr>
@@ -62,6 +65,28 @@
               <p>默认五星好评: {{ infoObj.defaultFavorPrice }}元 / 单*
                 <span class="red">{{ infoObj.defaultFavorNum }}</span>单</p>
               <p>plus会员: {{ infoObj.plusPrice }}元 / 单*
+                <span class="red">{{ infoObj.plusNum }}</span>单</p>
+            </div>
+          </td>
+          <td>
+            <span>{{ yongjin }}元</span>
+          </td>
+        </tr>
+        <tr v-if="$route.query.shopType==2">
+          <td>
+            <span>增值服务</span>
+          </td>
+          <td>
+            <div>
+              <p>地域限制: {{ infoObj.graphicFavorPrice }}元 / 单*
+                <span class="red">{{ infoObj.graphicFavorNum }}</span>单</p>
+              <p>年龄限制: {{ infoObj.wordFavorPrice }}元 / 单*
+                <span class="red">{{ infoObj.wordFavorNum }}</span>单</p>
+              <p>性别限制: {{ infoObj.defaultFavorPrice }}元 / 单*
+                <span class="red">{{ infoObj.defaultFavorNum }}</span>单</p>
+              <p>钻石限制: {{ infoObj.plusPrice }}元 / 单*
+                <span class="red">{{ infoObj.plusNum }}</span>单</p>
+              <p>花呗限制: {{ infoObj.plusPrice }}元 / 单*
                 <span class="red">{{ infoObj.plusNum }}</span>单</p>
             </div>
           </td>

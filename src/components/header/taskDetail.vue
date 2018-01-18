@@ -188,7 +188,10 @@
               <td>
                 <span>{{ benjin }}元</span>
               </td>
-              <td rowspan="2">
+              <td v-if="taskInfoObj.shopType == 0" rowspan="2">
+                <span class="red">{{ totalPriceObj.totalPrice }}</span>元
+              </td>
+              <td v-else rowspan="3">
                 <span class="red">{{ totalPriceObj.totalPrice }}</span>元
               </td>
             </tr>
@@ -202,6 +205,28 @@
                   <p>纯文字好评: {{ totalPriceObj.wordFavorPrice }}元 / 单*{{ totalPriceObj.wordFavorNum }}单</p>
                   <p>默认五星好评: {{ totalPriceObj.defaultFavorPrice }}元 / 单*{{ totalPriceObj.defaultFavorNum }}单</p>
                   <p>plus会员: {{ totalPriceObj.plusPrice }}元 / 单*{{ totalPriceObj.plusNum }}单</p>
+                </div>
+              </td>
+              <td>
+                <span>{{ yongjin }}元</span>
+              </td>
+            </tr>
+            <tr v-if="taskInfoObj.shopType == 1 || taskInfoObj.shopType == 2">
+              <td>
+                <span>增值服务</span>
+              </td>
+              <td>
+                <div>
+                  <p>地域限制: {{ totalPriceObj.graphicFavorPrice }}元 / 单*
+                    <span class="red">{{ totalPriceObj.graphicFavorNum }}</span>单</p>
+                  <p>年龄限制: {{ totalPriceObj.wordFavorPrice }}元 / 单*
+                    <span class="red">{{ totalPriceObj.wordFavorNum }}</span>单</p>
+                  <p>性别限制: {{ totalPriceObj.defaultFavorPrice }}元 / 单*
+                    <span class="red">{{ totalPriceObj.defaultFavorNum }}</span>单</p>
+                  <p>钻石限制: {{ totalPriceObj.plusPrice }}元 / 单*
+                    <span class="red">{{ totalPriceObj.plusNum }}</span>单</p>
+                  <p>花呗限制: {{ totalPriceObj.plusPrice }}元 / 单*
+                    <span class="red">{{ totalPriceObj.plusNum }}</span>单</p>
                 </div>
               </td>
               <td>
@@ -626,11 +651,10 @@ export default {
           line-height 1
           margin-bottom 20px
         p
+          display inline-block
           font-size 14px
           line-height 30px
-        span
-          display inline-block
-          width 100px
+          margin-right 50px
       .step4
         table
           width 100%

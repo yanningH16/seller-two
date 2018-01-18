@@ -94,9 +94,17 @@ export default {
                 bradge: this.orderWaitPassCount
               },
               {
+                text: '编辑评价',
+                link: 'editEvlate'
+              },
+              {
                 text: '审核评价',
                 link: 'appraiseOrder',
                 bradge: this.favorWaitPassCount
+              },
+              {
+                text: '申述',
+                link: 'allege'
               }
             ]
           },

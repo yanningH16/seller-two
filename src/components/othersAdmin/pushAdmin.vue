@@ -77,7 +77,7 @@
             <noCont v-if="this.tableDataBuy.length===0"></noCont>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="管理员账号" name="three">
+        <!-- <el-tab-pane label="管理员账号" name="three">
           <div class="accountTab">
             <el-table :data="tableDataAdmin" style="width: 100%" v-if="tableDataAdmin.length!==0">
               <el-table-column prop="name" align="center" label="姓名">
@@ -94,7 +94,7 @@
             </el-table>
             <noCont v-if="tableDataAdmin.length===0"></noCont>
           </div>
-        </el-tab-pane>
+        </el-tab-pane> -->
         <!-- 分页 -->
         <div class="pager" v-if="showPager">
           <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[1, 5, 10, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalCount">

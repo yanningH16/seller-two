@@ -45,6 +45,7 @@
         <div class="input">
           <span class="must">商品链接：</span>
           <el-input placeholder="请输入内容" v-model="sendObj.productUrl" style="width:600px;"></el-input>
+          <strong class="readShopInfo">读取店铺信息</strong>
           <p>我们会根据您填写的试用商品链接抓取部分商品的宝贝描述。</p>
         </div>
         <div class="input">
@@ -73,7 +74,7 @@
           </el-select>
           <div class="setFormat">
             <span class="must">设置商品规格
-              <b class="gray">（若手机京东和pc端的价格不一致，请填写手机端价格）</b>
+              <b class="gray">（若手机和pc端的价格不一致，请填写手机端价格）</b>
             </span>
           </div>
           <table class="table">
@@ -122,7 +123,18 @@
           </el-radio-group>
           <h4>支持付款方式：</h4>
           <ul class="payWay">
-            <li>
+            <li v-if="$route.query.shopType==2">
+              <span>是否允许买家使用花呗付款</span>
+              <el-radio-group v-model="sendObj.isSupportBaiTiao">
+                <el-radio :label="1">
+                  <b style="color: #3c3c3c">允许</b>
+                </el-radio>
+                <el-radio :label="0">
+                  <b style="color: #3c3c3c">不允许</b>
+                </el-radio>
+              </el-radio-group>
+            </li>
+            <li v-else>
               <span>是否允许买家使用白条付款</span>
               <el-radio-group v-model="sendObj.isSupportBaiTiao">
                 <el-radio :label="1">
@@ -160,79 +172,125 @@
       </div>
       <h2>第二步: 设置如何找到商品</h2>
       <div class="step step2">
-        <transition-group name="fade">
-          <ul class="keywordList" v-for="(item, index) in keywordList" :key="index">
-            <li>
-              <span class="must">关键词来源{{ index+1 }}：让买手在
-                <b class="red">京东APP</b>搜索关键字&nbsp;&nbsp;</span>
-              <el-input style="width:340px;" v-model="item.keyword" placeholder="请输入搜索关键字"></el-input>
-              <span v-if="index!==0" class="el-icon-delete deleBtn" @click="deleKeyArr(index)"></span>
-            </li>
-            <li style="margin-top:24px;margin-bottom:14px;">
+        <ul v-if="$route.query.shopType==2" class="keywordList" v-for="(item, index) in keywordList" :key="index">
+          <li>
+            <span class="must">关键词来源{{ index+1 }}：让买手在
+              <b class="red">淘宝APP</b>搜索关键字&nbsp;&nbsp;</span>
+            <el-input style="width:340px;" v-model="item.keyword" placeholder="请输入搜索关键字"></el-input>
+            <!-- <span v-if="index!==0" class="el-icon-delete deleBtn" @click="deleKeyArr(index)"></span> -->
+          </li>
+          <li class="searchBox" v-show="item.showSearch" :key="index">
+            <span>排序方式：</span>
+            <el-select placeholder="请选择" v-model="item.sortClass" style="width: 140px;">
+              <el-option label="综合排序" value="综合排序">
+              </el-option>
+              <el-option label="价格排序" value="价格排序">
+              </el-option>
+            </el-select>
+            <b class="gray">
+              &nbsp;&nbsp;推荐按销量排序查找，商品位置更稳定更好找
+            </b>
+            <h4>买家通过
+              <span class="red">价格筛选，发货地</span>缩小范围</h4>
+            <div class="filter">
+              <div class="col col1">
+                <p>
+                  <span>价格:</span>&nbsp;
+                  <el-input style="width:140px;" type="number" v-model="item.priceLow" placeholder="请输入价格"></el-input>
+                  —
+                  <el-input style="width:140px;" type="number" v-model="item.priceHigh" placeholder="请输入价格"></el-input>&nbsp;元</p>
+              </div>
+              <div class="col col2">
+                <p>
+                  <span>发货地:</span>&nbsp;
+                  <el-select placeholder="请选择" v-model="item.postLocation" style="width: 140px;">
+                    <el-option v-for="(address, i) in positionArr" :key="i" :label="address.name" :value="address.name">
+                    </el-option>
+                  </el-select>
+                </p>
+              </div>
+              <div class="col col3">
+                <p>
+                  <span>付款人数:</span>&nbsp;
+                  <el-input type="number" style="width:140px;" v-model="item.pageNum" placeholder="请输入人数"></el-input>
+                </p>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <!-- <transition-group name="fade"> -->
+        <ul v-else class="keywordList" v-for="(item, index) in keywordList" :key="index">
+          <li>
+            <span class="must">关键词来源{{ index+1 }}：让买手在
+              <b class="red">京东APP</b>搜索关键字&nbsp;&nbsp;</span>
+            <el-input style="width:340px;" v-model="item.keyword" placeholder="请输入搜索关键字"></el-input>
+            <span v-if="index!==0" class="el-icon-delete deleBtn" @click="deleKeyArr(index)"></span>
+          </li>
+          <!-- <li style="margin-top:24px;margin-bottom:14px;">
               <el-button type="text" @click="item.showSearch = !item.showSearch">{{ item.showSearch ? '搜索范围' : '查看搜索范围' }}&nbsp;&nbsp;</el-button>
               <b class="gray">&nbsp;&nbsp;若关键词排名较低，请务必设置此项，以便设置能找到商品</b>
-            </li>
-            <transition-group name="fade">
-              <li class="searchBox" v-show="item.showSearch" :key="index">
-                <span>排序方式：</span>
-                <el-select placeholder="请选择" v-model="item.sortClass" style="width: 140px;">
-                  <el-option label="综合排序" value="综合排序">
-                  </el-option>
-                  <el-option label="价格排序" value="价格排序">
-                  </el-option>
-                </el-select>
-                <b class="gray">
-                  &nbsp;&nbsp;推荐按销量排序查找，商品位置更稳定更好找
-                </b>
-                <i class="deleBtn el-icon-circle-close-outline" @click="item.showSearch = false"></i>
-                <h4>买家通过
-                  <span class="red">价格筛选，发货地</span>缩小范围(选填)</h4>
-                <div class="filter">
-                  <div class="col col1">
-                    <p>
-                      <span>价格:</span>&nbsp;
-                      <el-input style="width:140px;" v-model="item.priceLow" placeholder="请输入价格"></el-input>
-                      —
-                      <el-input style="width:140px;" v-model="item.priceHigh" placeholder="请输入价格"></el-input>&nbsp;元</p>
-                    <p>
-                      <span>评价数约:</span>&nbsp;
-                      <el-input style="width:140px;" v-model="item.favorNum" placeholder="请输入数量"></el-input>
-                    </p>
-                  </div>
-                  <div class="col col2">
-                    <p>
-                      <span>发货地:</span>&nbsp;
-                      <el-select placeholder="请选择" v-model="item.postLocation" style="width: 140px;">
-                        <el-option v-for="(address, i) in positionArr" :key="i" :label="address.name" :value="address.name">
-                        </el-option>
-                      </el-select>
-                    </p>
-                    <p>
-                      <span>目标翻页数:</span>&nbsp;
-                      <el-input style="width:140px;" v-model="item.pageNum" placeholder="请输入数量"></el-input>
-                    </p>
-                  </div>
-                  <div class="col col3">
-                    <p>
-                      <span>品牌:</span>&nbsp;
-                      <el-input style="width:140px;" v-model="item.brand" placeholder="请输入品牌"></el-input>
-                    </p>
-                  </div>
-                </div>
-                <div class="save">
+            </li> -->
+          <!-- <transition-group name="fade"> -->
+          <li class="searchBox" v-show="item.showSearch" :key="index">
+            <span>排序方式：</span>
+            <el-select placeholder="请选择" v-model="item.sortClass" style="width: 140px;">
+              <el-option label="综合排序" value="综合排序">
+              </el-option>
+              <el-option label="价格排序" value="价格排序">
+              </el-option>
+            </el-select>
+            <b class="gray">
+              &nbsp;&nbsp;推荐按销量排序查找，商品位置更稳定更好找
+            </b>
+            <!-- <i class="deleBtn el-icon-circle-close-outline" @click="item.showSearch = false"></i> -->
+            <h4>买家通过
+              <span class="red">价格筛选，发货地</span>缩小范围</h4>
+            <div class="filter">
+              <div class="col col1">
+                <p>
+                  <span>价格:</span>&nbsp;
+                  <el-input style="width:140px;" type="number" v-model="item.priceLow" placeholder="请输入价格"></el-input>
+                  —
+                  <el-input style="width:140px;" type="number" v-model="item.priceHigh" placeholder="请输入价格"></el-input>&nbsp;元</p>
+                <p>
+                  <span>评价数约:</span>&nbsp;
+                  <el-input style="width:140px;" type="number" v-model="item.favorNum" placeholder="请输入数量"></el-input>
+                </p>
+              </div>
+              <div class="col col2">
+                <p>
+                  <span>发货地:</span>&nbsp;
+                  <el-select placeholder="请选择" v-model="item.postLocation" style="width: 140px;">
+                    <el-option v-for="(address, i) in positionArr" :key="i" :label="address.name" :value="address.name">
+                    </el-option>
+                  </el-select>
+                </p>
+                <p>
+                  <span>目标翻页数:</span>&nbsp;
+                  <el-input style="width:140px;" type="number" v-model="item.pageNum" placeholder="请输入数量"></el-input>
+                </p>
+              </div>
+              <div class="col col3">
+                <p>
+                  <span>品牌:</span>&nbsp;
+                  <el-input style="width:140px;" v-model="item.brand" placeholder="请输入品牌"></el-input>
+                </p>
+              </div>
+            </div>
+            <!-- <div class="save">
                   <button class="btn btn-small" @click="saveKey(index)">保存</button>
-                </div>
-              </li>
-            </transition-group>
-          </ul>
-        </transition-group>
-        <div class="addKeyword">
+                </div> -->
+          </li>
+          <!-- </transition-group> -->
+        </ul>
+        <!-- </transition-group> -->
+        <!-- <div class="addKeyword">
           <el-button type="text" @click="addKeyArr">
             <i class="el-icon-circle-plus"></i>
-            可多添加{{ 5-keywordList.length }}个京东搜索关键词方案
+            可多添加{{ 5-keywordList.length }}个搜索关键词方案
           </el-button>
           <span class="gray">(最多可添加5组关键词方案)</span>
-        </div>
+        </div> -->
       </div>
       <h2 v-if="!isReturnBack">第三步: 选择任务类型与单数</h2>
       <div v-if="!isReturnBack" class="step step3">
@@ -312,6 +370,116 @@
             </p>
           </el-radio-group>
         </div>
+      </div>
+      <h2 v-if="!isReturnBack">第四步: 增值服务</h2>
+      <div v-if="!isReturnBack" class="step step4">
+        <ul class="server">
+          <li>
+            <el-checkbox v-model="checked">地域限制</el-checkbox>
+            <span class="red">(所选区域不可接该任务)+0.1元 / 单</span>
+          </li>
+          <li>
+            <ul class="area">
+              <li style="background:#EDEDED;">编辑区域</li>
+              <li>
+                <el-checkbox class="bold" v-model="checked">华东</el-checkbox>
+                <el-checkbox-group v-model="checkList">
+                  <el-checkbox label="上海"></el-checkbox>
+                  <el-checkbox label="江苏"></el-checkbox>
+                  <el-checkbox label="浙江"></el-checkbox>
+                  <el-checkbox label="安徽"></el-checkbox>
+                  <el-checkbox label="江西"></el-checkbox>
+                </el-checkbox-group>
+              </li>
+              <li>
+                <el-checkbox class="bold" v-model="checked">华北</el-checkbox>
+                <el-checkbox-group v-model="checkList">
+                  <el-checkbox label="北京"></el-checkbox>
+                  <el-checkbox label="天津"></el-checkbox>
+                  <el-checkbox label="山西"></el-checkbox>
+                  <el-checkbox label="山东"></el-checkbox>
+                  <el-checkbox label="河北"></el-checkbox>
+                  <el-checkbox label="内蒙古"></el-checkbox>
+                </el-checkbox-group>
+              </li>
+              <li>
+                <el-checkbox class="bold" v-model="checked">华中</el-checkbox>
+                <el-checkbox-group v-model="checkList">
+                  <el-checkbox label="湖南"></el-checkbox>
+                  <el-checkbox label="湖北"></el-checkbox>
+                  <el-checkbox label="河南"></el-checkbox>
+                </el-checkbox-group>
+              </li>
+              <li>
+                <el-checkbox class="bold" v-model="checked">华南</el-checkbox>
+                <el-checkbox-group v-model="checkList">
+                  <el-checkbox label="广东"></el-checkbox>
+                  <el-checkbox label="广西"></el-checkbox>
+                  <el-checkbox label="福建"></el-checkbox>
+                  <el-checkbox label="海南"></el-checkbox>
+                </el-checkbox-group>
+              </li>
+              <li>
+                <el-checkbox class="bold" v-model="checked">东北</el-checkbox>
+                <el-checkbox-group v-model="checkList">
+                  <el-checkbox label="辽宁"></el-checkbox>
+                  <el-checkbox label="吉林"></el-checkbox>
+                  <el-checkbox label="黑龙江"></el-checkbox>
+                </el-checkbox-group>
+              </li>
+              <li>
+                <el-checkbox class="bold" v-model="checked">西北</el-checkbox>
+                <el-checkbox-group v-model="checkList">
+                  <el-checkbox label="陕西"></el-checkbox>
+                  <el-checkbox label="新疆"></el-checkbox>
+                  <el-checkbox label="甘肃"></el-checkbox>
+                  <el-checkbox label="宁夏"></el-checkbox>
+                  <el-checkbox label="青海"></el-checkbox>
+                </el-checkbox-group>
+              </li>
+              <li>
+                <el-checkbox class="bold" v-model="checked">西南</el-checkbox>
+                <el-checkbox-group v-model="checkList">
+                  <el-checkbox label="重庆"></el-checkbox>
+                  <el-checkbox label="云南"></el-checkbox>
+                  <el-checkbox label="贵州"></el-checkbox>
+                  <el-checkbox label="西藏"></el-checkbox>
+                  <el-checkbox label="四川"></el-checkbox>
+                </el-checkbox-group>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <el-checkbox v-model="checked">年龄设置</el-checkbox>
+            <span class="red">(选定年龄段内的用户可接该任务)+0.5 元 / 单</span>
+          </li>
+          <li>
+            <el-radio v-model="radio" label="0">18岁以下</el-radio>
+            <el-radio v-model="radio" label="1">18-25岁以下</el-radio>
+            <el-radio v-model="radio" label="2">26-35岁以下</el-radio>
+            <el-radio v-model="radio" label="3">36岁以下</el-radio>
+          </li>
+          <li>
+            <el-checkbox v-model="checked">性别设置</el-checkbox>
+            <span class="red">(选定性别可接该任务)+0.5 元 / 单</span>
+          </li>
+          <li>
+            <el-radio v-model="radio" label="1">男</el-radio>
+            <el-radio v-model="radio" label="2">女</el-radio>
+          </li>
+          <li>
+            <el-checkbox v-model="checked"></el-checkbox>
+            <span class="red">仅限钻石级别的买号可接该任务+0.5元／单</span>
+          </li>
+          <li>
+            <el-checkbox v-model="checked"></el-checkbox>
+            <span class="red">仅限开通花呗的买号可接该任务+2元／单(指已开通花呗的用户，账号安全，权重高)</span>
+          </li>
+          <li>
+            <span>任务备注&nbsp;:&nbsp;</span>
+            <el-input style="width:340px;" placeholder="请输入备注"></el-input>
+          </li>
+        </ul>
       </div>
       <div class="next" v-if="!isReturnBack">
         <button class="btn disabled" @click="doPrevent">上一步</button>
@@ -398,6 +566,29 @@ export default {
       },
       // 创建店铺的信息
       creatShopInfo: {},
+      // 增值服务对象
+      increaseObj: {
+        area: {
+          checked: false,
+          area1: {
+            checked: false,
+            arr: []
+          }
+        },
+        age: {
+          checked: true
+        },
+        gender: {
+          checked: true
+        },
+        allowZhuan: {
+          checked: true
+        },
+        allowHuaBei: {
+          checked: true
+        },
+        common: ''
+      },
       sendObj: {
         productName: '', // 商品标题
         productUrl: '', // 商品链接
@@ -1157,6 +1348,17 @@ export default {
       color #3c3c3c
       .input
         margin-bottom 32px
+        .readShopInfo
+          border 1px solid #FF3341
+          margin-left 12px
+          display inline-block
+          height 36px
+          line-height 36px
+          text-align center
+          cursor pointer
+          width 160px
+          font-size 12px
+          color #FF3341
         p
           font-size 12px
           color #9b9b9b
@@ -1226,7 +1428,7 @@ export default {
     .keywordList
       padding-bottom 32px
       padding-top 20px
-      border-bottom 1px dashed #cccccc
+      // border-bottom 1px dashed #cccccc
       transform translate3d(0, 0px, 0)
       opacity 1
       .deleBtn
@@ -1237,16 +1439,17 @@ export default {
         &:first-child
           display none
       .searchBox
+        margin-top 20px
         padding 14px 20px
-        border 1px solid #dedede
-        box-shadow 0 1px 5px rgba(0, 0, 0, 0.12)
+        // border 1px solid #dedede
+        // box-shadow 0 1px 5px rgba(0, 0, 0, 0.12)
     .fade-enter-active, .fade-leave-active
       transition all 0.5s ease-out
     .fade-enter, .fade-leave-active
       transform translate3d(0, -50px, 0)
       opacity 0
     .filter
-      display flex
+      // display flex
       .col
         flex 1
         margin-right 20px
@@ -1331,4 +1534,19 @@ export default {
       p
         margin-top 16px
         margin-bottom 16px
+  .step4
+    .server
+      >li
+        margin 27px 0
+        font-size 14px
+      .area
+        border 1px solid #DEDEDE
+        li
+          height 40px
+          line-height 40px
+          padding 0 20px
+          &:nth-child(2n)
+            background rgba(23, 159, 255, 0.1)
+          .bold
+            margin-right 50px
 </style>

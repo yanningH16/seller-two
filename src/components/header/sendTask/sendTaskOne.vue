@@ -34,7 +34,7 @@
       <div class="step2">
         <h2>第二部: 选择任务类型</h2>
         <el-radio-group v-model="taskType" style="padding-left:60px;">
-          <div class="taskType">
+          <div v-show="parseInt(shop.shopType)===0" class="taskType">
             <el-radio :label="1">
               <span class="jdIcon"></span>
               <b style="font-size:14px;color:#444444;">京东App任务
@@ -42,11 +42,19 @@
               </b>
             </el-radio>
           </div>
-          <div class="taskType">
+          <div v-show="parseInt(shop.shopType)===0" class="taskType">
             <el-radio :label="2">
               <span class="jdIcon"></span>
               <b style="font-size:14px;color:#444444;">微信京东任务
                 <span style="color:#949494">(用户在微信京东下单)</span>
+              </b>
+            </el-radio>
+          </div>
+          <div v-show="parseInt(shop.shopType)===1" class="taskType">
+            <el-radio :label="3">
+              <span class="taobaoIcon"></span>
+              <b style="font-size:14px;color:#444444;">手淘App任务
+                <span style="color:#949494">(用户在手淘app下单)</span>
               </b>
             </el-radio>
           </div>
@@ -66,7 +74,10 @@ export default {
     return {
       warnShow: true,
       active: 0,
-      shop: null,
+      shop: {
+        shopType: '',
+        shopName: ''
+      },
       taskType: null,
       shopListArr: []
     }
