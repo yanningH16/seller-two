@@ -110,6 +110,10 @@ export default {
                 link: 'coinPay'
               },
               {
+                text: '提现',
+                link: 'coinGet'
+              },
+              {
                 text: '资金记录',
                 link: 'coinApply'
               },

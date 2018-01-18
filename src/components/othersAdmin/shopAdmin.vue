@@ -9,7 +9,7 @@
         <li class="site">
           <span>店铺首页网址&nbsp;&nbsp;</span>
           <el-input v-model="input" placeholder="请输入内容" style="width:384px"></el-input>
-          <!-- <span class="shopInfo">读取店铺信息</span> -->
+          <span class="shopInfo">读取店铺信息</span>
         </li>
         <li class="shopName">
           <span>店铺名称&nbsp;&nbsp;</span>
@@ -262,7 +262,7 @@ export default {
         concatName: this.input4,
         concatTelephone: this.input5,
         concatQQ: this.input6,
-        shopType: 0,
+        shopType: this.$route.query.number,
         productClassDetail: this.className
       }).then((data) => {
         let res = data.data
@@ -485,7 +485,7 @@ export default {
       min-width 800px
       max-width 1100px
       .site
-        margin-left -28px
+        margin-left 154px
       .shopName
         margin-top 20px
       .wangwang
@@ -498,10 +498,11 @@ export default {
         display inline
         width 164px
         height 36px
-        // border 1px solid rgba(255, 51, 65, 1)
-        color white
+        border 1px solid #FF3341
+        color #FF3341
         padding 10px 40px
         margin-left 12px
+        cursor pointer
       .pic
         margin-top 20px
         .pic_admin
