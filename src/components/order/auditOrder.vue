@@ -95,11 +95,6 @@
                     <button class="btn btn-small disabled" @click="toReject(item.buyerTaskId)">驳回</button>
                   </p>
                 </li>
-                <li>
-                  <p>
-                    <button class="btn btn-small">申述</button>
-                  </p>
-                </li>
               </ul>
             </div>
           </div>

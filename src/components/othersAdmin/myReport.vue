@@ -3,16 +3,16 @@
     <div class="nav">
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item :to="{ name: 'myReport' }">其他管理</el-breadcrumb-item>
-        <el-breadcrumb-item>我的举报</el-breadcrumb-item>
+        <el-breadcrumb-item>我的申述</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="tabs">
       <el-table :data="tableData" style="width: 100%" v-if="tableData.length!==0">
         <el-table-column prop="time" align="center" label="提交时间">
         </el-table-column>
-        <el-table-column prop="complainPhone" align="center" label="举报人">
+        <el-table-column prop="complainPhone" align="center" label="申述人">
         </el-table-column>
-        <el-table-column prop="chuaqinInfo" align="center" label="被举报人">
+        <el-table-column prop="chuaqinInfo" align="center" label="被申述人">
         </el-table-column>
         <el-table-column prop="reason" align="center" label="原因" width="150">
           <template slot-scope="scope">

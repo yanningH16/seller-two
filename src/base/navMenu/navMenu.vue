@@ -101,10 +101,6 @@ export default {
                 text: '审核评价',
                 link: 'appraiseOrder',
                 bradge: this.favorWaitPassCount
-              },
-              {
-                text: '申述',
-                link: 'allege'
               }
             ]
           },
@@ -145,7 +141,7 @@ export default {
                 link: 'pushAdmin'
               },
               {
-                text: '我的举报',
+                text: '我的申述',
                 link: 'myReport'
               }
             ]

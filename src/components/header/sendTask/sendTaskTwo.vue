@@ -218,8 +218,7 @@
             </div>
           </li>
         </ul>
-        <!-- <transition-group name="fade"> -->
-        <ul v-else class="keywordList" v-for="(item, index) in keywordList" :key="index">
+        <ul v-if="!($route.query.shopType==2)" class="keywordList" v-for="(item, index) in keywordList" :key="index">
           <li>
             <span class="must">关键词来源{{ index+1 }}：让买手在
               <b class="red">京东APP</b>搜索关键字&nbsp;&nbsp;</span>
@@ -230,7 +229,6 @@
               <el-button type="text" @click="item.showSearch = !item.showSearch">{{ item.showSearch ? '搜索范围' : '查看搜索范围' }}&nbsp;&nbsp;</el-button>
               <b class="gray">&nbsp;&nbsp;若关键词排名较低，请务必设置此项，以便设置能找到商品</b>
             </li> -->
-          <!-- <transition-group name="fade"> -->
           <li class="searchBox" v-show="item.showSearch" :key="index">
             <span>排序方式：</span>
             <el-select placeholder="请选择" v-model="item.sortClass" style="width: 140px;">
@@ -383,7 +381,7 @@
               <li style="background:#EDEDED;">编辑区域</li>
               <li>
                 <el-checkbox class="bold" v-model="checked">华东</el-checkbox>
-                <el-checkbox-group v-model="checkList">
+                <el-checkbox-group style="display:inline-block;" v-model="checkList">
                   <el-checkbox label="上海"></el-checkbox>
                   <el-checkbox label="江苏"></el-checkbox>
                   <el-checkbox label="浙江"></el-checkbox>
@@ -393,7 +391,7 @@
               </li>
               <li>
                 <el-checkbox class="bold" v-model="checked">华北</el-checkbox>
-                <el-checkbox-group v-model="checkList">
+                <el-checkbox-group style="display:inline-block;" v-model="checkList">
                   <el-checkbox label="北京"></el-checkbox>
                   <el-checkbox label="天津"></el-checkbox>
                   <el-checkbox label="山西"></el-checkbox>
@@ -404,7 +402,7 @@
               </li>
               <li>
                 <el-checkbox class="bold" v-model="checked">华中</el-checkbox>
-                <el-checkbox-group v-model="checkList">
+                <el-checkbox-group style="display:inline-block;" v-model="checkList">
                   <el-checkbox label="湖南"></el-checkbox>
                   <el-checkbox label="湖北"></el-checkbox>
                   <el-checkbox label="河南"></el-checkbox>
@@ -412,7 +410,7 @@
               </li>
               <li>
                 <el-checkbox class="bold" v-model="checked">华南</el-checkbox>
-                <el-checkbox-group v-model="checkList">
+                <el-checkbox-group style="display:inline-block;" v-model="checkList">
                   <el-checkbox label="广东"></el-checkbox>
                   <el-checkbox label="广西"></el-checkbox>
                   <el-checkbox label="福建"></el-checkbox>
@@ -421,7 +419,7 @@
               </li>
               <li>
                 <el-checkbox class="bold" v-model="checked">东北</el-checkbox>
-                <el-checkbox-group v-model="checkList">
+                <el-checkbox-group style="display:inline-block;" v-model="checkList">
                   <el-checkbox label="辽宁"></el-checkbox>
                   <el-checkbox label="吉林"></el-checkbox>
                   <el-checkbox label="黑龙江"></el-checkbox>
@@ -429,7 +427,7 @@
               </li>
               <li>
                 <el-checkbox class="bold" v-model="checked">西北</el-checkbox>
-                <el-checkbox-group v-model="checkList">
+                <el-checkbox-group style="display:inline-block;" v-model="checkList">
                   <el-checkbox label="陕西"></el-checkbox>
                   <el-checkbox label="新疆"></el-checkbox>
                   <el-checkbox label="甘肃"></el-checkbox>
@@ -439,7 +437,7 @@
               </li>
               <li>
                 <el-checkbox class="bold" v-model="checked">西南</el-checkbox>
-                <el-checkbox-group v-model="checkList">
+                <el-checkbox-group style="display:inline-block;" v-model="checkList">
                   <el-checkbox label="重庆"></el-checkbox>
                   <el-checkbox label="云南"></el-checkbox>
                   <el-checkbox label="贵州"></el-checkbox>

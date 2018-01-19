@@ -1,13 +1,13 @@
 <template>
   <div class="wrap">
-    <h4>举报</h4>
+    <h4>申述</h4>
     <ul class="infoMsg">
       <li style="padding-top:124px">
-        <span>*</span>举报对象
+        <span>*</span>申述对象
         <el-input v-model="input" placeholder="请输入内容"></el-input>
       </li>
       <li>
-        <span>*</span>举报原因
+        <span>*</span>申述原因
         <el-select v-model="value" placeholder="请选择">
           <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.label">
           </el-option>
@@ -26,7 +26,7 @@
         </el-upload>
       </li>
       <li style="margin-top:30px">
-        <button class="btn" @click="sureReport">确认举报</button>
+        <button class="btn" @click="sureReport">确认申述</button>
       </li>
     </ul>
 
@@ -116,8 +116,8 @@ export default {
         complainPhone: this.userInfo.telephone
       }).then((data) => {
         if (data.data.code === '200') {
-          this.$confirm('举报成功', '提示', {
-            confirmButtonText: '查看举报列表',
+          this.$confirm('申述成功', '提示', {
+            confirmButtonText: '查看申述列表',
             cancelButtonText: '返回上一步',
             type: 'success'
           }).then(() => {

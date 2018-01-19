@@ -8,7 +8,7 @@
         <router-view/>
         <div v-if="$route.name!='myReport' && $route.name!='report'" class="report" @click="toReport">
           <span class="el-icon-warning"></span>
-          <p>举报</p>
+          <p>申述</p>
         </div>
       </div>
     </div>
