@@ -9,16 +9,16 @@
         <li class="site">
           <span>店铺首页网址&nbsp;&nbsp;</span>
           <el-input v-model="input" placeholder="请输入内容" style="width:384px"></el-input>
-          <span class="shopInfo">读取店铺信息</span>
+          <span class="shopInfo" @click="getShopInfo">读取店铺信息</span>
         </li>
         <li class="shopName">
           <span>店铺名称&nbsp;&nbsp;</span>
           <el-input v-model="input1" placeholder="请输入内容" style="width:384px"></el-input>
         </li>
-        <!-- <li class="wangwang">
+        <li class="wangwang" v-show="this.$route.query.number!==0">
           <span>店铺旺旺ID&nbsp;&nbsp;</span>
           <el-input v-model="input2" placeholder="请输入内容" style="width:384px"></el-input>
-        </li> -->
+        </li>
         <li class="type">
           <span>商品所属分类&nbsp;&nbsp;</span>
           <el-select v-model="value" placeholder="请选择" @change="valueChange">
@@ -146,6 +146,41 @@ export default {
     this.Provinces()
   },
   methods: {
+    // 当点击读取店铺信息触发的事件
+    getShopInfo () {
+      if (this.input === '') {
+        this.$message({
+          message: '请正确填写商品链接,不能为空',
+          type: 'warning'
+        })
+        return false
+      }
+      this.$ajax.post('/api/seller/shop/getShopUrlInfo', {
+        shopUrl: this.input,
+        shopType: this.$route.query.number
+      }).then((data) => {
+        console.log(data)
+        let res = data.data
+        if (res.code === '200') {
+          this.input1 = res.data.title
+          this.input2 = res.data.wanwangId
+          if (res.data.title === '' || res.data.wangwangId === '') {
+            this.$message({
+              message: '暂无无法读取店铺信息,请手动填写',
+              type: 'warning'
+            })
+          }
+        } else {
+          this.$message({
+            message: data.data.message,
+            type: 'warning'
+          })
+        }
+      }).catch((err) => {
+        console.log(err)
+        this.$message.error('服务器错误！')
+      })
+    },
     handleAvatarSuccess (res, file) {
       // this.imageUrl = URL.createObjectURL(file.raw)
     },
