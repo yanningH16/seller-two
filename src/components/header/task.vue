@@ -173,7 +173,7 @@ export default {
       // 搜索对象
       searchObj: {
         taskType: '0',
-        platform: '0',
+        platform: '',
         keyword: '',
         keywordType: ''
       },

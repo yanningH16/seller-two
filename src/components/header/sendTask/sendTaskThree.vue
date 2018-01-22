@@ -45,10 +45,10 @@
           <td>
             <span>{{ benjin }}元</span>
           </td>
-          <td v-if="$route.query.shopType==2" rowspan="3">
+          <td v-if="infoObj.shopType==0" rowspan="2">
             <span class="red">{{ infoObj.totalPrice }}</span>元
           </td>
-          <td v-else rowspan="2">
+          <td v-else rowspan="3">
             <span class="red">{{ infoObj.totalPrice }}</span>元
           </td>
         </tr>
@@ -72,26 +72,26 @@
             <span>{{ yongjin }}元</span>
           </td>
         </tr>
-        <tr v-if="$route.query.shopType==2">
+        <tr v-if="infoObj.shopType==1 || infoObj.shopType==2">
           <td>
             <span>增值服务</span>
           </td>
           <td>
             <div>
-              <p>地域限制: {{ infoObj.graphicFavorPrice }}元 / 单*
-                <span class="red">{{ infoObj.graphicFavorNum }}</span>单</p>
-              <p>年龄限制: {{ infoObj.wordFavorPrice }}元 / 单*
-                <span class="red">{{ infoObj.wordFavorNum }}</span>单</p>
-              <p>性别限制: {{ infoObj.defaultFavorPrice }}元 / 单*
-                <span class="red">{{ infoObj.defaultFavorNum }}</span>单</p>
-              <p>钻石限制: {{ infoObj.plusPrice }}元 / 单*
-                <span class="red">{{ infoObj.plusNum }}</span>单</p>
-              <p>花呗限制: {{ infoObj.plusPrice }}元 / 单*
-                <span class="red">{{ infoObj.plusNum }}</span>单</p>
+              <p>地域限制: {{ infoObj.limitLocationPrice }}元 / 单*
+                <span class="red">{{ infoObj.isLimitLocation == 1 ? infoObj.totalNum : 0 }}</span>单</p>
+              <p>年龄限制: {{ infoObj.limitAgePrice }}元 / 单*
+                <span class="red">{{ infoObj.isLimitAge == 1 ? infoObj.totalNum : 0 }}</span>单</p>
+              <p>性别限制: {{ infoObj.limitGenderPrice }}元 / 单*
+                <span class="red">{{ infoObj.isLimitGender == 1 ? infoObj.totalNum : 0 }}</span>单</p>
+              <p>钻石限制: {{ infoObj.limitDiamondPrice }}元 / 单*
+                <span class="red">{{ infoObj.isLimitDiamond == 1 ? infoObj.totalNum : 0 }}</span>单</p>
+              <p>花呗限制: {{ infoObj.limitHuabeiPrice }}元 / 单*
+                <span class="red">{{ infoObj.isLimitHUabei == 1 ? infoObj.totalNum : 0 }}</span>单</p>
             </div>
           </td>
           <td>
-            <span>{{ yongjin }}元</span>
+            <span>{{ fuwu }}元</span>
           </td>
         </tr>
       </table>
@@ -164,6 +164,16 @@ export default {
         (this.infoObj.wordFavorPrice) * (this.infoObj.wordFavorNum) +
         (this.infoObj.defaultFavorPrice) * (this.infoObj.defaultFavorNum) +
         (this.infoObj.plusNum) * (this.infoObj.plusPrice)
+      total = total.toFixed(2)
+      return total
+    },
+    fuwu: function () {
+      let total = 0
+      total = (this.infoObj.limitAgePrice) * (this.infoObj.totalNum) * (this.infoObj.isLimitAge) +
+        (this.infoObj.limitDiamondPrice) * (this.infoObj.totalNum) * (this.infoObj.isLimitDiamond) +
+        (this.infoObj.limitGenderPrice) * (this.infoObj.totalNum) * (this.infoObj.isLimitGender) +
+        (this.infoObj.limitHuabeiPrice) * (this.infoObj.totalNum) * (this.infoObj.isLimitHUabei) +
+        (this.infoObj.limitLocationPrice) * (this.infoObj.totalNum) * (this.infoObj.isLimitLocation)
       total = total.toFixed(2)
       return total
     },

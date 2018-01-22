@@ -53,7 +53,8 @@ export default {
       isActive: 0,
       favorWaitPassCount: 0,
       notPassTaskCount: 0,
-      orderWaitPassCount: 0
+      orderWaitPassCount: 0,
+      toAddFavorCount: 0
     }
   },
   created () {
@@ -95,7 +96,8 @@ export default {
               },
               {
                 text: '编辑评价',
-                link: 'editEvlate'
+                link: 'editEvlate',
+                bradge: this.toAddFavorCount
               },
               {
                 text: '审核评价',
@@ -172,6 +174,7 @@ export default {
           this.notPassTaskCount = res.data.notPassTaskCount
           this.orderWaitPassCount = res.data.orderWaitPassCount
           this.favorWaitPassCount = res.data.favorWaitPassCount
+          this.toAddFavorCount = res.data.toAddFavorCount
         } else {
           this.$message({
             message: res.message,

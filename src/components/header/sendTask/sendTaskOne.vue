@@ -26,7 +26,7 @@
         <h2>第一步: 选择店铺</h2>
         <div class="taskType" v-for="(item, index) in shopListArr" :key="index" style="padding-left:60px;">
           <el-radio v-model="shop" :label="item">
-            <span :class="{'jdIcon': item.shopType==0 , 'taobaoIcon': item.shopType==1, 'tianmaoIcon': item.shopType==2}"></span>
+            <span class="inblock" :class="{'jdIcon': item.shopType==0 , 'taobaoIcon': item.shopType==1, 'tianmaoIcon': item.shopType==2}"></span>
             <b style="font-size:14px;color:#444444;">{{ item.shopName }}</b>
           </el-radio>
         </div>
@@ -36,7 +36,7 @@
         <el-radio-group v-model="taskType" style="padding-left:60px;">
           <div v-show="parseInt(shop.shopType)===0" class="taskType">
             <el-radio :label="1">
-              <span class="jdIcon"></span>
+              <span class="jdIcon inblock"></span>
               <b style="font-size:14px;color:#444444;">京东App任务
                 <span style="color:#949494">(用户在京东app下单)</span>
               </b>
@@ -44,15 +44,15 @@
           </div>
           <div v-show="parseInt(shop.shopType)===0" class="taskType">
             <el-radio :label="2">
-              <span class="jdIcon"></span>
+              <span class="jdIcon inblock"></span>
               <b style="font-size:14px;color:#444444;">微信京东任务
                 <span style="color:#949494">(用户在微信京东下单)</span>
               </b>
             </el-radio>
           </div>
-          <div v-show="parseInt(shop.shopType)===1" class="taskType">
+          <div v-show="parseInt(shop.shopType)===1 || parseInt(shop.shopType)===2" class="taskType">
             <el-radio :label="3">
-              <span class="taobaoIcon"></span>
+              <span class="taobaoIcon inblock"></span>
               <b style="font-size:14px;color:#444444;">手淘App任务
                 <span style="color:#949494">(用户在手淘app下单)</span>
               </b>
@@ -190,7 +190,7 @@ export default {
       line-height 32px
       margin-top 16px
       margin-bottom 16px
-    .jdIcon
+    .inblock
       display inline-block
       width 14px
       height 14px

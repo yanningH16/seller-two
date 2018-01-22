@@ -112,7 +112,7 @@
           <div>
             <p>
               <span>商品名称：{{ goodsInfoObj.productName }}</span>
-              所在分类：{{ goodsInfoObj.productClassFirstDetail + ' / ' + goodsInfoObj.productClassSecondDetail + ' / ' + goodsInfoObj.productClassThirdDetail }}
+              所在分类：{{ goodsInfoObj.productClassFirstDetail + ' / ' + goodsInfoObj.productClassSecondDetail + (goodsInfoObj.productClassThirdDetail ? (' / ' + goodsInfoObj.productClassThirdDetail) : '') }}
             </p>
             <p>商品链接：
               <a class="blue link" target="_blank" :href="goodsInfoObj.productUrl">{{ goodsInfoObj.productUrl }}</a>
@@ -140,7 +140,7 @@
               <span class="gray">价格区间：</span>
               {{ item.priceLow }}-{{ item.priceHigh }}元
             </p>
-            <p>
+            <p v-if="taskInfoObj.shopType==0">
               <span class="gray">品牌：</span>
               {{ item.brand }}
             </p>
@@ -148,12 +148,13 @@
               <span class="gray">发货地：</span>
               {{ item.postLocation }}
             </p>
-            <p>
+            <p v-if="taskInfoObj.shopType==0">
               <span class="gray">评价数（约）：</span>
               {{ item.favorNum }}
             </p>
             <p>
-              <span class="gray">预计翻页数：</span>
+              <span v-if="taskInfoObj.shopType==0" class="gray">预计翻页数：</span>
+              <span v-else class="gray">付款人数: </span>
               {{ item.pageNum }}
             </p>
           </li>
@@ -188,7 +189,7 @@
               <td>
                 <span>{{ benjin }}元</span>
               </td>
-              <td v-if="taskInfoObj.shopType == 0" rowspan="2">
+              <td v-if="taskInfoObj.shopType==0" rowspan="2">
                 <span class="red">{{ totalPriceObj.totalPrice }}</span>元
               </td>
               <td v-else rowspan="3">
@@ -211,26 +212,26 @@
                 <span>{{ yongjin }}元</span>
               </td>
             </tr>
-            <tr v-if="taskInfoObj.shopType == 1 || taskInfoObj.shopType == 2">
+            <tr v-if="taskInfoObj.shopType==1 || taskInfoObj.shopType==2">
               <td>
                 <span>增值服务</span>
               </td>
               <td>
                 <div>
-                  <p>地域限制: {{ totalPriceObj.graphicFavorPrice }}元 / 单*
-                    <span class="red">{{ totalPriceObj.graphicFavorNum }}</span>单</p>
-                  <p>年龄限制: {{ totalPriceObj.wordFavorPrice }}元 / 单*
-                    <span class="red">{{ totalPriceObj.wordFavorNum }}</span>单</p>
-                  <p>性别限制: {{ totalPriceObj.defaultFavorPrice }}元 / 单*
-                    <span class="red">{{ totalPriceObj.defaultFavorNum }}</span>单</p>
-                  <p>钻石限制: {{ totalPriceObj.plusPrice }}元 / 单*
-                    <span class="red">{{ totalPriceObj.plusNum }}</span>单</p>
-                  <p>花呗限制: {{ totalPriceObj.plusPrice }}元 / 单*
-                    <span class="red">{{ totalPriceObj.plusNum }}</span>单</p>
+                  <p>地域限制: {{ totalPriceObj.limitLocationPrice }}元 / 单*
+                    <span class="red">{{ totalPriceObj.isLimitLocation == 1 ? totalPriceObj.totalNum : 0 }}</span>单</p>
+                  <p>年龄限制: {{ totalPriceObj.limitAgePrice }}元 / 单*
+                    <span class="red">{{ totalPriceObj.isLimitAge == 1 ? totalPriceObj.totalNum : 0 }}</span>单</p>
+                  <p>性别限制: {{ totalPriceObj.limitGenderPrice }}元 / 单*
+                    <span class="red">{{ totalPriceObj.isLimitGender == 1 ? totalPriceObj.totalNum : 0 }}</span>单</p>
+                  <p>钻石限制: {{ totalPriceObj.limitDiamondPrice }}元 / 单*
+                    <span class="red">{{ totalPriceObj.isLimitDiamond == 1 ? totalPriceObj.totalNum : 0 }}</span>单</p>
+                  <p>花呗限制: {{ totalPriceObj.limitHuabeiPrice }}元 / 单*
+                    <span class="red">{{ totalPriceObj.isLimitHUabei == 1 ? totalPriceObj.totalNum : 0 }}</span>单</p>
                 </div>
               </td>
               <td>
-                <span>{{ yongjin }}元</span>
+                <span>{{ fuwu }}元</span>
               </td>
             </tr>
           </table>
@@ -353,6 +354,7 @@ export default {
     benjin: function () {
       let benjin = 0
       benjin = (this.totalPriceObj.productUnitPrice) * (this.totalPriceObj.numPerOrder) * (this.totalPriceObj.totalNum) + (this.totalPriceObj.postPrice) * (this.totalPriceObj.totalNum)
+      benjin = benjin.toFixed(2)
       return benjin
     },
     yongjin: function () {
@@ -361,7 +363,18 @@ export default {
         (this.totalPriceObj.wordFavorPrice) * (this.totalPriceObj.wordFavorNum) +
         (this.totalPriceObj.defaultFavorPrice) * (this.totalPriceObj.defaultFavorNum) +
         (this.totalPriceObj.plusPrice) * (this.totalPriceObj.plusNum)
+      yongjin = yongjin.toFixed(2)
       return yongjin
+    },
+    fuwu: function () {
+      let total = 0
+      total = (this.totalPriceObj.limitAgePrice) * (this.totalPriceObj.totalNum) * (this.totalPriceObj.isLimitAge) +
+        (this.totalPriceObj.limitDiamondPrice) * (this.totalPriceObj.totalNum) * (this.totalPriceObj.isLimitDiamond) +
+        (this.totalPriceObj.limitGenderPrice) * (this.totalPriceObj.totalNum) * (this.totalPriceObj.isLimitGender) +
+        (this.totalPriceObj.limitHuabeiPrice) * (this.totalPriceObj.totalNum) * (this.totalPriceObj.isLimitHUabei) +
+        (this.totalPriceObj.limitLocationPrice) * (this.totalPriceObj.totalNum) * (this.totalPriceObj.isLimitLocation)
+      total = total.toFixed(2)
+      return total
     },
     params () {
       return {

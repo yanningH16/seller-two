@@ -29,7 +29,7 @@
     <div class="cont">
       <div class="choosed">
         <span>已选择: </span>
-        <b>{{ creatShopInfo.taskType == 1 ? '手机京东' : '微信京东' }}&nbsp;&nbsp;垫付任务</b>
+        <b>{{ creatShopInfo.taskType == 1 ? '手机京东' : creatShopInfo.taskType == 2 ? '微信京东' : creatShopInfo.taskType == 3 ? '手淘App' : '其他' }}&nbsp;&nbsp;垫付任务</b>
         <i :class="{ 'jdIcon': creatShopInfo.shopType==0, 'taobaoIcon': creatShopInfo.shopType==1, 'tianmaoIcon': creatShopInfo.shopType==2 }"></i>
         <span>{{ creatShopInfo.shopName }}</span>
       </div>
@@ -40,12 +40,12 @@
           <el-input placeholder="请输入内容" v-model="sendObj.productName" style="width:600px;">
             <span slot="suffix" style="line-height:40px;">{{ sendObj.productName.length }}/20</span>
           </el-input>
-          <p>请输入试用商品简称，不要和京东商品名相同，防止买手直接搜索名称购买</p>
+          <p>请输入试用商品简称，不要和京东/淘宝商品名相同，防止买手直接搜索名称购买</p>
         </div>
         <div class="input">
           <span class="must">商品链接：</span>
           <el-input placeholder="请输入内容" v-model="sendObj.productUrl" style="width:600px;"></el-input>
-          <strong class="readShopInfo">读取店铺信息</strong>
+          <strong class="readShopInfo" @click="readShopInfo">读取店铺信息</strong>
           <p>我们会根据您填写的试用商品链接抓取部分商品的宝贝描述。</p>
         </div>
         <div class="input">
@@ -60,18 +60,30 @@
             </el-upload>
           </div>
           <span class="must">商品类目</span>
-          <el-select v-model="classValue.classOne" value-key="id" placeholder="请选择" style="width:140px;margin-left:12px;" @change="chooseClass(1)">
-            <el-option v-for="(item, index) in classObj.classOne" :key="index" :label="item.className" :value="item">
-            </el-option>
-          </el-select>
-          <el-select v-model="classValue.classTwo" value-key="id" placeholder="请选择" style="width:140px;margin-left:12px;" @change="chooseClass(2)">
-            <el-option v-for="(item, index) in classObj.classTwo" :key="index" :label="item.className" :value="item">
-            </el-option>
-          </el-select>
-          <el-select v-model="classValue.classThree" value-key="id" placeholder="请选择" style="width:140px;margin-left:12px;" @change="chooseClass(3)">
-            <el-option v-for="(item, index) in classObj.classThree" :key="index" :label="item.className" :value="item">
-            </el-option>
-          </el-select>
+          <div v-if="creatShopInfo.shopType==0" style="display: inline-block;">
+            <el-select v-model="classValue.classOne" value-key="id" placeholder="请选择" style="width:140px;margin-left:12px;" @change="chooseClass(1)">
+              <el-option v-for="(item, index) in classObj.classOne" :key="index" :label="item.className" :value="item">
+              </el-option>
+            </el-select>
+            <el-select v-model="classValue.classTwo" value-key="id" placeholder="请选择" style="width:140px;margin-left:12px;" @change="chooseClass(2)">
+              <el-option v-for="(item, index) in classObj.classTwo" :key="index" :label="item.className" :value="item">
+              </el-option>
+            </el-select>
+            <el-select v-model="classValue.classThree" value-key="id" placeholder="请选择" style="width:140px;margin-left:12px;" @change="chooseClass(3)">
+              <el-option v-for="(item, index) in classObj.classThree" :key="index" :label="item.className" :value="item">
+              </el-option>
+            </el-select>
+          </div>
+          <div v-else style="display: inline-block;">
+            <el-select v-model="classValue.classOne" value-key="id" placeholder="请选择" style="width:140px;margin-left:12px;" @change="chooseTbClass(1)">
+              <el-option v-for="(item, index) in classObj.classOne" :key="index" :label="item.className" :value="item">
+              </el-option>
+            </el-select>
+            <el-select v-model="classValue.classTwo" value-key="id" placeholder="请选择" style="width:140px;margin-left:12px;" @change="chooseTbClass(2)">
+              <el-option v-for="(item, index) in classObj.classTwo" :key="index" :label="item.className" :value="item">
+              </el-option>
+            </el-select>
+          </div>
           <div class="setFormat">
             <span class="must">设置商品规格
               <b class="gray">（若手机和pc端的价格不一致，请填写手机端价格）</b>
@@ -123,8 +135,8 @@
           </el-radio-group>
           <h4>支持付款方式：</h4>
           <ul class="payWay">
-            <li v-if="$route.query.shopType==2">
-              <span>是否允许买家使用花呗付款</span>
+            <li v-if="creatShopInfo.shopType==0">
+              <span>是否允许买家使用白条付款</span>
               <el-radio-group v-model="sendObj.isSupportBaiTiao">
                 <el-radio :label="1">
                   <b style="color: #3c3c3c">允许</b>
@@ -135,7 +147,7 @@
               </el-radio-group>
             </li>
             <li v-else>
-              <span>是否允许买家使用白条付款</span>
+              <span>是否允许买家使用花呗付款</span>
               <el-radio-group v-model="sendObj.isSupportBaiTiao">
                 <el-radio :label="1">
                   <b style="color: #3c3c3c">允许</b>
@@ -172,53 +184,7 @@
       </div>
       <h2>第二步: 设置如何找到商品</h2>
       <div class="step step2">
-        <ul v-if="$route.query.shopType==2" class="keywordList" v-for="(item, index) in keywordList" :key="index">
-          <li>
-            <span class="must">关键词来源{{ index+1 }}：让买手在
-              <b class="red">淘宝APP</b>搜索关键字&nbsp;&nbsp;</span>
-            <el-input style="width:340px;" v-model="item.keyword" placeholder="请输入搜索关键字"></el-input>
-            <!-- <span v-if="index!==0" class="el-icon-delete deleBtn" @click="deleKeyArr(index)"></span> -->
-          </li>
-          <li class="searchBox" v-show="item.showSearch" :key="index">
-            <span>排序方式：</span>
-            <el-select placeholder="请选择" v-model="item.sortClass" style="width: 140px;">
-              <el-option label="综合排序" value="综合排序">
-              </el-option>
-              <el-option label="价格排序" value="价格排序">
-              </el-option>
-            </el-select>
-            <b class="gray">
-              &nbsp;&nbsp;推荐按销量排序查找，商品位置更稳定更好找
-            </b>
-            <h4>买家通过
-              <span class="red">价格筛选，发货地</span>缩小范围</h4>
-            <div class="filter">
-              <div class="col col1">
-                <p>
-                  <span>价格:</span>&nbsp;
-                  <el-input style="width:140px;" type="number" v-model="item.priceLow" placeholder="请输入价格"></el-input>
-                  —
-                  <el-input style="width:140px;" type="number" v-model="item.priceHigh" placeholder="请输入价格"></el-input>&nbsp;元</p>
-              </div>
-              <div class="col col2">
-                <p>
-                  <span>发货地:</span>&nbsp;
-                  <el-select placeholder="请选择" v-model="item.postLocation" style="width: 140px;">
-                    <el-option v-for="(address, i) in positionArr" :key="i" :label="address.name" :value="address.name">
-                    </el-option>
-                  </el-select>
-                </p>
-              </div>
-              <div class="col col3">
-                <p>
-                  <span>付款人数:</span>&nbsp;
-                  <el-input type="number" style="width:140px;" v-model="item.pageNum" placeholder="请输入人数"></el-input>
-                </p>
-              </div>
-            </div>
-          </li>
-        </ul>
-        <ul v-if="!($route.query.shopType==2)" class="keywordList" v-for="(item, index) in keywordList" :key="index">
+        <ul v-if="creatShopInfo.shopType==0" class="keywordList" v-for="(item, index) in keywordList" :key="index">
           <li>
             <span class="must">关键词来源{{ index+1 }}：让买手在
               <b class="red">京东APP</b>搜索关键字&nbsp;&nbsp;</span>
@@ -280,6 +246,52 @@
                 </div> -->
           </li>
           <!-- </transition-group> -->
+        </ul>
+        <ul v-if="creatShopInfo.shopType==1 || creatShopInfo.shopType==2" class="keywordList" v-for="(item, index) in keywordList" :key="index">
+          <li>
+            <span class="must">关键词来源{{ index+1 }}：让买手在
+              <b class="red">淘宝APP</b>搜索关键字&nbsp;&nbsp;</span>
+            <el-input style="width:340px;" v-model="item.keyword" placeholder="请输入搜索关键字"></el-input>
+            <!-- <span v-if="index!==0" class="el-icon-delete deleBtn" @click="deleKeyArr(index)"></span> -->
+          </li>
+          <li class="searchBox" v-show="item.showSearch" :key="index">
+            <span>排序方式：</span>
+            <el-select placeholder="请选择" v-model="item.sortClass" style="width: 140px;">
+              <el-option label="综合排序" value="综合排序">
+              </el-option>
+              <el-option label="价格排序" value="价格排序">
+              </el-option>
+            </el-select>
+            <b class="gray">
+              &nbsp;&nbsp;推荐按销量排序查找，商品位置更稳定更好找
+            </b>
+            <h4>买家通过
+              <span class="red">价格筛选，发货地</span>缩小范围</h4>
+            <div class="filter">
+              <div class="col col1">
+                <p>
+                  <span>价格:</span>&nbsp;
+                  <el-input style="width:140px;" type="number" v-model="item.priceLow" placeholder="请输入价格"></el-input>
+                  —
+                  <el-input style="width:140px;" type="number" v-model="item.priceHigh" placeholder="请输入价格"></el-input>&nbsp;元</p>
+              </div>
+              <div class="col col2">
+                <p>
+                  <span>发货地:</span>&nbsp;
+                  <el-select placeholder="请选择" v-model="item.postLocation" style="width: 140px;">
+                    <el-option v-for="(address, i) in positionArr" :key="i" :label="address.name" :value="address.name">
+                    </el-option>
+                  </el-select>
+                </p>
+              </div>
+              <div class="col col3">
+                <p>
+                  <span>付款人数:</span>&nbsp;
+                  <el-input type="number" style="width:140px;" v-model="item.pageNum" placeholder="请输入人数"></el-input>
+                </p>
+              </div>
+            </div>
+          </li>
         </ul>
         <!-- </transition-group> -->
         <!-- <div class="addKeyword">
@@ -357,127 +369,69 @@
             </div>
           </div>
         </div>
-        <span class="must" @click="aaa">设置买号类型：</span>
-        <div class="buyerType">
-          <el-radio-group v-model="buyerType">
-            <p>
-              <el-radio :label="1">全员为plus (+{{ priceObj.plusPrice || 3 }}元 / 单)</el-radio>
-            </p>
-            <p>
-              <el-radio :label="0">非plus会员</el-radio>
-            </p>
-          </el-radio-group>
+        <div v-if="creatShopInfo.shopType==0">
+          <span class="must" @click="aaa">设置买号类型：</span>
+          <div class="buyerType">
+            <el-radio-group v-model="buyerType">
+              <p>
+                <el-radio :label="1">全员为plus (+{{ priceObj.plusPrice || 3 }}元 / 单)</el-radio>
+              </p>
+              <p>
+                <el-radio :label="0">非plus会员</el-radio>
+              </p>
+            </el-radio-group>
+          </div>
         </div>
       </div>
-      <h2 v-if="!isReturnBack">第四步: 增值服务</h2>
-      <div v-if="!isReturnBack" class="step step4">
+      <h2 v-if="!isReturnBack && creatShopInfo.shopType!=0">第四步: 增值服务</h2>
+      <div v-if="!isReturnBack && creatShopInfo.shopType!=0" class="step step4">
         <ul class="server">
           <li>
-            <el-checkbox v-model="checked">地域限制</el-checkbox>
+            <el-checkbox v-model="increaseObj.area.checked">地域限制</el-checkbox>
             <span class="red">(所选区域不可接该任务)+0.1元 / 单</span>
           </li>
           <li>
             <ul class="area">
               <li style="background:#EDEDED;">编辑区域</li>
-              <li>
-                <el-checkbox class="bold" v-model="checked">华东</el-checkbox>
-                <el-checkbox-group style="display:inline-block;" v-model="checkList">
-                  <el-checkbox label="上海"></el-checkbox>
-                  <el-checkbox label="江苏"></el-checkbox>
-                  <el-checkbox label="浙江"></el-checkbox>
-                  <el-checkbox label="安徽"></el-checkbox>
-                  <el-checkbox label="江西"></el-checkbox>
-                </el-checkbox-group>
-              </li>
-              <li>
-                <el-checkbox class="bold" v-model="checked">华北</el-checkbox>
-                <el-checkbox-group style="display:inline-block;" v-model="checkList">
-                  <el-checkbox label="北京"></el-checkbox>
-                  <el-checkbox label="天津"></el-checkbox>
-                  <el-checkbox label="山西"></el-checkbox>
-                  <el-checkbox label="山东"></el-checkbox>
-                  <el-checkbox label="河北"></el-checkbox>
-                  <el-checkbox label="内蒙古"></el-checkbox>
-                </el-checkbox-group>
-              </li>
-              <li>
-                <el-checkbox class="bold" v-model="checked">华中</el-checkbox>
-                <el-checkbox-group style="display:inline-block;" v-model="checkList">
-                  <el-checkbox label="湖南"></el-checkbox>
-                  <el-checkbox label="湖北"></el-checkbox>
-                  <el-checkbox label="河南"></el-checkbox>
-                </el-checkbox-group>
-              </li>
-              <li>
-                <el-checkbox class="bold" v-model="checked">华南</el-checkbox>
-                <el-checkbox-group style="display:inline-block;" v-model="checkList">
-                  <el-checkbox label="广东"></el-checkbox>
-                  <el-checkbox label="广西"></el-checkbox>
-                  <el-checkbox label="福建"></el-checkbox>
-                  <el-checkbox label="海南"></el-checkbox>
-                </el-checkbox-group>
-              </li>
-              <li>
-                <el-checkbox class="bold" v-model="checked">东北</el-checkbox>
-                <el-checkbox-group style="display:inline-block;" v-model="checkList">
-                  <el-checkbox label="辽宁"></el-checkbox>
-                  <el-checkbox label="吉林"></el-checkbox>
-                  <el-checkbox label="黑龙江"></el-checkbox>
-                </el-checkbox-group>
-              </li>
-              <li>
-                <el-checkbox class="bold" v-model="checked">西北</el-checkbox>
-                <el-checkbox-group style="display:inline-block;" v-model="checkList">
-                  <el-checkbox label="陕西"></el-checkbox>
-                  <el-checkbox label="新疆"></el-checkbox>
-                  <el-checkbox label="甘肃"></el-checkbox>
-                  <el-checkbox label="宁夏"></el-checkbox>
-                  <el-checkbox label="青海"></el-checkbox>
-                </el-checkbox-group>
-              </li>
-              <li>
-                <el-checkbox class="bold" v-model="checked">西南</el-checkbox>
-                <el-checkbox-group style="display:inline-block;" v-model="checkList">
-                  <el-checkbox label="重庆"></el-checkbox>
-                  <el-checkbox label="云南"></el-checkbox>
-                  <el-checkbox label="贵州"></el-checkbox>
-                  <el-checkbox label="西藏"></el-checkbox>
-                  <el-checkbox label="四川"></el-checkbox>
+              <li v-for="(item,index) in increaseObj.area.areaArr" :key="index">
+                <el-checkbox @change="chooseAreaArr(index,item.checked)" class="bold" v-model="item.checked">华东</el-checkbox>
+                <el-checkbox-group style="display:inline-block;" v-model="item.chooseArr">
+                  <el-checkbox v-for="(add, i) in item.arr" :key="i" :label="add"></el-checkbox>
                 </el-checkbox-group>
               </li>
             </ul>
           </li>
           <li>
-            <el-checkbox v-model="checked">年龄设置</el-checkbox>
+            <el-checkbox v-model="increaseObj.age.checked">年龄设置</el-checkbox>
             <span class="red">(选定年龄段内的用户可接该任务)+0.5 元 / 单</span>
           </li>
           <li>
-            <el-radio v-model="radio" label="0">18岁以下</el-radio>
-            <el-radio v-model="radio" label="1">18-25岁以下</el-radio>
-            <el-radio v-model="radio" label="2">26-35岁以下</el-radio>
-            <el-radio v-model="radio" label="3">36岁以下</el-radio>
+            <el-radio v-model="increaseObj.age.chooseAge" label="0">18岁以下</el-radio>
+            <el-radio v-model="increaseObj.age.chooseAge" label="1">18-25岁以下</el-radio>
+            <el-radio v-model="increaseObj.age.chooseAge" label="2">26-35岁以下</el-radio>
+            <el-radio v-model="increaseObj.age.chooseAge" label="3">36岁以下</el-radio>
           </li>
           <li>
-            <el-checkbox v-model="checked">性别设置</el-checkbox>
+            <el-checkbox v-model="increaseObj.gender.checked">性别设置</el-checkbox>
             <span class="red">(选定性别可接该任务)+0.5 元 / 单</span>
           </li>
           <li>
-            <el-radio v-model="radio" label="1">男</el-radio>
-            <el-radio v-model="radio" label="2">女</el-radio>
+            <el-radio v-model="increaseObj.gender.chooseGender" label="1">男</el-radio>
+            <el-radio v-model="increaseObj.gender.chooseGender" label="2">女</el-radio>
           </li>
           <li>
-            <el-checkbox v-model="checked"></el-checkbox>
+            <el-checkbox v-model="increaseObj.allowZhuan.checked"></el-checkbox>
             <span class="red">仅限钻石级别的买号可接该任务+0.5元／单</span>
           </li>
           <li>
-            <el-checkbox v-model="checked"></el-checkbox>
+            <el-checkbox v-model="increaseObj.allowHuaBei.checked"></el-checkbox>
             <span class="red">仅限开通花呗的买号可接该任务+2元／单(指已开通花呗的用户，账号安全，权重高)</span>
           </li>
-          <li>
-            <span>任务备注&nbsp;:&nbsp;</span>
-            <el-input style="width:340px;" placeholder="请输入备注"></el-input>
-          </li>
         </ul>
+      </div>
+      <div style="padding:20px;">
+        <span>任务备注&nbsp;:&nbsp;</span>
+        <el-input v-model="taskCommon" style="width:340px;" placeholder="请输入备注"></el-input>
       </div>
       <div class="next" v-if="!isReturnBack">
         <button class="btn disabled" @click="doPrevent">上一步</button>
@@ -568,25 +522,52 @@ export default {
       increaseObj: {
         area: {
           checked: false,
-          area1: {
+          areaArr: [{
             checked: false,
-            arr: []
-          }
+            chooseArr: [],
+            arr: ['上海', '江苏', '浙江', '安徽', '江西']
+          }, {
+            checked: false,
+            chooseArr: [],
+            arr: ['北京', '天津', '山西', '山东', '河北', '内蒙古']
+          }, {
+            checked: false,
+            chooseArr: [],
+            arr: ['湖南', '湖北', '河南']
+          }, {
+            checked: false,
+            chooseArr: [],
+            arr: ['广东', '广西', '福建', '海南']
+          }, {
+            checked: false,
+            chooseArr: [],
+            arr: ['辽宁', '吉林', '黑龙江']
+          }, {
+            checked: false,
+            chooseArr: [],
+            arr: ['陕西', '新疆', '甘肃', '宁夏', '青海']
+          }, {
+            checked: false,
+            chooseArr: [],
+            arr: ['重庆', '云南', '贵州', '西藏', '四川']
+          }]
         },
         age: {
-          checked: true
+          checked: false,
+          chooseAge: ''
         },
         gender: {
-          checked: true
+          checked: false,
+          chooseGender: ''
         },
         allowZhuan: {
-          checked: true
+          checked: false
         },
         allowHuaBei: {
-          checked: true
-        },
-        common: ''
+          checked: false
+        }
       },
+      taskCommon: '',
       sendObj: {
         productName: '', // 商品标题
         productUrl: '', // 商品链接
@@ -603,6 +584,7 @@ export default {
         productFormat: '任意规格', // 商品规格
         isPostageFree: 1, // 是否包邮 0 - 否，1-是
         isSupportBaiTiao: 0, // 是否支持白条/花呗
+        // isSupportHuabei: 0,
         isSupportCredit: 0, // 是否支持信用卡
         isSupportTicket: 0, // 是否支持优惠卷
         searchKeywordList: [{ // 关键词方案列表
@@ -699,10 +681,36 @@ export default {
     aaa () {
       // console.log(this.sendObj)
     },
+    readShopInfo () {
+      if (this.sendObj.productUrl) {
+        this.$ajax.post('/api/seller/shop/getProductUrlInfo', {
+          shopType: this.creatShopInfo.shopType,
+          productUrl: this.sendObj.productUrl
+        }).then((data) => {
+          if (data.data.code === '200') {
+            let res = data.data.data
+            this.sendObj.productName = res.name
+          } else {
+            this.$message({
+              message: data.data.message,
+              type: 'warning'
+            })
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
+      } else {
+        this.$message({
+          message: '请先填写商品链接地址',
+          type: 'warning'
+        })
+      }
+    },
     // 根据价格获取评价的价格
     getPrice () {
       if (this.sendObj.productOrderPrice && this.sendObj.numPerOrder) {
         this.$ajax.post('/api/seller/task/getFavorByPrice', {
+          shopType: parseInt(this.creatShopInfo.shopType) === 0 ? 0 : 1,
           price: this.sendObj.productOrderPrice * this.sendObj.numPerOrder
         }).then((data) => {
           // console.log(data)
@@ -1021,8 +1029,25 @@ export default {
           this.sendObj.defaultFavorNum = 0
         }
         this.sendObj.throwTime = this.sendDateList[0].time
-
         this.sendObj.sellerTaskId = this.creatShopInfo.sellerTaskId
+
+        // 增值服务
+        if (parseInt(this.creatShopInfo.shopType) !== 0) {
+          let areaArrs = []
+          for (let m of this.increaseObj.area.areaArr) {
+            areaArrs = areaArrs.concat(m.chooseArr)
+          }
+          this.sendObj.isLimitLocation = this.increaseObj.area.checked ? 1 : 0
+          this.sendObj.isLimitGender = this.increaseObj.gender.checked ? 1 : 0
+          this.sendObj.isLimitAge = this.increaseObj.age.checked ? 1 : 0
+          this.sendObj.isLimitDiamond = this.increaseObj.allowZhuan.checked ? 1 : 0
+          this.sendObj.isLimitHuabei = this.increaseObj.allowHuaBei.checked ? 1 : 0
+          this.sendObj.exludeLocations = areaArrs
+          this.sendObj.ageIndex = this.increaseObj.age.chooseAge
+          this.sendObj.gender = this.increaseObj.gender.chooseGender
+        }
+        // 任务备注
+        this.sendObj.comment = this.taskCommon
         // console.log(this.sendObj)
         sessionStorage.setItem('taskTwo_sendObj', JSON.stringify(this.sendObj))
 
@@ -1091,6 +1116,39 @@ export default {
         })
       }
     },
+    // 获取淘宝分类
+    getTbClassApi (url, classIndex, id) {
+      if (classIndex === 1) {
+        this.$ajax.post(url, {
+        }).then((data) => {
+          if (data.data.code === '200') {
+            this.classObj.classOne = data.data.data
+          } else {
+            this.$message({
+              message: data.data.message,
+              type: 'warning'
+            })
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
+      } else if (classIndex === 2) {
+        this.$ajax.post(url, {
+          firstId: id
+        }).then((data) => {
+          if (data.data.code === '200') {
+            this.classObj.classTwo = data.data.data
+          } else {
+            this.$message({
+              message: data.data.message,
+              type: 'warning'
+            })
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
+      }
+    },
     // 获取地址
     getPositionArr () {
       this.$ajax.post('/api/config/location/getProvinceList', {
@@ -1124,6 +1182,17 @@ export default {
       } else if (index === 3) {
         this.sendObj.productClassThirdId = this.classValue.classThree.id
         this.sendObj.productClassThirdDesc = this.classValue.classThree.className
+      }
+    },
+    chooseTbClass (index) {
+      if (index === 1) {
+        this.classValue.classTwo = {}
+        this.getTbClassApi('/api/config/productClass/getTBSecondClassByFirstid', 2, this.classValue.classOne.id)
+        this.sendObj.productClassFirstId = this.classValue.classOne.id
+        this.sendObj.productClassFirstDesc = this.classValue.classOne.className
+      } else if (index === 2) {
+        this.sendObj.productClassSecondId = this.classValue.classTwo.id
+        this.sendObj.productClassSecondDesc = this.classValue.classTwo.className
       }
     },
     // 获取上一步创建店铺的信息
@@ -1182,6 +1251,14 @@ export default {
         console.log(err)
       })
     },
+    // 地区选择
+    chooseAreaArr (index, checked) {
+      if (checked) {
+        this.increaseObj.area.areaArr[index].chooseArr = this.increaseObj.area.areaArr[index].arr
+      } else {
+        this.increaseObj.area.areaArr[index].chooseArr = []
+      }
+    },
     // 发送修改信息
     sureToFix () {
       this.$ajax.post('/api/seller/task/updateRejectTask', {
@@ -1222,12 +1299,16 @@ export default {
   mounted () {
     // 设置日期表格
     this.setMyDate()
-    // 获取分类列表
-    this.getClassApi('/api/config/productClass/getJDFirstClass', 1)
     // 获取地址列表
     this.getPositionArr()
     // 获取上一步店铺信息
     this.getCreatShopInfo()
+    // 获取分类列表
+    if (parseInt(this.creatShopInfo.shopType) === 0) {
+      this.getClassApi('/api/config/productClass/getJDFirstClass', 1)
+    } else {
+      this.getTbClassApi('/api/config/productClass/getTBFirstClass', 1)
+    }
     if (this.$route.query.rbSellerTaskId) {
       // 设置被驳回的信息
       this.isReturnBack = true
