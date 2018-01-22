@@ -50,9 +50,17 @@
               </b>
             </el-radio>
           </div>
-          <div v-show="parseInt(shop.shopType)===1 || parseInt(shop.shopType)===2" class="taskType">
+          <div v-show="parseInt(shop.shopType)===1" class="taskType">
             <el-radio :label="3">
               <span class="taobaoIcon inblock"></span>
+              <b style="font-size:14px;color:#444444;">手淘App任务
+                <span style="color:#949494">(用户在手淘app下单)</span>
+              </b>
+            </el-radio>
+          </div>
+          <div v-show="parseInt(shop.shopType)===2" class="taskType">
+            <el-radio :label="3">
+              <span class="tianmaoIcon inblock"></span>
               <b style="font-size:14px;color:#444444;">手淘App任务
                 <span style="color:#949494">(用户在手淘app下单)</span>
               </b>
