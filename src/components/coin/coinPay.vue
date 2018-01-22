@@ -307,11 +307,11 @@ export default {
             type: 'success'
           })
           this.dialogVisible = false
-          if (this.$route.query.toPay) {
-            window.history.go(-1)
-          } else {
-            this.getTask(1, this.pageSize)
-          }
+          // if (this.$route.query.toPay) {
+          //   window.history.go(-1)
+          // } else {
+          this.getTask(1, this.pageSize)
+          // }
         } else {
           this.$message({
             message: data.data.message,
