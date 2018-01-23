@@ -303,9 +303,9 @@
         </div> -->
       </div>
       <h2 v-if="!isReturnBack">第三步: 选择任务类型与单数</h2>
-      <div v-if="!isReturnBack" class="step step3">
+      <div v-if="!isReturnBack" id="taskTwoDisabled" class="step step3 taskTwoDisabled">
         <span>任务开展时间&nbsp;:&nbsp;</span>
-        <el-date-picker v-model="taskStarTime" @change="setTaskStarTime" type="date" placeholder="选择日期" format="yyyy/MM/dd">
+        <el-date-picker v-model="taskStarTime" :picker-options="timeOption" @change="setTaskStarTime" type="date" placeholder="选择日期" format="yyyy/MM/dd">
         </el-date-picker>
         <table class="dateTable">
           <tr>
@@ -427,21 +427,24 @@
             <el-checkbox v-model="increaseObj.allowHuaBei.checked"></el-checkbox>
             <span class="red">仅限开通花呗的买号可接该任务+2元／单(指已开通花呗的用户，账号安全，权重高)</span>
           </li>
+          <li>
+            <span>任务备注&nbsp;:&nbsp;</span>
+            <el-input v-model="taskCommon" style="width:340px;" placeholder="请输入备注"></el-input>
+          </li>
         </ul>
       </div>
-      <div style="padding:20px;">
-        <span>任务备注&nbsp;:&nbsp;</span>
-        <el-input v-model="taskCommon" style="width:340px;" placeholder="请输入备注"></el-input>
-      </div>
+      <!-- <div style="padding:20px;">
+        
+      </div> -->
       <div class="next" v-if="!isReturnBack">
-        <button class="btn disabled" @click="doPrevent">上一步</button>
+        <button class="btn disab" @click="doPrevent">上一步</button>
         <button class="btn" @click="doNext">下一步</button>
-        <!-- <button class="btn" :class="{'disabled': !(shop && taskType)}" :disabled="!(shop && taskType)" @click="doNext">下一步</button> -->
+        <!-- <button class="btn" :class="{'disab': !(shop && taskType)}" :disab="!(shop && taskType)" @click="doNext">下一步</button> -->
       </div>
       <div class="next" v-if="isReturnBack">
-        <button class="btn disabled" @click="$router.push({name: 'overView'})">取消</button>
+        <button class="btn disab" @click="$router.push({name: 'overView'})">取消</button>
         <button class="btn" @click="sureToFix">确认</button>
-        <!-- <button class="btn" :class="{'disabled': !(shop && taskType)}" :disabled="!(shop && taskType)" @click="doNext">下一步</button> -->
+        <!-- <button class="btn" :class="{'disab': !(shop && taskType)}" :disab="!(shop && taskType)" @click="doNext">下一步</button> -->
       </div>
     </div>
   </div>
@@ -483,6 +486,11 @@ export default {
       positionArr: [],
       // 任务开展时间
       taskStarTime: '',
+      timeOption: {
+        disabledDate (time) {
+          return time.getTime() < Date.now()
+        }
+      },
       // 日历数组
       timeArr: [],
       // 复选框的以选择数组
@@ -525,31 +533,31 @@ export default {
           areaArr: [{
             checked: false,
             chooseArr: [],
-            arr: ['上海', '江苏', '浙江', '安徽', '江西']
+            arr: ['上海市', '江苏省', '浙江省', '安徽省', '江西省']
           }, {
             checked: false,
             chooseArr: [],
-            arr: ['北京', '天津', '山西', '山东', '河北', '内蒙古']
+            arr: ['北京市', '天津市', '山西省', '山东省', '河北省', '内蒙古']
           }, {
             checked: false,
             chooseArr: [],
-            arr: ['湖南', '湖北', '河南']
+            arr: ['湖南省', '湖北省', '河南省']
           }, {
             checked: false,
             chooseArr: [],
-            arr: ['广东', '广西', '福建', '海南']
+            arr: ['广东省', '广西', '福建省', '海南省']
           }, {
             checked: false,
             chooseArr: [],
-            arr: ['辽宁', '吉林', '黑龙江']
+            arr: ['辽宁省', '吉林省', '黑龙江']
           }, {
             checked: false,
             chooseArr: [],
-            arr: ['陕西', '新疆', '甘肃', '宁夏', '青海']
+            arr: ['陕西省', '新疆', '甘肃省', '宁夏', '青海省']
           }, {
             checked: false,
             chooseArr: [],
-            arr: ['重庆', '云南', '贵州', '西藏', '四川']
+            arr: ['重庆市', '云南省', '贵州省', '西藏', '四川省']
           }]
         },
         age: {
@@ -727,8 +735,10 @@ export default {
         this.taskStarTime = val
         this.filterTime(val)
       } else {
-        this.taskStarTime = new Date()
-        this.filterTime(new Date())
+        let now = new Date()
+        now.setDate(now.getDate() + 1)
+        this.taskStarTime = now
+        this.filterTime(now)
       }
     },
     // 筛选日历
@@ -1304,11 +1314,13 @@ export default {
     // 获取上一步店铺信息
     this.getCreatShopInfo()
     // 获取分类列表
-    if (parseInt(this.creatShopInfo.shopType) === 0) {
-      this.getClassApi('/api/config/productClass/getJDFirstClass', 1)
-    } else {
-      this.getTbClassApi('/api/config/productClass/getTBFirstClass', 1)
-    }
+    setTimeout(() => {
+      if (parseInt(this.creatShopInfo.shopType) === 0) {
+        this.getClassApi('/api/config/productClass/getJDFirstClass', 1)
+      } else {
+        this.getTbClassApi('/api/config/productClass/getTBFirstClass', 1)
+      }
+    }, 2000)
     if (this.$route.query.rbSellerTaskId) {
       // 设置被驳回的信息
       this.isReturnBack = true
