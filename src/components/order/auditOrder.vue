@@ -80,10 +80,10 @@
                   <div>
                     <span>姓名：{{ item.buyerName }}</span>
                     <span>订单金额：{{ item.realOrderPrice }}</span>
-                    <p>京东订单编号：{{ item.realOrderId }}&nbsp;&nbsp;
+                    <p>订单编号：{{ item.realOrderId }}&nbsp;&nbsp;
                       <span class="blue copy" :data-clipboard-text='item.realOrderId' @click="doCopy">复制</span>
                     </p>
-                    <p>京东用户名：{{ item.jdUserName }}</p>
+                    <p v-if="item.shopType==0">京东用户名：{{ item.jdUserName }}</p>
                     <p>手机号：{{ item.telephone }}</p>
                   </div>
                 </li>
@@ -261,10 +261,10 @@
                   <div>
                     <span>姓名：{{ item.buyerName }}</span>
                     <span>订单金额：{{ item.realOrderPrice }}</span>
-                    <p>京东订单编号：{{ item.realOrderId }}&nbsp;&nbsp;
+                    <p>订单编号：{{ item.realOrderId }}&nbsp;&nbsp;
                       <span class="blue copy" :data-clipboard-text="item.realOrderId" @click="doCopy">复制</span>
                     </p>
-                    <p>京东用户名：{{ item.jdUserName }}</p>
+                    <p v-if="item.shopType==0">京东用户名：{{ item.jdUserName }}</p>
                     <p>手机号：{{ item.telephone }}</p>
                   </div>
                 </li>
@@ -477,9 +477,23 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '确认成功!'
+        this.$ajax.post('/api/seller/order/confirmOrder', {
+          buyerTaskId: buyerTaskId
+        }).then((data) => {
+          if (data.data.code === '200') {
+            this.$message({
+              type: 'success',
+              message: '确认订单成功!'
+            })
+            this.getTask()
+          } else {
+            this.$message({
+              type: 'warning',
+              message: data.data.message
+            })
+          }
+        }).catch((err) => {
+          console.log(err)
         })
       }).catch(() => {
         this.$message({

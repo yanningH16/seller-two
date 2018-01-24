@@ -123,7 +123,7 @@
               商品单价：{{ goodsInfoObj.productShowPrice }}元（
               <i v-if="goodsInfoObj.isPostFree==0">不</i>包邮）
             </p>
-            <p>小计：{{ goodsInfoObj.productShowPrice * goodsInfoObj.numPerOrder}}元</p>
+            <p>小计：{{ (goodsInfoObj.productShowPrice * goodsInfoObj.numPerOrder).toFixed(2) || '--'}}元</p>
           </div>
         </div>
       </div>

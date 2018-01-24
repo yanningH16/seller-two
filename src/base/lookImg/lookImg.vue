@@ -40,4 +40,5 @@ export default {
     left 0
     margin auto
     max-width 800px
+    max-height 80%
 </style>

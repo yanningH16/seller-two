@@ -83,10 +83,10 @@
                   <div>
                     <span>姓名：{{ item.buyerName }}</span>
                     <span>订单金额：{{ item.realOrderPrice }}</span>
-                    <p>京东订单编号：{{ item.realOrderId }}&nbsp;&nbsp;
+                    <p>订单编号：{{ item.realOrderId }}&nbsp;&nbsp;
                       <span class="blue copy" :data-clipboard-text='item.realOrderId' @click="doCopy">复制</span>
                     </p>
-                    <p>京东用户名：{{ item.jdUserName }}</p>
+                    <p v-if="item.shopType==0">京东用户名：{{ item.jdUserName || '--' }}</p>
                     <p>手机号：{{ item.telephone }}</p>
                   </div>
                 </li>
@@ -166,7 +166,7 @@
                   <img :src="item.productPicUrl" alt="pic">
                   <div>
                     <p>姓名：{{ item.buyerName }}</p>
-                    <p>京东用户名：{{ item.jdUserName }}</p>
+                    <p v-if="item.shopType==0">京东用户名：{{ item.jdUserName || '--' }}</p>
                     <p>手机号：{{ item.telephone }}</p>
                     <p>子任务编号：{{ item.taskDayId }}</p>
                   </div>
@@ -176,7 +176,7 @@
                     <img :src="(JSON.parse(item.realOrderPicUrl))[0] || ''" alt="pic">
                   </a> -->
                   <div>
-                    <p>京东订单编号：</p>
+                    <p>订单编号：</p>
                     <p class="red">{{ item.realOrderId }}</p>
                     <p>订单金额：
                       <span class="red">{{ item.realOrderPrice }}</span>
@@ -189,7 +189,7 @@
                     <p>{{ item.sellerFavor || '无评价信息' }}</p>
                   </div>
                   <div class="imgs" v-if="item.favorTaskType == 2">
-                    <a @click="lookImg(m)" v-for="(m, i) in (JSON.parse(item.sellerFavorPicUrl) || [])" :key="i">
+                    <a @click="lookImg(m)" v-for="(m, i) in (item.sellerFavorPic ? JSON.parse(item.sellerFavorPic) : [])" :key="i">
                       <img :src="m" alt="pic">
                     </a>
                   </div>
@@ -390,6 +390,7 @@ export default {
       favorType: '',
       lookImgUrl: '',
       platform: '',
+      status: '9',
       shopName: '',
       shopList: [],
       searchKey: '',
@@ -436,18 +437,20 @@ export default {
         keyword: this.searchKey,
         keywordType: this.searchKeyType,
         sellerUserId: this.userInfo.sellerUserId,
+        status: this.status,
         pageNo: this.pageNo,
         pageSize: this.pageSize
       }
     },
     apiUrl () {
-      if (this.activeName === 'first') {
-        return '/api/seller/order/getToCheckOrderList'
-      } else if (this.activeName === 'second') {
-        return '/api/seller/order/getCheckedOrderList'
-      } else if (this.activeName === 'third') {
-        return '/api/seller/order/getRejectOrderList'
-      }
+      // if (this.activeName === 'first') {
+      //   return '/api/seller/order/getFavorOrderListByStatus'
+      // } else if (this.activeName === 'second') {
+      //   return '/api/seller/order/getCheckedOrderList'
+      // } else if (this.activeName === 'third') {
+      //   return '/api/seller/order/getRejectOrderList'
+      // }
+      return '/api/seller/order/getFavorOrderListByStatus'
     },
     ...mapGetters([
       'userInfo'
@@ -558,7 +561,7 @@ export default {
         })
       } else {
         let buyerTaskId = sessionStorage.getItem('__buyerTaskId__') || ''
-        this.$ajax.post('/api/seller/order/confirmOrder', {
+        this.$ajax.post('/api/seller/order/addSellerFavor', {
           buyerTaskId: buyerTaskId,
           sellerFavor: this.confirmObj.evaluteText,
           sellerFavorPicUrl: this.confirmObj.imgArr
@@ -586,6 +589,11 @@ export default {
       }
     },
     handleClick (tab, event) {
+      if (tab.name === 'first') {
+        this.status = '9'
+      } else {
+        this.status = '10'
+      }
       this.getTask()
     },
     beforeAvatarUpload (file) {

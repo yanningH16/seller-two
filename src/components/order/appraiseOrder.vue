@@ -56,7 +56,7 @@
                   <p>任务编号:
                     <span>{{ item.buyerTaskId }}</span>
                   </p>
-                  <p>京东订单编号:
+                  <p>订单编号:
                     <span>{{ item.realOrderId }}</span>
                     <strong class="blue" @click="$router.push({name: 'taskDetail',query:{sellerTaskId: item.sellerTaskId}})">[查看任务详情]</strong>
                   </p>
@@ -75,8 +75,8 @@
                       <p>姓名:
                         <span>{{ item.buyerName }}</span>
                       </p>
-                      <p style="margin-top:15px">京东用户名:
-                        <span>{{ item.jdUserName }}</span>
+                      <p v-if="item.shopType==0" style="margin-top:15px">京东用户名:
+                        <span>{{ item.jdUserName || '--' }}</span>
                       </p>
                       <p style="margin-top:15px">手机号:
                         <span>{{ item.telephone }}</span>
@@ -165,7 +165,7 @@
                   <p>任务编号:
                     <span>{{ item.buyerTaskId }}</span>
                   </p>
-                  <p>京东订单编号:
+                  <p>订单编号:
                     <span>{{ item.realOrderId }}</span>
                     <strong class="blue" @click="$router.push({name: 'taskDetail',query:{sellerTaskId: item.sellerTaskId}})">[查看任务详情]</strong>
                   </p>
@@ -184,7 +184,7 @@
                       <p>姓名:
                         <span>{{ item.buyerName }}</span>
                       </p>
-                      <p style="margin-top:15px">京东用户名:
+                      <p v-if="item.shopType==0" style="margin-top:15px">京东用户名:
                         <span>{{ item.jdUserName }}</span>
                       </p>
                       <p style="margin-top:15px">手机号:
@@ -298,10 +298,10 @@
                       <p>姓名:
                         <span>{{ item.buyerName }}</span>
                       </p>
-                      <p style="margin-top:15px">京东订单编号:
+                      <p style="margin-top:15px">订单编号:
                         <span>{{ item.realOrderId }}</span>
                       </p>
-                      <p style="margin-top:15px">京东用户名:
+                      <p v-if="item.shopType==0" style="margin-top:15px">京东用户名:
                         <span>{{ item.jdUserName }}</span>
                       </p>
                       <p style="margin-top:15px">手机号:

@@ -427,15 +427,12 @@
             <el-checkbox v-model="increaseObj.allowHuaBei.checked"></el-checkbox>
             <span class="red">仅限开通花呗的买号可接该任务+2元／单(指已开通花呗的用户，账号安全，权重高)</span>
           </li>
-          <li>
-            <span>任务备注&nbsp;:&nbsp;</span>
-            <el-input v-model="taskCommon" style="width:340px;" placeholder="请输入备注"></el-input>
-          </li>
         </ul>
       </div>
-      <!-- <div style="padding:20px;">
-        
-      </div> -->
+      <div style="padding:20px;">
+        <span>任务备注&nbsp;:&nbsp;</span>
+        <el-input v-model="taskCommon" style="width:340px;" placeholder="请输入备注"></el-input>
+      </div>
       <div class="next" v-if="!isReturnBack">
         <button class="btn disab" @click="doPrevent">上一步</button>
         <button class="btn" @click="doNext">下一步</button>
