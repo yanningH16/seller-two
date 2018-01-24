@@ -75,7 +75,7 @@
       </div>
     </div>
     <!-- 弹框部分 -->
-    <el-dialog title="生产充值单" :visible.sync="dialogVisible" width="600px" :modal-append-to-body='false'>
+    <!-- <el-dialog title="生产充值单" :visible.sync="dialogVisible" width="600px" :modal-append-to-body='false'>
       <p style="font-size:16px;color:#333">请使用尾号
         <span style="color:#ff0020">{{objDate.sellerBankCardNo |bankCard}}</span>的
         <span style="color:#ff0020">{{objDate.sellerBankName }}
@@ -97,7 +97,7 @@
           <span>{{objDate.platformCardBankCardName}}</span>
         </li>
         <li class="detali">
-          收款金额&nbsp;&nbsp;
+          提现金额金额&nbsp;&nbsp;
           <span>{{objDate.chargeAmount}}</span>
           <p style="margin-left:70px">为了汇款安全快速到账,请按添加小数点后金额汇款.如果金额不匹配会造成汇款到账延迟</p>
         </li>
@@ -112,51 +112,7 @@
         <el-button type="danger" @click="transferMoney">确认转账</el-button>
         <el-button @click="dialogVisible = false">先不转</el-button>
       </span>
-    </el-dialog>
-    <!-- 充值单详情的弹窗 -->
-    <el-dialog title="充值单详情" :visible.sync="toview" width="600px" :modal-append-to-body='false'>
-      <div class="line"></div>
-      <ul class="payPar">
-        <li>
-          充值账户名&nbsp;&nbsp;
-          <span>{{lookData.sellerBankCardUserName}}</span>
-        </li>
-        <li>
-          充值账户&nbsp;&nbsp;
-          <span>{{lookData.sellerBankCardNo}}</span>
-          <span class="blue copy" :data-clipboard-text='lookData.sellerBankCardNo' @click="doCopy">复制</span>
-        </li>
-        <li>
-          所属银行&nbsp;&nbsp;
-          <span>{{lookData.sellerBankCardName}}</span>
-        </li>
-        <li class="lines"></li>
-        <li>
-          收款账户名
-          <span>{{lookData.platformBankCardUserName}}</span>
-        </li>
-        <li>
-          银行卡号&nbsp;&nbsp;
-          <span>{{lookData.platformBankCardNo}}</span>
-          <span class="blue copy" :data-clipboard-text='lookData.platformBankCardNo' @click="doCopy">复制</span>
-        </li>
-        <li>
-          收款账户详情&nbsp;&nbsp;
-          <span>{{lookData.platformBankCardName}}</span>
-        </li>
-        <li>
-          收款金额&nbsp;&nbsp;
-          <span style="color:#FF2933">{{lookData.chargeAmount}}</span>
-          <p style="margin-left:70px">为了汇款安全快速到账,请按添加小数点后金额汇款.如果金额不匹配会造成汇款到账延迟</p>
-        </li>
-        <li>
-          备注/附言/摘要&nbsp;&nbsp;
-          <span>{{lookData.memo}}</span>
-          <span class="blue copy" :data-clipboard-text='lookData.memo' @click="doCopy">复制</span>
-          <p style="margin-left:100px">请在备注/附言/摘要中严格要求填写<br>不要填写除此以外的其他字符(刷单,SD等),否则不能正确到账</p>
-        </li>
-      </ul>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -164,6 +120,7 @@ import Clipboard from 'clipboard'
 import { mapGetters, mapActions } from 'vuex'
 import { pageCommon } from '../../assets/js/mixin'
 import NoCont from '../../base/noCont/noCont'
+import md5 from 'md5'
 export default {
   name: 'coinPay',
   mixins: [pageCommon],
@@ -194,12 +151,11 @@ export default {
       tableData: [],
       options: [],
       item: '',
-      apiUrl: '/api/sellerorder/getChargeApplysBySellerUserId'
+      apiUrl: '/api/withdrawApply/getSellerApplysBySellerId'
     }
   },
   created () {
     this.addBank()
-    this.pointNum = Math.round(Math.random() * 99)
   },
   mounted () {
     this.getMoney()
@@ -245,45 +201,53 @@ export default {
         })
       })
     },
-    // 当点击生成充值单 获取到充值单的信息
+    // 当点击申请提现,进行提现申请
     getChargeInfo () {
-      if (this.item.value === '' || this.input4 === '') {
+      if (this.item.value === '' || this.input4 === '' || this.input5 === '') {
         this.$message({
           message: '请正确填写充值信息',
           type: 'warning'
         })
         return false
       }
-      this.dialogVisible = true
-      this.$ajax.post('/api/sellerAccout/getChargeInfo', {
-        sellerUserId: this.userInfo.sellerUserId,
+      if (this.input4 < 500) {
+        this.$message({
+          message: '单次提现应金额大于500',
+          type: 'warning'
+        })
+        return false
+      }
+      if (this.input4 > this.userMoney.availableCapitalAmount) {
+        this.$message({
+          message: '提现金额大于已有金额,请重新输入',
+          type: 'warning'
+        })
+        return false
+      }
+      // this.dialogVisible = true
+      this.$ajax.post('/api/withdrawApply/createSellerApply', {
+        userId: this.userInfo.sellerUserId,
         sellerBankCardId: this.item.value,
-        chargeAmount: this.input4 + '.' + this.pointNum
+        withdrawAmount: this.input4,
+        withdrawPassword: md5(this.input5),
+        withdrawType: 0,
+        bankCardName: this.item.label,
+        bankCardNo: this.item.bankCardNo,
+        bankName: this.item.userName
       }).then((data) => {
-        // console.log(data)
         let res = data.data
         if (res.code === '200') {
-          let goods = {
-            chargeAmount: res.data.chargeAmount,
-            memo: res.data.memo,
-            platformCardBankCardName: res.data.platformCardBankName,
-            platformCardBankName: res.data.platformCardBankName,
-            platformCardNo: res.data.platformCardNo,
-            platformCardUserName: res.data.platformCardUserName,
-            sellerBankCardNo: res.data.sellerBankCardNo,
-            sellerBankName: res.data.sellerBankName,
-            sellerBankCardUserName: res.data.sellerBankCardUserName
-          }
-          this.objDate = goods
-          this.platformCardBankCardName = goods.platformCardBankCardName
-          this.memo = goods.memo
-          this.platformCardNo = goods.platformCardNo
-          this.sellerBankCardNo = goods.sellerBankCardNo
-          this.platformCardUserName = goods.platformCardUserName
-          this.sellerBankCardUserName = goods.sellerBankCardUserName
-        } else {
           this.$message({
             message: data.data.message,
+            type: 'success'
+          })
+          this.getTask()
+          this.getMoney()
+          this.input4 = ''
+          this.input5 = ''
+        } else {
+          this.$message({
+            message: res.message,
             type: 'warning'
           })
         }
@@ -292,47 +256,7 @@ export default {
         this.$message.error('未知错误！')
       })
     },
-    // 当点击生确认转账的时候触发的事件
-    transferMoney () {
-      this.$ajax.post('/api/sellerorder/createApply', {
-        sellerUserId: this.userInfo.sellerUserId,
-        sellerBankCardId: this.item.value,
-        chargeAmount: this.input4 + '.' + this.pointNum,
-        sellerBankCardName: this.item.label,
-        platformBankCardId: this.userInfo.platformChargeBankCardId,
-        platformBankCardName: this.platformCardBankCardName,
-        memo: this.memo,
-        sellerTelephone: this.userInfo.telephone,
-        sellerUserName: '',
-        sellerBankCardNo: this.sellerBankCardNo,
-        platformBankCardNo: this.platformCardNo,
-        sellerBankCardUserName: this.sellerBankCardUserName,
-        platformBankCardUserName: this.platformCardUserName
-      }).then((data) => {
-        // console.log(data)
-        let res = data.data
-        if (res.code === '200') {
-          this.$message({
-            message: '充值成功',
-            type: 'success'
-          })
-          this.dialogVisible = false
-          if (this.$route.query.toPay) {
-            window.history.go(-1)
-          } else {
-            this.getTask(1, this.pageSize)
-          }
-        } else {
-          this.$message({
-            message: data.data.message,
-            type: 'error'
-          })
-        }
-      }).catch((err) => {
-        console.log(err)
-        this.$message.error('未知错误！')
-      })
-    },
+    // 银行卡的信息
     addBank () {
       this.$ajax.post('/api/sellerAccout/getSellerBankCardList', {
         sellerUserId: this.userInfo.sellerUserId
@@ -366,16 +290,15 @@ export default {
     // 待处理充值的列表
     setList (data) {
       let arr = []
-      for (let word of data.chargeApplys) {
+      for (let word of data.withdrawApplys) {
         let goods = {
-          payWater: word.chargeApplyId,
+          payWater: word.withdrawApplyId,
           creatTime: word.gmtCreate,
-          collectionBank: word.sellerBankCardNo,
-          moneyBank: word.platformBankCardNo,
-          payNum: word.chargeAmount,
-          remark: word.memo,
-          JDStatus: word.status === '0' ? '进行中' : word.status === '1' ? '成功' : '失败',
-          chargeApplyId: word.chargeApplyId
+          collectionBank: word.platformBankCardName || '--',
+          moneyBank: word.bankCardNo,
+          payNum: word.actualAmount,
+          remark: '本金提现',
+          JDStatus: word.status === '0' ? '进行中' : word.status === '1' ? '成功' : '失败'
         }
         arr.push(goods)
       }
