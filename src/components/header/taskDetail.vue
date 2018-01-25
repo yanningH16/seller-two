@@ -53,10 +53,9 @@
       </div>
       <div class="top-right" v-if="taskInfoObj.status==4">
         <h2>任务已提交，等待客服审核</h2>
-        <p>您的任务已提交，客服审核通过之后即可上线<br />
-          <span class="red">16:00</span>点之前提交的任务当日审核上线；<br/>
-          <span class="red">16:00</span>点之后提交的任务次日
-          <span class="red">6:00</span>统一上线<br/> 审核之前您还可以：
+        <p>您的任务已提交，客服审核通过之后即可上线
+          <br /> 您的任务已提交，客服审核通过后即会根据你的放单计划进行任务派发，
+          <br/> 审核之前您还可以：
           <span class="blue" @click="toDo('cancel')">撤销任务</span>
         </p>
       </div>
@@ -123,7 +122,7 @@
               商品单价：{{ goodsInfoObj.productShowPrice }}元（
               <i v-if="goodsInfoObj.isPostFree==0">不</i>包邮）
             </p>
-            <p>小计：{{ (goodsInfoObj.productShowPrice * goodsInfoObj.numPerOrder).toFixed(2) || '--'}}元</p>
+            <p>小计：{{ (goodsInfoObj.productShowPrice * goodsInfoObj.numPerOrder + (goodsInfoObj.isPostFree==0?1:0)*10).toFixed(2) || '--'}}元</p>
           </div>
         </div>
       </div>
@@ -183,7 +182,7 @@
               <td>
                 <div>
                   <p>商品: {{ totalPriceObj.productUnitPrice }}元*{{ totalPriceObj.numPerOrder }}件 / 单*{{ totalPriceObj.totalNum }}单</p>
-                  <p>运费备用金: {{ totalPriceObj.postPrice }}元 / 单*{{ totalPriceObj.totalNum }}单</p>
+                  <p>运费备用金: {{ totalPriceObj.isPostFree==0 ? 10 : 0 }}元 / 单*{{ totalPriceObj.totalNum }}单</p>
                 </div>
               </td>
               <td>
@@ -205,7 +204,7 @@
                   <p>图文好评: {{ totalPriceObj.graphicFavorPrice }}元 / 单*{{ totalPriceObj.graphicFavorNum }}单</p>
                   <p>纯文字好评: {{ totalPriceObj.wordFavorPrice }}元 / 单*{{ totalPriceObj.wordFavorNum }}单</p>
                   <p>默认五星好评: {{ totalPriceObj.defaultFavorPrice }}元 / 单*{{ totalPriceObj.defaultFavorNum }}单</p>
-                  <p>plus会员: {{ totalPriceObj.plusPrice }}元 / 单*{{ totalPriceObj.plusNum }}单</p>
+                  <p v-if="taskInfoObj.shopType==0">plus会员: {{ totalPriceObj.plusPrice }}元 / 单*{{ totalPriceObj.plusNum }}单</p>
                 </div>
               </td>
               <td>
@@ -353,7 +352,7 @@ export default {
     },
     benjin: function () {
       let benjin = 0
-      benjin = (this.totalPriceObj.productUnitPrice) * (this.totalPriceObj.numPerOrder) * (this.totalPriceObj.totalNum) + (this.totalPriceObj.postPrice) * (this.totalPriceObj.totalNum)
+      benjin = (this.totalPriceObj.productUnitPrice) * (this.totalPriceObj.numPerOrder) * (this.totalPriceObj.totalNum) + (parseInt(this.totalPriceObj.isPostFree) === 0 ? 10 : 0) * (this.totalPriceObj.totalNum)
       benjin = benjin.toFixed(2)
       return benjin
     },

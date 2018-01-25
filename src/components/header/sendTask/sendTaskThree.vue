@@ -64,7 +64,7 @@
                 <span class="red">{{ infoObj.wordFavorNum }}</span>单</p>
               <p>默认五星好评: {{ infoObj.defaultFavorPrice }}元 / 单*
                 <span class="red">{{ infoObj.defaultFavorNum }}</span>单</p>
-              <p>plus会员: {{ infoObj.plusPrice }}元 / 单*
+              <p v-if="infoObj.shopType==0">plus会员: {{ infoObj.plusPrice }}元 / 单*
                 <span class="red">{{ infoObj.plusNum }}</span>单</p>
             </div>
           </td>

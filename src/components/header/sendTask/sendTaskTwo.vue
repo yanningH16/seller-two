@@ -22,7 +22,7 @@
         <el-step title="发布成功"></el-step>
       </el-steps>
     </div>
-    <div class="returnBack" v-if="isReturnBack">
+    <div class="returnBack" style="background:rgba(255, 171, 177, 0.2);color:#FF3341;" v-if="isReturnBack">
       <div>驳回原因：</div>
       <p>{{ returnBackObj.comment }}</p>
     </div>
@@ -45,7 +45,7 @@
         <div class="input">
           <span class="must">商品链接：</span>
           <el-input placeholder="请输入内容" v-model="sendObj.productUrl" style="width:600px;"></el-input>
-          <strong class="readShopInfo" @click="readShopInfo">读取店铺信息</strong>
+          <strong v-show="!(creatShopInfo.taskType==3)" class="readShopInfo" @click="readShopInfo">读取店铺信息</strong>
           <p>我们会根据您填写的试用商品链接抓取部分商品的宝贝描述。</p>
         </div>
         <div class="input">
@@ -115,7 +115,7 @@
                 <input type="number" v-model="sendObj.numPerOrder" :disabled="isReturnBack" @blur="getPrice" placeholder="请填写">
               </td>
               <td>
-                <input type="text" v-model="sendObj.productFormat" @focus="sendObj.productFormat=''" :disabled="isReturnBack" placeholder="任意规格(按照试用价格下单)">
+                <input type="text" v-model="sendObj.productFormat" @focus="productFormat(1)" @blur="productFormat(0)" :disabled="isReturnBack" placeholder="任意规格(按照试用价格下单)">
               </td>
             </tr>
           </table>
@@ -387,16 +387,16 @@
       <div v-if="!isReturnBack && creatShopInfo.shopType!=0" class="step step4">
         <ul class="server">
           <li>
-            <el-checkbox v-model="increaseObj.area.checked">地域限制</el-checkbox>
+            <el-checkbox @change="cancelArea" v-model="increaseObj.area.checked">地域限制</el-checkbox>
             <span class="red">(所选区域不可接该任务)+0.1元 / 单</span>
           </li>
-          <li>
+          <li v-show="increaseObj.area.checked">
             <ul class="area">
               <li style="background:#EDEDED;">编辑区域</li>
               <li v-for="(item,index) in increaseObj.area.areaArr" :key="index">
-                <el-checkbox @change="chooseAreaArr(index,item.checked)" class="bold" v-model="item.checked">华东</el-checkbox>
+                <el-checkbox @change="chooseAreaArr(index,item.checked)" class="bold" v-model="item.checked">{{ item.area }}</el-checkbox>
                 <el-checkbox-group style="display:inline-block;" v-model="item.chooseArr">
-                  <el-checkbox v-for="(add, i) in item.arr" :key="i" :label="add"></el-checkbox>
+                  <el-checkbox @change="isCheckAreaBox" v-for="(add, i) in item.arr" :key="i" :label="add"></el-checkbox>
                 </el-checkbox-group>
               </li>
             </ul>
@@ -405,7 +405,7 @@
             <el-checkbox v-model="increaseObj.age.checked">年龄设置</el-checkbox>
             <span class="red">(选定年龄段内的用户可接该任务)+0.5 元 / 单</span>
           </li>
-          <li>
+          <li v-show="increaseObj.age.checked">
             <el-radio v-model="increaseObj.age.chooseAge" label="0">18岁以下</el-radio>
             <el-radio v-model="increaseObj.age.chooseAge" label="1">18-25岁以下</el-radio>
             <el-radio v-model="increaseObj.age.chooseAge" label="2">26-35岁以下</el-radio>
@@ -415,7 +415,7 @@
             <el-checkbox v-model="increaseObj.gender.checked">性别设置</el-checkbox>
             <span class="red">(选定性别可接该任务)+0.5 元 / 单</span>
           </li>
-          <li>
+          <li v-show="increaseObj.gender.checked">
             <el-radio v-model="increaseObj.gender.chooseGender" label="1">男</el-radio>
             <el-radio v-model="increaseObj.gender.chooseGender" label="2">女</el-radio>
           </li>
@@ -530,30 +530,37 @@ export default {
           areaArr: [{
             checked: false,
             chooseArr: [],
+            area: '华东',
             arr: ['上海市', '江苏省', '浙江省', '安徽省', '江西省']
           }, {
             checked: false,
             chooseArr: [],
+            area: '华北',
             arr: ['北京市', '天津市', '山西省', '山东省', '河北省', '内蒙古']
           }, {
             checked: false,
             chooseArr: [],
+            area: '华中',
             arr: ['湖南省', '湖北省', '河南省']
           }, {
             checked: false,
             chooseArr: [],
+            area: '华南',
             arr: ['广东省', '广西', '福建省', '海南省']
           }, {
             checked: false,
             chooseArr: [],
+            area: '东北',
             arr: ['辽宁省', '吉林省', '黑龙江']
           }, {
             checked: false,
             chooseArr: [],
+            area: '西北',
             arr: ['陕西省', '新疆', '甘肃省', '宁夏', '青海省']
           }, {
             checked: false,
             chooseArr: [],
+            area: '西南',
             arr: ['重庆市', '云南省', '贵州省', '西藏', '四川省']
           }]
         },
@@ -586,7 +593,7 @@ export default {
         productShowPrice: '', // 商品展示价格
         productOrderPrice: '', // 商品下单价格
         numPerOrder: '', // 买家每单拍几件
-        productFormat: '任意规格', // 商品规格
+        productFormat: '', // 商品规格
         isPostageFree: 1, // 是否包邮 0 - 否，1-是
         isSupportBaiTiao: 0, // 是否支持白条/花呗
         // isSupportHuabei: 0,
@@ -725,6 +732,18 @@ export default {
         }).catch((err) => {
           console.log(err)
         })
+      }
+    },
+    // 判断规格
+    productFormat (type) {
+      if (type === 1) { // 聚焦时
+        if (this.sendObj.productFormat === '任意规格') {
+          this.sendObj.productFormat = ''
+        }
+      } else if (type === 0) { // 失焦时
+        if (this.sendObj.productFormat === '') {
+          this.sendObj.productFormat = '任意规格'
+        }
       }
     },
     setMyDate (val) {
@@ -1156,6 +1175,21 @@ export default {
         })
       }
     },
+    // 全不选地区
+    cancelArea (value) {
+      if (!value) {
+        for (let m of this.increaseObj.area.areaArr) {
+          m.checked = false
+          m.chooseArr = []
+        }
+      }
+    },
+    // 检测显示选中地区
+    isCheckAreaBox (value) {
+      if (value) {
+        this.increaseObj.area.checked = true
+      }
+    },
     // 获取地址
     getPositionArr () {
       this.$ajax.post('/api/config/location/getProvinceList', {
@@ -1242,6 +1276,7 @@ export default {
           this.sendObj.productShowPrice = rbObj.productShowPrice
           this.sendObj.productOrderPrice = rbObj.productUnitPrice
           this.sendObj.productUrl = rbObj.productUrl
+          this.sendObj.taskCommon = rbObj.taskCommon
           this.keywordList = searchArr
           this.sendObj.sellerTaskId = rbObj.sellerTaskId
           this.classValue.classOne = rbObj.productClassFirstDesc
@@ -1261,6 +1296,7 @@ export default {
     // 地区选择
     chooseAreaArr (index, checked) {
       if (checked) {
+        this.increaseObj.area.checked = true
         this.increaseObj.area.areaArr[index].chooseArr = this.increaseObj.area.areaArr[index].arr
       } else {
         this.increaseObj.area.areaArr[index].chooseArr = []
