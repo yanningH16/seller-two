@@ -310,7 +310,13 @@ export default {
           if (this.$route.query.toBindShop) {
             window.history.go(-1)
           } else {
-            this.$router.push({ name: 'shopAdminList' })
+            if (this.$route.query.number === 0) {
+              this.$router.push({ name: 'shopAdminList', query: { activeName: 'first' } })
+            } else if (this.$route.query.number === 1) {
+              this.$router.push({ name: 'shopAdminList', query: { activeName: 'two' } })
+            } else if (this.$route.query.number === 2) {
+              this.$router.push({ name: 'shopAdminList', query: { activeName: 'three' } })
+            }
           }
         } else {
           this.$message({

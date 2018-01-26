@@ -110,6 +110,15 @@ export default {
   },
   created () {
     this.shoplist()
+    if (this.$route.query.activeName === 'first') {
+      this.activeName = 'first'
+    } else if (this.$route.query.activeName === 'two') {
+      this.activeName = 'two'
+    } else if (this.$route.query.activeName === 'three') {
+      this.activeName = 'three'
+    } else {
+      this.activeName = 'first'
+    }
   },
   methods: {
     // 点击添加店铺进行相应的跳转
