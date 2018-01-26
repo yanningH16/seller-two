@@ -1,5 +1,5 @@
 <template>
-  <div class="sendTaskTwo">
+  <div class="sendTaskTwo" ref="sendTaskTwo">
     <div class="nav">
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item :to="{ name: 'overView' }">首页</el-breadcrumb-item>
@@ -26,7 +26,7 @@
       <div>驳回原因：</div>
       <p>{{ returnBackObj.comment }}</p>
     </div>
-    <div class="cont">
+    <div class="cont" ref="cont">
       <div class="choosed">
         <span>已选择: </span>
         <b>{{ creatShopInfo.taskType == 1 ? '手机京东' : creatShopInfo.taskType == 2 ? '微信京东' : creatShopInfo.taskType == 3 ? '手淘App' : '其他' }}&nbsp;&nbsp;垫付任务</b>
@@ -35,7 +35,7 @@
       </div>
       <h2>第一步: 填写商品信息</h2>
       <div class="step step1">
-        <div class="input">
+        <div class="input" ref="input">
           <span class="must">商品标题：</span>
           <el-input placeholder="请输入内容" v-model="sendObj.productName" style="width:600px;">
             <span slot="suffix" style="line-height:40px;">{{ sendObj.productName.length }}/20</span>
@@ -45,7 +45,7 @@
         <div class="input">
           <span class="must">商品链接：</span>
           <el-input placeholder="请输入内容" v-model="sendObj.productUrl" style="width:600px;"></el-input>
-          <strong v-show="!(creatShopInfo.taskType==3)" class="readShopInfo" @click="readShopInfo">读取店铺信息</strong>
+          <strong v-show="!(creatShopInfo.taskType==3)" class="readShopInfo" @click="readShopInfo">读取链接信息</strong>
           <p>我们会根据您填写的试用商品链接抓取部分商品的宝贝描述。</p>
         </div>
         <div class="input">
@@ -62,14 +62,20 @@
           <span class="must">商品类目</span>
           <div v-if="creatShopInfo.shopType==0" style="display: inline-block;">
             <el-select v-model="classValue.classOne" value-key="id" placeholder="请选择" style="width:140px;margin-left:12px;" @change="chooseClass(1)">
+              <el-option :label="classValue.classOne.className" :value="classValue.classOne">
+              </el-option>
               <el-option v-for="(item, index) in classObj.classOne" :key="index" :label="item.className" :value="item">
               </el-option>
             </el-select>
             <el-select v-model="classValue.classTwo" value-key="id" placeholder="请选择" style="width:140px;margin-left:12px;" @change="chooseClass(2)">
+              <el-option :label="classValue.classTwo.className" :value="classValue.classTwo">
+              </el-option>
               <el-option v-for="(item, index) in classObj.classTwo" :key="index" :label="item.className" :value="item">
               </el-option>
             </el-select>
             <el-select v-model="classValue.classThree" value-key="id" placeholder="请选择" style="width:140px;margin-left:12px;" @change="chooseClass(3)">
+              <el-option :label="classValue.classThree.className" :value="classValue.classThree">
+              </el-option>
               <el-option v-for="(item, index) in classObj.classThree" :key="index" :label="item.className" :value="item">
               </el-option>
             </el-select>
@@ -593,7 +599,7 @@ export default {
         productShowPrice: '', // 商品展示价格
         productOrderPrice: '', // 商品下单价格
         numPerOrder: '', // 买家每单拍几件
-        productFormat: '', // 商品规格
+        productFormat: '任意规格', // 商品规格
         isPostageFree: 1, // 是否包邮 0 - 否，1-是
         isSupportBaiTiao: 0, // 是否支持白条/花呗
         // isSupportHuabei: 0,
@@ -701,7 +707,29 @@ export default {
         }).then((data) => {
           if (data.data.code === '200') {
             let res = data.data.data
+            // 商品名
             this.sendObj.productName = res.name
+            // 一级分类
+            this.classValue.classOne = {
+              className: res.classFirst,
+              id: '1'
+            }
+            this.sendObj.productClassFirstId = '1'
+            this.sendObj.productClassFirstDesc = res.classFirst
+            // 二级分类
+            this.classValue.classTwo = {
+              className: res.classSecond,
+              id: '1'
+            }
+            this.sendObj.productClassSecondId = '1'
+            this.sendObj.productClassSecondDesc = res.classSecond
+            // 三级分类
+            this.classValue.classThree = {
+              className: res.classThird,
+              id: '1'
+            }
+            this.sendObj.productClassThirdId = '1'
+            this.sendObj.productClassThirdDesc = res.classThird
           } else {
             this.$message({
               message: data.data.message,
@@ -1031,68 +1059,135 @@ export default {
       }
     },
     doNext () {
-      if (this.$route.query.syb) {
-        window.history.go(-1)
-      } else {
-        if (this.buyerType === 1) {
-          this.sendObj.plusNum = this.sendTotalNum
-        } else {
-          this.sendObj.plusNum = 0
-        }
-        if (this.setFavorNumObj.wordFavor.checked) {
-          this.sendObj.wordFavorNum = this.setFavorNumObj.wordFavor.num
-        } else {
-          this.sendObj.wordFavorNum = 0
-        }
-        if (this.setFavorNumObj.picFavor.checked) {
-          this.sendObj.graphicWordFavorNum = this.setFavorNumObj.picFavor.num
-        } else {
-          this.sendObj.graphicWordFavorNum = 0
-        }
-        if (this.setFavorNumObj.defaultFavor.checked) {
-          this.sendObj.defaultFavorNum = this.setFavorNumObj.defaultFavor.num
-        } else {
-          this.sendObj.defaultFavorNum = 0
-        }
-        this.sendObj.throwTime = this.sendDateList[0].time
-        this.sendObj.sellerTaskId = this.creatShopInfo.sellerTaskId
-
-        // 增值服务
-        if (parseInt(this.creatShopInfo.shopType) !== 0) {
-          let areaArrs = []
-          for (let m of this.increaseObj.area.areaArr) {
-            areaArrs = areaArrs.concat(m.chooseArr)
-          }
-          this.sendObj.isLimitLocation = this.increaseObj.area.checked ? 1 : 0
-          this.sendObj.isLimitGender = this.increaseObj.gender.checked ? 1 : 0
-          this.sendObj.isLimitAge = this.increaseObj.age.checked ? 1 : 0
-          this.sendObj.isLimitDiamond = this.increaseObj.allowZhuan.checked ? 1 : 0
-          this.sendObj.isLimitHuabei = this.increaseObj.allowHuaBei.checked ? 1 : 0
-          this.sendObj.exludeLocations = areaArrs
-          this.sendObj.ageIndex = this.increaseObj.age.chooseAge
-          this.sendObj.gender = this.increaseObj.gender.chooseGender
-        }
-        // 任务备注
-        this.sendObj.comment = this.taskCommon
-        // console.log(this.sendObj)
-        sessionStorage.setItem('taskTwo_sendObj', JSON.stringify(this.sendObj))
-
-        this.$ajax.post('/api/seller/task/addTaskInfo', this.sendObj).then((data) => {
-          // console.log(data)
-          if (data.data.code === '200') {
-            this.$router.push({ name: 'sendTaskThree', query: { sellerTaskId: data.data.data.sellerTaskId } })
-          } else {
-            this.$message({
-              message: data.data.message,
-              type: 'warning'
-            })
-          }
-        }).catch((err) => {
-          console.log(err)
-          this.$message.error('服务器错误！')
+      if (this.sendObj.productName === '') {
+        this.$message({
+          message: '请输入商品标题',
+          type: 'warning'
         })
+      } else if (this.sendObj.productUrl === '') {
+        this.$message({
+          message: '请输入商品链接',
+          type: 'warning'
+        })
+      } else if (this.sendObj.productPicUrl === '') {
+        this.$message({
+          message: '请上传商品主图',
+          type: 'warning'
+        })
+      } else if (this.sendObj.productShowPrice === '') {
+        this.$message({
+          message: '请填写商品展示价格',
+          type: 'warning'
+        })
+      } else if (this.sendObj.productOrderPrice === '') {
+        this.$message({
+          message: '请填写商品下单价格',
+          type: 'warning'
+        })
+      } else if (this.sendObj.numPerOrder === '') {
+        this.$message({
+          message: '请填写买家每单拍几件',
+          type: 'warning'
+        })
+      } else if (this.sendObj.productFormat === '') {
+        this.$message({
+          message: '请填写商品规格',
+          type: 'warning'
+        })
+      } else if (this.keywordList[0].keyword === '') {
+        this.$message({
+          message: '请填写搜索关键词',
+          type: 'warning'
+        })
+      } else if (this.keywordList[0].sortClass === '') {
+        this.$message({
+          message: '请选择搜索排序方式',
+          type: 'warning'
+        })
+      } else if (this.keywordList[0].priceLow === '') {
+        this.$message({
+          message: '请填写商品最低价',
+          type: 'warning'
+        })
+      } else if (this.keywordList[0].priceHigh === '') {
+        this.$message({
+          message: '请填写商品最高价',
+          type: 'warning'
+        })
+      } else if (this.keywordList[0].postLocation === '') {
+        this.$message({
+          message: '请选择商品发货地',
+          type: 'warning'
+        })
+      } else if (this.keywordList[0].pageNum === '') {
+        this.$message({
+          message: '请填写翻页数 / 付款人数',
+          type: 'warning'
+        })
+      } else {
+        if (this.$route.query.syb) {
+          window.history.go(-1)
+        } else {
+          if (this.buyerType === 1) {
+            this.sendObj.plusNum = this.sendTotalNum
+          } else {
+            this.sendObj.plusNum = 0
+          }
+          if (this.setFavorNumObj.wordFavor.checked) {
+            this.sendObj.wordFavorNum = this.setFavorNumObj.wordFavor.num
+          } else {
+            this.sendObj.wordFavorNum = 0
+          }
+          if (this.setFavorNumObj.picFavor.checked) {
+            this.sendObj.graphicWordFavorNum = this.setFavorNumObj.picFavor.num
+          } else {
+            this.sendObj.graphicWordFavorNum = 0
+          }
+          if (this.setFavorNumObj.defaultFavor.checked) {
+            this.sendObj.defaultFavorNum = this.setFavorNumObj.defaultFavor.num
+          } else {
+            this.sendObj.defaultFavorNum = 0
+          }
+          this.sendObj.throwTime = this.sendDateList[0].time
+          this.sendObj.sellerTaskId = this.creatShopInfo.sellerTaskId
+
+          // 增值服务
+          if (parseInt(this.creatShopInfo.shopType) !== 0) {
+            let areaArrs = []
+            for (let m of this.increaseObj.area.areaArr) {
+              areaArrs = areaArrs.concat(m.chooseArr)
+            }
+            this.sendObj.isLimitLocation = this.increaseObj.area.checked ? 1 : 0
+            this.sendObj.isLimitGender = this.increaseObj.gender.checked ? 1 : 0
+            this.sendObj.isLimitAge = this.increaseObj.age.checked ? 1 : 0
+            this.sendObj.isLimitDiamond = this.increaseObj.allowZhuan.checked ? 1 : 0
+            this.sendObj.isLimitHuabei = this.increaseObj.allowHuaBei.checked ? 1 : 0
+            this.sendObj.exludeLocations = areaArrs
+            this.sendObj.ageIndex = this.increaseObj.age.chooseAge
+            this.sendObj.gender = this.increaseObj.gender.chooseGender
+          }
+          // 任务备注
+          this.sendObj.comment = this.taskCommon
+          // console.log(this.sendObj)
+          sessionStorage.setItem('taskTwo_sendObj', JSON.stringify(this.sendObj))
+
+          this.$ajax.post('/api/seller/task/addTaskInfo', this.sendObj).then((data) => {
+            // console.log(data)
+            if (data.data.code === '200') {
+              this.$router.push({ name: 'sendTaskThree', query: { sellerTaskId: data.data.data.sellerTaskId } })
+            } else {
+              this.$message({
+                message: data.data.message,
+                type: 'warning'
+              })
+            }
+          }).catch((err) => {
+            console.log(err)
+            this.$message.error('服务器错误！')
+          })
+        }
+        // this.$router.push({ name: 'sendTaskThree' })
       }
-      // this.$router.push({ name: 'sendTaskThree' })
     },
     // 获取分类列表
     getClassApi (url, classIndex, id) {
@@ -1209,14 +1304,14 @@ export default {
     // 当分类选框变化时
     chooseClass (index) {
       if (index === 1) {
-        this.classValue.classTwo = {}
-        this.classValue.classThree = {}
-        this.classObj.classThree = ''
+        // this.classValue.classTwo = {}
+        // this.classValue.classThree = {}
+        // this.classObj.classThree = ''
         this.getClassApi('/api/config/productClass/getJDSecondClassByFirstid', 2, this.classValue.classOne.id)
         this.sendObj.productClassFirstId = this.classValue.classOne.id
         this.sendObj.productClassFirstDesc = this.classValue.classOne.className
       } else if (index === 2) {
-        this.classValue.classThree = {}
+        // this.classValue.classThree = {}
         this.getClassApi('/api/config/productClass/getThirdClassBySecondId', 3, this.classValue.classTwo.id)
         this.sendObj.productClassSecondId = this.classValue.classTwo.id
         this.sendObj.productClassSecondDesc = this.classValue.classTwo.className
@@ -1276,7 +1371,7 @@ export default {
           this.sendObj.productShowPrice = rbObj.productShowPrice
           this.sendObj.productOrderPrice = rbObj.productUnitPrice
           this.sendObj.productUrl = rbObj.productUrl
-          this.sendObj.taskCommon = rbObj.taskCommon
+          this.taskCommon = rbObj.comment
           this.keywordList = searchArr
           this.sendObj.sellerTaskId = rbObj.sellerTaskId
           this.classValue.classOne = rbObj.productClassFirstDesc

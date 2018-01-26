@@ -40,7 +40,7 @@
       </ul>
     </div>
     <div class="taskList">
-      <el-tabs v-model="activeName" type="border-card" @tab-click="handleClick">
+      <el-tabs v-model="activeName" :class="{ 'rejectArea': returnBackArr.length!=0 }" type="border-card" @tab-click="handleClick">
         <el-tab-pane label="垫付任务" name="first">
           <div class="orderList">
             <h2>待确认垫付订单</h2>
@@ -298,6 +298,7 @@ export default {
   mounted () {
     this.getOrderList()
     this.getMoney()
+    this.getReturnBack()
   }
 }
 </script>
@@ -369,6 +370,18 @@ export default {
     background #ffffff
     border-radius 4px
     margin-bottom 20px
+    .rejectArea
+      position relative
+      &:before
+        content ''
+        position absolute
+        top 5px
+        left 220px
+        width 10px
+        height 10px
+        z-index 10
+        border-radius 50%
+        background #ff3341
     .orderList
       padding 20px
       min-height 500px

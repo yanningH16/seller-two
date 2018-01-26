@@ -113,7 +113,7 @@
           <b class="red">{{ infoObj.totalPrice }}</b>元</p>
       </div>
       <div class="next">
-        <button class="btn disabled" @click="doPrevent">上一步</button>
+        <!-- <button class="btn disabled" @click="doPrevent">上一步</button> -->
         <button class="btn" @click="doNext">确认</button>
       </div>
     </div>

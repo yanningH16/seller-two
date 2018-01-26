@@ -71,7 +71,8 @@ export default {
             lines: [
               {
                 text: '总览',
-                link: 'overView'
+                link: 'overView',
+                bradge: this.notPassTaskCount
               },
               {
                 text: '发布垫付任务',
@@ -79,8 +80,7 @@ export default {
               },
               {
                 text: '任务管理',
-                link: 'task',
-                bradge: this.notPassTaskCount
+                link: 'task'
               }
             ]
           },
