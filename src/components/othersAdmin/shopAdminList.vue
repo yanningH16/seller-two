@@ -109,7 +109,6 @@ export default {
     ])
   },
   created () {
-    this.shoplist()
     if (this.$route.query.activeName === 'first') {
       this.activeName = 'first'
     } else if (this.$route.query.activeName === 'two') {
@@ -119,6 +118,7 @@ export default {
     } else {
       this.activeName = 'first'
     }
+    this.shoplist()
   },
   methods: {
     // 点击添加店铺进行相应的跳转
