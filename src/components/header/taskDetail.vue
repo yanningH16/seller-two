@@ -246,7 +246,7 @@
             </el-table-column>
             <el-table-column prop="orderId" align="center" label="订单编号">
             </el-table-column>
-            <el-table-column prop="taskDayId" align="center" label="试用编号">
+            <el-table-column prop="taskDayId" align="center" label="任务编号">
             </el-table-column>
             <el-table-column align="center" label="任务状态">
               <template slot-scope="scope">
