@@ -163,6 +163,11 @@ export default {
       'userMoney'
     ])
   },
+  watch: {
+    $route () {
+      this.pointNum()
+    }
+  },
   methods: {
     pointNum () {
       this.$ajax.post('/api/order/search/sellerStatistics', {
