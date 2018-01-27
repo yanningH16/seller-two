@@ -54,7 +54,6 @@
       <div class="top-right" v-if="taskInfoObj.status==4">
         <h2>任务已提交，等待客服审核</h2>
         <p>您的任务已提交，客服审核通过之后即可上线
-          <br /> 您的任务已提交，客服审核通过后即会根据你的放单计划进行任务派发，
           <br/> 审核之前您还可以：
           <span class="blue" @click="toDo('cancel')">撤销任务</span>
         </p>
