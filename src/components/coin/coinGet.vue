@@ -156,6 +156,20 @@ export default {
   },
   created () {
     this.addBank()
+    if (!this.userInfo.withdrawPassword) {
+      this.$confirm('您还未设置提现密码,前去设置?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$router.push({ name: 'userInfo' })
+      }).catch(() => {
+        this.$message({
+          type: 'warning',
+          message: '注意,您还未设置提现密码,暂不能进行提现'
+        })
+      })
+    }
   },
   mounted () {
     this.getMoney()
