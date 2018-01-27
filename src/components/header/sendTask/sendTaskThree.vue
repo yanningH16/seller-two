@@ -7,12 +7,12 @@
         <el-breadcrumb-item>发布垫付任务</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <div class="warning" v-if="warnShow">
+    <!-- <div class="warning" v-if="warnShow">
       <i class="el-icon-warning"></i>
       <span style="margin-left:20px;margin-right:40px;">(1) 当日18点前发布的任务，当日审核通过后进行分发。</span>
       <span>（2）当日22点后发布的任务，将在当日审核后于次日8点起开始。</span>
       <b class="el-icon-close" style="float:right;margin-top:14px;font-weight: bold" @click="warnShow=false"></b>
-    </div>
+    </div> -->
     <div class="step">
       <el-steps :active="active" finish-status="success" align-center>
         <el-step title="选择任务类型"></el-step>

@@ -8,12 +8,12 @@
         <el-breadcrumb-item v-if="isReturnBack">修改垫付任务</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <div class="warning" v-if="warnShow && !isReturnBack">
+    <!-- <div class="warning" v-if="warnShow && !isReturnBack">
       <i class="el-icon-warning"></i>
       <span style="margin-left:20px;margin-right:40px;">(1) 当日18点前发布的任务，当日审核通过后进行分发。</span>
       <span>（2）当日22点后发布的任务，将在当日审核后于次日8点起开始。</span>
       <b class="el-icon-close" style="float:right;margin-top:14px;font-weight: bold" @click="warnShow=false"></b>
-    </div>
+    </div> -->
     <div class="step" v-if="!isReturnBack">
       <el-steps :active="active" finish-status="success" align-center>
         <el-step title="选择任务类型"></el-step>
@@ -441,7 +441,7 @@
       </div>
       <div class="next" v-if="!isReturnBack">
         <button class="btn disab" @click="doPrevent">上一步</button>
-        <button class="btn" @click="doNext">下一步</button>
+        <button class="btn" :disabled="postFinish" @click="doNext">下一步</button>
         <!-- <button class="btn" :class="{'disab': !(shop && taskType)}" :disab="!(shop && taskType)" @click="doNext">下一步</button> -->
       </div>
       <div class="next" v-if="isReturnBack">
@@ -458,6 +458,8 @@ export default {
   name: 'sendTaskTwo',
   data () {
     return {
+      // 下一步不可用
+      postFinish: false,
       warnShow: true,
       // 是否驳回
       isReturnBack: false,
@@ -1128,6 +1130,7 @@ export default {
         if (this.$route.query.syb) {
           window.history.go(-1)
         } else {
+          this.postFinish = true
           if (this.buyerType === 1) {
             this.sendObj.plusNum = this.sendTotalNum
           } else {
@@ -1181,6 +1184,7 @@ export default {
                 type: 'warning'
               })
             }
+            this.postFinish = false
           }).catch((err) => {
             console.log(err)
             this.$message.error('服务器错误！')
