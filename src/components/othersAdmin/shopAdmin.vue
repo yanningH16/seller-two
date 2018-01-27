@@ -150,7 +150,7 @@ export default {
     getShopInfo () {
       if (this.input === '') {
         this.$message({
-          message: '请正确填写商品链接,不能为空',
+          message: '请正确填写店铺链接,不能为空',
           type: 'warning'
         })
         return false
