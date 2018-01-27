@@ -441,7 +441,10 @@
       </div>
       <div class="next" v-if="!isReturnBack">
         <button class="btn disab" @click="doPrevent">上一步</button>
-        <button class="btn" :disabled="postFinish" @click="doNext">下一步</button>
+        <button class="btn" :disabled="postFinish" @click="doNext">
+          <em v-if="postFinish" class="el-icon-loading"></em>
+          <em v-else>下一步</em>
+        </button>
         <!-- <button class="btn" :class="{'disab': !(shop && taskType)}" :disab="!(shop && taskType)" @click="doNext">下一步</button> -->
       </div>
       <div class="next" v-if="isReturnBack">
